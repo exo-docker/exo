@@ -1,0 +1,3 @@
+# eXo Docker container
+
+The aim of this repository is to give the configuration to run eXo Platform and all its needed components in Docker containers.
