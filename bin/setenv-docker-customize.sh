@@ -46,7 +46,7 @@ else
       exit 1;;
   esac
   
-  replace_in_file /opt/exo/conf/server.xml address=\"0.0.0.0\" "address=\"0.0.0.0\" proxyPort=\"443\" proxyName=\"${EXO_CUSTOMER_VHOST}\""
+  replace_in_file /opt/exo/conf/server.xml address=\"0.0.0.0\" "address=\"0.0.0.0\"  scheme=\"https\" secure=\"false\" proxyPort=\"443\" proxyName=\"${EXO_CUSTOMER_VHOST}\""
   # Declare the new valve to pass the replace the proxy ip by the client ip
   replace_in_file /opt/exo/conf/server.xml "</Host>" "  <Valve className=\"org.apache.catalina.valves.RemoteIpValve\" remoteIpHeader=\"x-forwarded-for\" proxiesHeader=\"x-forwarded-by\" protocolHeader=\"x-forwarded-proto\" />\n      </Host>"
   
