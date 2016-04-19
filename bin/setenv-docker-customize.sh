@@ -10,6 +10,13 @@
 # This file contains customizations related to Docker environment.
 # -----------------------------------------------------------------------------
 
+replace_in_file() {
+  local _tmpFile=$(mktemp /tmp/replace.XXXXXXXXXX) || { echo "Failed to create temp file"; exit 1; }
+  mv $1 ${_tmpFile}
+  sed "s|$2|$3|g" ${_tmpFile} > $1
+  rm ${_tmpFile}
+}
+
 # -----------------------------------------------------------------------------
 # Check configuration variables and add default values when needed
 # -----------------------------------------------------------------------------
@@ -38,6 +45,8 @@ else
     *) echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (${EXO_DB_TYPE})";
       exit 1;;
   esac
+  
+  replace_in_file /opt/exo/conf/server.xml address=\"0.0.0.0\" "address=\"0.0.0.0\" proxyPort=\"443\" proxyName=\"${EXO_CUSTOMER_VHOST}\""
   # put a file to avoid doing the configuration twice
   touch /opt/exo/_done.configuration
 fi
