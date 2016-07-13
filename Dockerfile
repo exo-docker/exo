@@ -72,16 +72,12 @@ RUN sed -i '/# Load custom settings/i \
 ' ${EXO_APP_DIR}/bin/setenv.sh && \
   grep 'setenv-docker-customize.sh' ${EXO_APP_DIR}/bin/setenv.sh
 
-# Add MySQL driver
-# TODO: make an add-on for that lib
-ADD http://central.maven.org/maven2/mysql/mysql-connector-java/5.1.38/mysql-connector-java-5.1.38.jar ${EXO_APP_DIR}/lib/
-RUN chown ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR}/lib/mysql-connector-java-5.1.38.jar
-
 # Install and Configure the chat
 ADD conf/chat.properties      /etc/exo/chat.properties
 RUN chown ${EXO_USER}:${EXO_GROUP} /etc/exo/chat.properties
 
 USER ${EXO_USER}
+RUN /opt/exo/addon install exo-jdbc-driver-mysql:1.0.0
 RUN /opt/exo/addon install exo-chat:1.2.0
 RUN /opt/exo/addon install exo-video-calls:1.3.0
 RUN /opt/exo/addon install exo-tasks:1.0.0
