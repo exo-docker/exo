@@ -79,7 +79,6 @@ RUN chown ${EXO_USER}:${EXO_GROUP} /etc/exo/chat.properties
 USER ${EXO_USER}
 RUN /opt/exo/addon install exo-jdbc-driver-mysql:1.0.0
 RUN /opt/exo/addon install exo-chat:1.2.0
-RUN /opt/exo/addon install exo-video-calls:1.3.0
 RUN /opt/exo/addon install exo-tasks:1.0.0
 RUN /opt/exo/addon install exo-remote-edit:1.1.0
 
