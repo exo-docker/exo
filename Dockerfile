@@ -10,7 +10,7 @@
 #           docker run -d --name=exo -p 80:8080 exoplatform/exo
 
 FROM       exoplatform/base-jdk:jdk8
-MAINTAINER DROUET Frederic <fdrouet+docker@exoplatform.com>
+MAINTAINER eXo Platform <docker@exoplatform.com>
 
 # Environment variables
 ENV EXO_VERSION_FULL    4.3.1-CP01
