@@ -53,7 +53,7 @@ RUN mkdir -p ${EXO_LOG_DIR}     && chown ${EXO_USER}:${EXO_GROUP} ${EXO_LOG_DIR}
 RUN curl -L -o /srv/downloads/eXo-Platform-${EXO_VERSION_FULL}.zip ${EXO_DOWNLOAD} && \
     unzip -q /srv/downloads/eXo-Platform-${EXO_VERSION_FULL}.zip -d /srv/downloads/ && \
     rm -f /srv/downloads/eXo-Platform-${EXO_VERSION_FULL}.zip && \
-    mv /srv/downloads/platform-4.3.0 ${EXO_APP_DIR} && \
+    mv /srv/downloads/platform-${EXO_VERSION_FULL} ${EXO_APP_DIR} && \
     # ln -s ${EXO_APP_DIR}/platform-${EXO_VERSION}-${EXO_EDITION} ${EXO_APP_DIR} && \
     chown -R ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR}
 RUN ln -s ${EXO_APP_DIR}/gatein/conf /etc/exo
