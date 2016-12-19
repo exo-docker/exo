@@ -13,7 +13,7 @@ FROM       exoplatform/base-jdk:jdk8
 MAINTAINER DROUET Frederic <fdrouet+docker@exoplatform.com>
 
 # Environment variables
-ENV EXO_VERSION_FULL    4.3.0
+ENV EXO_VERSION_FULL    4.3.1-CP01
 ENV EXO_VERSION_MINOR   4.3
 ENV EXO_DOWNLOAD        http://storage.exoplatform.org/downloads/Releases/Platform/${EXO_VERSION_MINOR}/${EXO_VERSION_FULL}/platform-${EXO_VERSION_FULL}.zip
 
@@ -78,8 +78,8 @@ RUN chown ${EXO_USER}:${EXO_GROUP} /etc/exo/chat.properties
 
 USER ${EXO_USER}
 RUN /opt/exo/addon install exo-jdbc-driver-mysql:1.0.0
-RUN /opt/exo/addon install exo-chat:1.2.0
-RUN /opt/exo/addon install exo-tasks:1.0.0
+RUN /opt/exo/addon install exo-chat:1.3.0
+RUN /opt/exo/addon install exo-tasks:1.1.0
 RUN /opt/exo/addon install exo-remote-edit:1.1.0
 
 CMD [ "/opt/exo/start_eXo.sh" ]
