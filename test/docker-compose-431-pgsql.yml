@@ -1,0 +1,29 @@
+version: '2'
+services:
+  exo:
+    extends:
+      file: common-plf43-stack.yml
+      service: exo
+    image: exoplatform/exo:4.3.1
+    environment:
+      EXO_DB_TYPE: pgsql
+      EXO_ADDONS_LIST: exo-jdbc-driver-postgresql
+    links:
+      - db
+      - mongo
+    depends_on:
+      - db
+      - mongo
+  mongo:
+    extends:
+      file: common-plf43-stack.yml
+      service: mongo
+  db:
+    extends:
+      file: common-plf43-stack.yml
+      service: pgsql
+volumes:
+  exo_data:
+  exo_logs:
+  db_data:
+  mongo_data:

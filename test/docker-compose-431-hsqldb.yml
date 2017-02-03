@@ -1,0 +1,21 @@
+version: '2'
+services:
+  exo:
+    extends:
+      file: common-plf43-stack.yml
+      service: exo
+    image: exoplatform/exo:4.3.1
+    environment:
+      EXO_DB_TYPE: hsqldb
+    links:
+      - mongo
+    depends_on:
+      - mongo
+  mongo:
+    extends:
+      file: common-plf43-stack.yml
+      service: mongo
+volumes:
+  exo_data:
+  exo_logs:
+  mongo_data:

@@ -62,6 +62,19 @@ The following environment variables should be passed to the container in order t
 
 The eXo Platform license file location must be `/etc/exo/license.xml`
 
+# Testing
+
+We provide some docker-compose files for testing various configurations in the test folder
+
+    # eXo Platform 4.3.1 + hsqldb
+    docker-compose -f test/docker-compose-431-hsqldb.yml -p exo431hsqldb up
+
+    # eXo Platform 4.3.1 + MySQL 5.5
+    docker-compose -f test/docker-compose-431-mysql.yml -p exo431mysql up
+
+    # eXo Platform 4.3.1 + Postgresql 9.4
+    docker-compose -f test/docker-compose-431-pgsql.yml -p exo431pgsql up
+
 # Image build
 
 The simplest way to build this image is to use default values :
