@@ -80,10 +80,6 @@ RUN chmod 755 ${EXO_APP_DIR}/bin/setenv-docker-customize.sh && \
 ' ${EXO_APP_DIR}/bin/setenv.sh && \
   grep 'setenv-docker-customize.sh' ${EXO_APP_DIR}/bin/setenv.sh
 
-# Install and Configure the chat
-ADD conf/chat.properties      /etc/exo/chat.properties
-RUN chown ${EXO_USER}:${EXO_GROUP} /etc/exo/chat.properties
-
 USER ${EXO_USER}
 
 RUN for a in ${ADDONS}; do echo "Installing addon $a"; /opt/exo/addon install $a; done

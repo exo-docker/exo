@@ -46,6 +46,18 @@ The following environment variables must be passed to the container in order to 
 | EXO_DB_HOST | NO | `mysql` | the host to connect to the database server
 | EXO_DB_PORT | NO | `3306` | the port to connect to the database server
 
+## Mongodb
+
+The following environment variables should be passed to the container in order to work if you use eXo Chat :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_MONGO_HOST | NO | `mongo` | the hostname to connect to the mongodb database for eXo Chat 
+| EXO_MONGO_PORT | NO | `27017` | the port to connect to the mongodb server
+| EXO_MONGO_USERNAME | NO | - | the username to use to connect to the mongodb database (no authentification configured by default)
+| EXO_MONGO_PASSWORD | NO | - | the password to use to connect to the mongodb database (no authentification configured by default)
+| EXO_MONGO_DB_NAME | NO | `chat` | the mongodb database name to use for eXo Chat 
+
 ## License
 
 The eXo Platform license file location must be `/etc/exo/license.xml`

@@ -76,6 +76,11 @@ case "${EXO_DB_TYPE}" in
     echo "ERROR: Postgresql (EXO_DB_TYPE = pgsql)"
     exit 1;;
 esac
+[ -z "${EXO_MONGO_HOST}" ] && EXO_MONGO_HOST="mongo"
+[ -z "${EXO_MONGO_PORT}" ] && EXO_MONGO_PORT="27017"
+[ -z "${EXO_MONGO_USERNAME}" ] && EXO_MONGO_USERNAME="-"
+[ -z "${EXO_MONGO_PASSWORD}" ] && EXO_MONGO_PASSWORD="-"
+[ -z "${EXO_MONGO_DB_NAME}" ] && EXO_MONGO_DB_NAME="chat"
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -121,6 +126,49 @@ else
       exit 1;;
   esac
 
+  # Mongodb configuration (for the Chat)
+  add_in_exo_configuration "# eXo Chat mongodb configuration"
+  add_in_exo_configuration "chat.dbServerHost=${EXO_MONGO_HOST}"
+  add_in_exo_configuration "chat.dbServerPort=${EXO_MONGO_PORT}"
+  add_in_exo_configuration "chat.dbName=${EXO_MONGO_DB_NAME}"
+  if [ "${EXO_MONGO_USERNAME:-}" = "-" ]; then
+    add_in_exo_configuration "chat.dbAuthentication=false"
+    add_in_exo_configuration "#chat.dbUser="
+    add_in_exo_configuration "#chat.dbPassword="
+  else
+    add_in_exo_configuration "chat.dbAuthentication=true"
+    add_in_exo_configuration "chat.dbUser=${EXO_MONGO_USERNAME}"
+    add_in_exo_configuration "chat.dbPassword=${EXO_MONGO_PASSWORD}"
+  fi
+
+  # eXo Chat configuration
+  add_in_exo_configuration "# eXo Chat server configuration"
+  # The password to access REST service on the eXo Chat server.
+  add_in_exo_configuration "chat.chatPassPhrase=something2change"
+  # The notifications are cleaned up every one hour by default.
+  add_in_exo_configuration "chat.chatCronNotifCleanup=0 0/60 * * * ?"
+  # The eXo group who can create teams.
+  add_in_exo_configuration "chat.teamAdminGroup=/platform/users"
+  # When a user reads a chat, the application displays messages of some days in the past.
+  add_in_exo_configuration "chat.chatReadDays=30"
+  # The number of messages that you can get in the Chat room.
+  add_in_exo_configuration "chatReadTotalJson=200"
+  # We must override this to remain inside the docker container (works only for embedded chat server)
+  add_in_exo_configuration "chat.chatServerBase=http://localhost:8080"
+
+  add_in_exo_configuration "# eXo Chat client configuration"
+  # Time interval to refresh messages in a chat.
+  add_in_exo_configuration "chat.chatIntervalChat=3000"
+  # Time interval to keep a chat session alive in milliseconds.
+  add_in_exo_configuration "chat.chatIntervalSession=60000"
+  # Time interval to refresh user status in milliseconds.
+  add_in_exo_configuration "chat.chatIntervalStatus=20000"
+  # Time interval to refresh Notifications in the main menu in milliseconds.
+  add_in_exo_configuration "chat.chatIntervalNotif=3000"
+  # Time interval to refresh Users list in milliseconds.
+  add_in_exo_configuration "chat.chatIntervalUsers=5000"
+  # Time after which a token will be invalid. The use will then be considered offline.
+  add_in_exo_configuration "chat.chatTokenValidity=30000"
 
   # put a file to avoid doing the configuration twice
   touch /opt/exo/_done.configuration
@@ -184,8 +232,8 @@ fi
 # -----------------------------------------------------------------------------
 # Change chat add-on security token at each start
 # -----------------------------------------------------------------------------
-if [ -f /etc/exo/chat.properties ]; then
-  sed -i 's/^chatPassPhrase=.*$/chatPassPhrase='"$(tr -dc '[:alnum:]' < /dev/urandom  | dd bs=4 count=6 2>/dev/null)"'/' /etc/exo/chat.properties
+if [ -f /etc/exo/exo.properties ]; then
+  sed -i 's/^chat.chatPassPhrase=.*$/chat.chatPassPhrase='"$(tr -dc '[:alnum:]' < /dev/urandom  | dd bs=4 count=6 2>/dev/null)"'/' /etc/exo/exo.properties
 fi
 
 # -----------------------------------------------------------------------------
