@@ -38,6 +38,8 @@ add_in_exo_configuration() {
 set +u		# DEACTIVATE unbound variable check
 [ -z "${EXO_DB_TYPE}" ] && EXO_DB_TYPE="mysql"
 [ -z "${EXO_DATA_DIR}" ] && EXO_DATA_DIR="/srv/exo"
+[ -z "${EXO_PROXY_VHOST}" ] && EXO_PROXY_VHOST="localhost"
+[ -z "${EXO_PROXY_SSL}" ] && EXO_PROXY_SSL="true"
 case "${EXO_DB_TYPE}" in
   hsqldb)
     echo "################################################################################"
@@ -108,7 +110,13 @@ else
       exit 1;;
   esac
 
-  replace_in_file /opt/exo/conf/server.xml address=\"0.0.0.0\" "address=\"0.0.0.0\"  scheme=\"https\" secure=\"false\" proxyPort=\"443\" proxyName=\"${EXO_CUSTOMER_VHOST}\""
+  case "${EXO_PROXY_SSL}" in
+    true|1)
+      replace_in_file /opt/exo/conf/server.xml "address=\"0.0.0.0\"" "address=\"0.0.0.0\" scheme=\"https\" secure=\"false\" proxyPort=\"443\" proxyName=\"${EXO_PROXY_VHOST}\"";;
+    *)
+      replace_in_file /opt/exo/conf/server.xml "address=\"0.0.0.0\"" "address=\"0.0.0.0\" proxyName=\"${EXO_PROXY_VHOST}\"";;
+  esac
+
   # Declare the new valve to pass the replace the proxy ip by the client ip
   replace_in_file /opt/exo/conf/server.xml "</Host>" "  <Valve className=\"org.apache.catalina.valves.RemoteIpValve\" remoteIpHeader=\"x-forwarded-for\" proxiesHeader=\"x-forwarded-by\" protocolHeader=\"x-forwarded-proto\" />\n      </Host>"
 
