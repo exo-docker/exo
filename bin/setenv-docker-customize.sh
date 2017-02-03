@@ -73,8 +73,12 @@ else
   else
     echo "# installing add-ons from EXO_ADDONS_LIST environment variable:"
     echo ${EXO_ADDONS_LIST} | tr ',' '\n' | while read _addon ; do
-        # Install addon
-        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_addon} --force --batch-mode
+      # Install addon
+      ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_addon} --force --batch-mode
+      if [ $? != 0 ]; then
+        echo "Problem during add-on install, startup aborted !"
+        exit 1
+      fi
     done
   fi
   echo "# ------------------------------------ #"
@@ -88,6 +92,10 @@ else
       [ "$(echo "$_addon" | awk  '{ string=substr($0, 1, 1); print string; }' )" = '#' ] && continue
       # Install addon
       ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_addon} --force --batch-mode
+      if [ $? != 0 ]; then
+        echo "Problem during add-on install, startup aborted !"
+        exit 1
+      fi
     done < "$_addons_list"
   else
     echo "# no add-on to install from addons-list.conf because /etc/exo/addons-list.conf file is absent."
