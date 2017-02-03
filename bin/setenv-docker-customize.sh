@@ -39,10 +39,10 @@ else
   case "${EXO_DB_TYPE}" in
     mysql)
       cat /opt/exo/conf/server-mysql.xml > /opt/exo/conf/server.xml
-      sed -i 's,jdbc:mysql://localhost:3306/plf,jdbc:mysql://mysql:'${EXO_DB_PORT}'/'${EXO_DB_NAME}',g' /opt/exo/conf/server.xml
-      sed -i 's,username="plf" password="plf",username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'",g' /opt/exo/conf/server.xml
+      replace_in_file /opt/exo/conf/server.xml "jdbc:mysql://localhost:3306/plf" "jdbc:mysql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
+      replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
       ;;
-    *) echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (${EXO_DB_TYPE})";
+    *) echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (current value is '${EXO_DB_TYPE}')";
       exit 1;;
   esac
 
