@@ -45,6 +45,7 @@ The following environment variables must be passed to the container in order to 
 | EXO_DB_PASSWORD | YES | - | the password to connect to the database
 | EXO_DB_HOST | NO | `mysql` | the host to connect to the database server
 | EXO_DB_PORT | NO | `3306` | the port to connect to the database server
+| EXO_DB_INSTALL_DRIVER | NO | `true` | automatically install the good jdbc driver add-on (true / false)
 
 ## Mongodb
 

@@ -17,6 +17,7 @@ services:
     image: exoplatform/exo:4.3.1
     environment:
       EXO_DB_TYPE: hsqldb
+      EXO_ADDONS_LIST: 
     links:
       - mongo
     depends_on:

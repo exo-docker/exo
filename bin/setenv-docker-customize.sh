@@ -53,6 +53,7 @@ case "${EXO_DB_TYPE}" in
     [ -z "${EXO_DB_PASSWORD}" ] && { echo "ERROR: you must provide a database password with EXO_DB_PASSWORD environment variable"; exit 1;}
     [ -z "${EXO_DB_HOST}" ] && EXO_DB_HOST="db"
     [ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="3306"
+    [ -z "${EXO_DB_INSTALL_DRIVER}" ] && EXO_DB_INSTALL_DRIVER="true"
     ;;
   pgsql|postgres|postgresql)
     [ -z "${EXO_DB_NAME}" ] && EXO_DB_NAME="exo"
@@ -60,6 +61,7 @@ case "${EXO_DB_TYPE}" in
     [ -z "${EXO_DB_PASSWORD}" ] && { echo "ERROR: you must provide a database password with EXO_DB_PASSWORD environment variable"; exit 1;}
     [ -z "${EXO_DB_HOST}" ] && EXO_DB_HOST="db"
     [ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="5432"
+    [ -z "${EXO_DB_INSTALL_DRIVER}" ] && EXO_DB_INSTALL_DRIVER="true"
     ;;
   oracle|ora)
     [ -z "${EXO_DB_NAME}" ] && EXO_DB_NAME="exo"
@@ -67,6 +69,7 @@ case "${EXO_DB_TYPE}" in
     [ -z "${EXO_DB_PASSWORD}" ] && { echo "ERROR: you must provide a database password with EXO_DB_PASSWORD environment variable"; exit 1;}
     [ -z "${EXO_DB_HOST}" ] && EXO_DB_HOST="db"
     [ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="1521"
+    [ -z "${EXO_DB_INSTALL_DRIVER}" ] && EXO_DB_INSTALL_DRIVER="false"
     ;;
   *)
     echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (current value is '${EXO_DB_TYPE}')"
@@ -109,11 +112,21 @@ else
       cat /opt/exo/conf/server-mysql.xml > /opt/exo/conf/server.xml
       replace_in_file /opt/exo/conf/server.xml "jdbc:mysql://localhost:3306/plf" "jdbc:mysql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
+      if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
+        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} exo-jdbc-driver-mysql --batch-mode
+      else
+        echo "WARNING: no database driver will be automatically installed (EXO_DB_INSTALL_DRIVER=false)."
+      fi
       ;;
     pgsql|postgres|postgresql)
       cat /opt/exo/conf/server-postgres.xml > /opt/exo/conf/server.xml
       replace_in_file /opt/exo/conf/server.xml "jdbc:postgresql://localhost:5432/plf" "jdbc:postgresql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
+      if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
+        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} exo-jdbc-driver-postgresql --batch-mode
+      else
+        echo "WARNING: no database driver will be automatically installed (EXO_DB_INSTALL_DRIVER=false)."
+      fi
       ;;
     oracle|ora)
       cat /opt/exo/conf/server-oracle.xml > /opt/exo/conf/server.xml
@@ -121,6 +134,11 @@ else
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
       add_in_exo_configuration "exo.jcr.datasource.dialect=org.hibernate.dialect.Oracle10gDialect"
       add_in_exo_configuration "exo.jpa.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect"
+      if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
+        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} exo-jdbc-driver-oracle --batch-mode
+      else
+        echo "WARNING: no database driver will be automatically installed (EXO_DB_INSTALL_DRIVER=false)."
+      fi
       ;;
     *) echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (current value is '${EXO_DB_TYPE}')";
       exit 1;;

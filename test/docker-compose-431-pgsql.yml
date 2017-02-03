@@ -17,7 +17,7 @@ services:
     image: exoplatform/exo:4.3.1
     environment:
       EXO_DB_TYPE: pgsql
-      EXO_ADDONS_LIST: exo-jdbc-driver-postgresql
+      EXO_ADDONS_LIST: 
     links:
       - db
       - mongo
