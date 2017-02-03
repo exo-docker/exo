@@ -53,12 +53,13 @@ else
   # put a file to avoid doing the configuration twice
   touch /opt/exo/_done.configuration
 fi
+
+# -----------------------------------------------------------------------------
+# Install add-ons if needed when the container is created for the first time
+# -----------------------------------------------------------------------------
 if [ -f /opt/exo/_done.addons ]; then
-  echo "INFO: Add-ons installation already done! skipping this step."
+  echo "INFO: add-ons installation already done! skipping this step."
 else
-  # -----------------------------------------------------------------------------
-  # Install add-ons if needed when the container is created for the first time
-  # -----------------------------------------------------------------------------
   echo "# ------------------------------------ #"
   echo "# eXo add-ons installation start ..."
   echo "# ------------------------------------ #"
