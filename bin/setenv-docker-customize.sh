@@ -17,17 +17,63 @@ replace_in_file() {
   rm ${_tmpFile}
 }
 
+# $1 : the full line content to insert at the end of eXo configuration file
+add_in_exo_configuration() {
+  local EXO_CONFIG_FILE="/etc/exo/exo.properties"
+  local P1="$1"
+  if [ ! -f ${EXO_CONFIG_FILE} ]; then
+    echo "Creating eXo configuration file [${EXO_CONFIG_FILE}]"
+    touch ${EXO_CONFIG_FILE}
+    if [ $? != 0 ]; then
+      echo "Problem during eXo configuration file creation, startup aborted !"
+      exit 1
+    fi
+  fi
+  echo "${P1}" >> ${EXO_CONFIG_FILE}
+}
+
 # -----------------------------------------------------------------------------
 # Check configuration variables and add default values when needed
 # -----------------------------------------------------------------------------
 set +u		# DEACTIVATE unbound variable check
 [ -z "${EXO_DB_TYPE}" ] && EXO_DB_TYPE="mysql"
-[ -z "${EXO_DB_NAME}" ] && EXO_DB_NAME="exo"
-[ -z "${EXO_DB_USER}" ] && EXO_DB_USER="exo"
-[ -z "${EXO_DB_PASSWORD}" ] && { echo "ERROR: you must provide a database password with EXO_DB_PASSWORD environment variable"; exit 1;}
-[ -z "${EXO_DB_HOST}" ] && EXO_DB_HOST="mysql"
-[ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="3306"
 [ -z "${EXO_DATA_DIR}" ] && EXO_DATA_DIR="/srv/exo"
+case "${EXO_DB_TYPE}" in
+  hsqldb)
+    echo "################################################################################"
+    echo "# WARNING: you are using HSQLDB which is not recommanded for production purpose."
+    echo "################################################################################"
+    sleep 2
+    ;;
+  mysql)
+    [ -z "${EXO_DB_NAME}" ] && EXO_DB_NAME="exo"
+    [ -z "${EXO_DB_USER}" ] && EXO_DB_USER="exo"
+    [ -z "${EXO_DB_PASSWORD}" ] && { echo "ERROR: you must provide a database password with EXO_DB_PASSWORD environment variable"; exit 1;}
+    [ -z "${EXO_DB_HOST}" ] && EXO_DB_HOST="db"
+    [ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="3306"
+    ;;
+  pgsql|postgres|postgresql)
+    [ -z "${EXO_DB_NAME}" ] && EXO_DB_NAME="exo"
+    [ -z "${EXO_DB_USER}" ] && EXO_DB_USER="exo"
+    [ -z "${EXO_DB_PASSWORD}" ] && { echo "ERROR: you must provide a database password with EXO_DB_PASSWORD environment variable"; exit 1;}
+    [ -z "${EXO_DB_HOST}" ] && EXO_DB_HOST="db"
+    [ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="5432"
+    ;;
+  oracle|ora)
+    [ -z "${EXO_DB_NAME}" ] && EXO_DB_NAME="exo"
+    [ -z "${EXO_DB_USER}" ] && EXO_DB_USER="exo"
+    [ -z "${EXO_DB_PASSWORD}" ] && { echo "ERROR: you must provide a database password with EXO_DB_PASSWORD environment variable"; exit 1;}
+    [ -z "${EXO_DB_HOST}" ] && EXO_DB_HOST="db"
+    [ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="1521"
+    ;;
+  *)
+    echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (current value is '${EXO_DB_TYPE}')"
+    echo "ERROR: supported database types are :"
+    echo "ERROR: HSQLDB     (EXO_DB_TYPE = hsqldb)"
+    echo "ERROR: MySQL      (EXO_DB_TYPE = mysql) (default)"
+    echo "ERROR: Postgresql (EXO_DB_TYPE = pgsql)"
+    exit 1;;
+esac
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -36,11 +82,27 @@ set -u		# REACTIVATE unbound variable check
 if [ -f /opt/exo/_done.configuration ]; then
   echo "INFO: Configuration already done! skipping this step."
 else
+  # Database configuration
   case "${EXO_DB_TYPE}" in
+    hsqldb)
+      cat /opt/exo/conf/server-hsqldb.xml > /opt/exo/conf/server.xml
+      ;;
     mysql)
       cat /opt/exo/conf/server-mysql.xml > /opt/exo/conf/server.xml
       replace_in_file /opt/exo/conf/server.xml "jdbc:mysql://localhost:3306/plf" "jdbc:mysql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
+      ;;
+    pgsql|postgres|postgresql)
+      cat /opt/exo/conf/server-postgres.xml > /opt/exo/conf/server.xml
+      replace_in_file /opt/exo/conf/server.xml "jdbc:postgresql://localhost:5432/plf" "jdbc:postgresql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
+      replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
+      ;;
+    oracle|ora)
+      cat /opt/exo/conf/server-oracle.xml > /opt/exo/conf/server.xml
+      replace_in_file /opt/exo/conf/server.xml "jdbc:oracle:thin:@localhost:1521:plf" "jdbc:oracle:thin://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
+      replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
+      add_in_exo_configuration "exo.jcr.datasource.dialect=org.hibernate.dialect.Oracle10gDialect"
+      add_in_exo_configuration "exo.jpa.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect"
       ;;
     *) echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (current value is '${EXO_DB_TYPE}')";
       exit 1;;

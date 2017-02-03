@@ -4,18 +4,23 @@
 
 The aim of this repository is to give the configuration to run eXo Platform in a Docker containers for production purpose.
 
-# Supported databases
+# Image compatibility
+## Databases
 
-Currently we only support `MySQL`.
+The image is now compatible with the following databases system :
 
-## Configuration
+* `MySQL` (default)
+* `HSQLDB`
+* `Postgresql`
+* `Oracle`
+
+# Configuration
 
 The following environment variables must be passed to the container in order to work :
 
-
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |--------------------------|-------------|--------------------------|----------------
-| EXO_DB_TYPE | NO | `mysql` | we currently only support mysql
+| EXO_DB_TYPE | NO | `mysql` | mysql / hsqldb / pgsql / ora
 | EXO_DB_NAME | NO | `exo` | the name of the database / schema to use
 | EXO_DB_USER | NO | `exo` | the username to connect to the database
 | EXO_DB_PASSWORD | YES | - | the password to connect to the database
@@ -27,7 +32,7 @@ The following environment variables must be passed to the container in order to 
 
 The eXo Platform license file location must be `/etc/exo/license.xml`
 
-# Build
+# Image build
 
 The simplest way to build this image is to use default values :
 
