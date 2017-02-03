@@ -26,3 +26,46 @@ The following environment variables must be passed to the container in order to 
 ## License
 
 The eXo Platform license file location must be `/etc/exo/license.xml`
+
+# Build
+
+The simplest way to build this image is to use default values :
+
+    docker build -t exoplatform/exo .
+
+This will produce an image with the current eXo Platform enterprise version and 3 bundled add-ons : eXo Chat, eXo Tasks, eXo Remote Edit.
+
+|    ARGUMENT NAME    |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| ADDONS | NO | `exo-chat exo-tasks exo-remote-edit` | a space separated list of add-ons to install
+| EXO_VERSION | NO | latest stable version | the full version number of the eXo Platform to package
+| DOWNLOAD_URL | NO | public download url | the full url where the eXo Platform binary must be downloaded
+| DOWNLOAD_USER | NO | - | a username to use for downloading the eXo Platform binary
+
+
+If you want to bundle a particular list of add-ons :
+
+    docker build \
+        --build-arg ADDONS="exo-chat exo-staging-extension:2.6.0" \
+        -t exoplatform/exo:my_version .
+
+If you want to build a particular version of eXo Platform just pass the good arguments :
+
+    docker build \
+        --build-arg EXO_VERSION=4.3.1 \
+        -t exoplatform/exo:4.3.1 .
+
+If you want to specify an alternate public download url :
+
+    docker build \
+        --build-arg DOWNLOAD_URL=http://my.host/my-own-download-link.zip \
+        -t exoplatform/exo:my_version .
+
+If you want to specify an alternate authenticated download url :
+
+    docker build \
+        --build-arg DOWNLOAD_URL=http://my.host/my-own-download-link.zip \
+        --build-arg DOWNLOAD_USER=my-username
+        -t exoplatform/exo:my_version .
+
+The password will be required during the build at the download step.
