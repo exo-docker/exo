@@ -1,5 +1,15 @@
 version: '2'
 services:
+  web:
+    extends:
+      file: common-plf43-stack.yml
+      service: web
+    ports: 
+      - "80:80"
+    links:
+      - exo
+    depends_on: 
+      - exo
   exo:
     extends:
       file: common-plf43-stack.yml

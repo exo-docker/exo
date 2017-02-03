@@ -1,5 +1,11 @@
 version: '2'
 services:
+  web:
+    image: nginx:1.10-alpine
+    expose:
+      - "80"
+    volumes:
+      - ./nginx-plf43.conf:/etc/nginx/nginx.conf:ro
   exo:
     image: exoplatform/exo:4.3
     environment:
@@ -11,8 +17,6 @@ services:
       EXO_PROXY_SSL: "false"
     expose:
       - "8080"
-    ports:
-      - "8080:8080"
     volumes:
       - exo_data:/srv/exo
       - exo_logs:/var/log/exo
