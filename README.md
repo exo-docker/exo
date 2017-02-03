@@ -16,6 +16,25 @@ The image is now compatible with the following databases system :
 
 # Configuration
 
+## Frontend proxy
+
+The following environment variables must be passed to the container in order to work :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_PROXY_VHOST | NO | `localhost` | specify the virtual host name to reach eXo Platform
+| EXO_PROXY_SSL | NO | `true` | is ssl activated on the proxy server ? (true / false)
+
+## Data on disk
+
+The following environment variables must be passed to the container in order to work :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_DATA_DIR | NO | `/srv/exo` | the directory to store eXo Platform data
+
+## Database
+
 The following environment variables must be passed to the container in order to work :
 
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
@@ -26,9 +45,6 @@ The following environment variables must be passed to the container in order to 
 | EXO_DB_PASSWORD | YES | - | the password to connect to the database
 | EXO_DB_HOST | NO | `mysql` | the host to connect to the database server
 | EXO_DB_PORT | NO | `3306` | the port to connect to the database server
-| EXO_DATA_DIR | NO | `/srv/exo` | the directory to store eXo Platform data
-| EXO_PROXY_VHOST | NO | `localhost` | specify the virtual host name to reach eXo Platform
-| EXO_PROXY_SSL | NO | `true` | is ssl activated on the proxy server ? (true / false)
 
 ## License
 
