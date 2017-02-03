@@ -251,4 +251,26 @@ fi
 # Change the device for antropy generation
 CATALINA_OPTS="${CATALINA_OPTS:-} -Djava.security.egd=file:/dev/./urandom"
 
+# Wait for database availability
+case "${EXO_DB_TYPE}" in
+  mysql)
+    echo "Waiting for database ${EXO_DB_TYPE} availability at ${EXO_DB_HOST}:${EXO_DB_PORT} ..."
+    /opt/wait-for-it.sh ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t 60
+    ;;
+  pgsql|postgres|postgresql)
+    echo "Waiting for database ${EXO_DB_TYPE} availability at ${EXO_DB_HOST}:${EXO_DB_PORT} ..."
+    /opt/wait-for-it.sh ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t 60
+    ;;
+  oracle|ora)
+    echo "Waiting for database ${EXO_DB_TYPE} availability at ${EXO_DB_HOST}:${EXO_DB_PORT} ..."
+    /opt/wait-for-it.sh ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t 60
+    ;;
+esac
+
+# Wait for mongodb availability (if chat is installed)
+if [ -f /opt/exo/addons/statuses/exo-chat.status ]; then
+  echo "Waiting for mongodb availability at ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} ..."
+  /opt/wait-for-it.sh ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} -s -t 60
+fi
+
 set +u		# DEACTIVATE unbound variable check

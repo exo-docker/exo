@@ -80,6 +80,11 @@ RUN chmod 755 ${EXO_APP_DIR}/bin/setenv-docker-customize.sh && \
 ' ${EXO_APP_DIR}/bin/setenv.sh && \
   grep 'setenv-docker-customize.sh' ${EXO_APP_DIR}/bin/setenv.sh
 
+COPY bin/wait-for-it.sh /opt/wait-for-it.sh
+RUN chmod 755 /opt/wait-for-it.sh && \
+    chown ${EXO_USER}:${EXO_GROUP} /opt/wait-for-it.sh
+
+
 USER ${EXO_USER}
 
 RUN for a in ${ADDONS}; do echo "Installing addon $a"; /opt/exo/addon install $a; done
