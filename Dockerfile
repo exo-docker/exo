@@ -12,6 +12,14 @@
 FROM       exoplatform/base-jdk:jdk8
 MAINTAINER eXo Platform <docker@exoplatform.com>
 
+# Install the needed packages
+RUN apt-get -qq update && \
+  apt-get -qq -y upgrade ${_APT_OPTIONS} && \
+  apt-get -qq -y install ${_APT_OPTIONS} libreoffice-calc libreoffice-draw libreoffice-impress libreoffice-math libreoffice-writer && \
+  apt-get -qq -y autoremove && \
+  apt-get -qq -y clean && \
+  rm -rf /var/lib/apt/lists/*
+
 # Build Arguments and environment variables
 ARG EXO_VERSION=4.3.1-CP01
 # this allow to specify an eXo Platform download url
@@ -35,14 +43,6 @@ ENV EXO_GROUP ${EXO_USER}
 RUN useradd --create-home -u 999 --user-group --shell /bin/bash ${EXO_USER}
 # giving all rights to eXo user
 RUN echo "exo   ALL = NOPASSWD: ALL" > /etc/sudoers.d/exo && chmod 440 /etc/sudoers.d/exo
-
-# Install the needed packages
-RUN apt-get -qq update && \
-  apt-get -qq -y upgrade ${_APT_OPTIONS} && \
-  apt-get -qq -y install ${_APT_OPTIONS} libreoffice-calc libreoffice-draw libreoffice-impress libreoffice-math libreoffice-writer && \
-  apt-get -qq -y autoremove && \
-  apt-get -qq -y clean && \
-  rm -rf /var/lib/apt/lists/*
 
 # Create needed directories
 # RUN mkdir -p ${EXO_APP_DIR}
