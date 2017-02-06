@@ -30,3 +30,6 @@ volumes:
   exo_data:
   exo_logs:
   mongo_data:
+networks:
+  front:
+  back:

@@ -6,6 +6,8 @@ services:
       - "80"
     volumes:
       - ./nginx-plf43.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - front
   exo:
     image: exoplatform/exo:4.3
     environment:
@@ -22,10 +24,15 @@ services:
     volumes:
       - exo_data:/srv/exo
       - exo_logs:/var/log/exo
+    networks:
+      - front
+      - back
   mongo:
     image: mongo:3.0
     volumes:
       - mongo_data:/data/db:rw
+    networks:
+      - back
   mysql:
     image: mysql:5.5
     environment:
@@ -35,6 +42,8 @@ services:
       MYSQL_PASSWORD: exo
     volumes:
       - db_data:/var/lib/mysql:rw
+    networks:
+      - back
   pgsql:
     image: postgres:9.4-alpine
     environment:
@@ -43,3 +52,5 @@ services:
       POSTGRES_PASSWORD: exo
     volumes:
       - db_data:/var/lib/postgresql/data:rw
+    networks:
+      - back
