@@ -79,6 +79,8 @@ case "${EXO_DB_TYPE}" in
     echo "ERROR: Postgresql (EXO_DB_TYPE = pgsql)"
     exit 1;;
 esac
+[ -z "${EXO_DB_POOL_INIT_SIZE}" ] && EXO_DB_POOL_INIT_SIZE="5"
+[ -z "${EXO_DB_POOL_MAX_SIZE}" ] && EXO_DB_POOL_MAX_SIZE="20"
 [ -z "${EXO_MONGO_HOST}" ] && EXO_MONGO_HOST="mongo"
 [ -z "${EXO_MONGO_PORT}" ] && EXO_MONGO_PORT="27017"
 [ -z "${EXO_MONGO_USERNAME}" ] && EXO_MONGO_USERNAME="-"
@@ -143,6 +145,7 @@ else
     *) echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (current value is '${EXO_DB_TYPE}')";
       exit 1;;
   esac
+  replace_in_file /opt/exo/conf/server.xml 'initialSize="5" maxActive="20"' 'initialSize="'${EXO_DB_POOL_INIT_SIZE}'" maxActive="'${EXO_DB_POOL_MAX_SIZE}'"'
 
   # Mongodb configuration (for the Chat)
   add_in_exo_configuration "# eXo Chat mongodb configuration"

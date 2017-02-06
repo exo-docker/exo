@@ -13,6 +13,8 @@ services:
       EXO_DB_USER: exo
       EXO_DB_PASSWORD: exo
       EXO_DB_HOST: db
+      EXO_DB_POOL_INIT_SIZE: 1
+      EXO_DB_POOL_MAX_SIZE: 15
       EXO_PROXY_VHOST: localhost
       EXO_PROXY_SSL: "false"
     expose:
