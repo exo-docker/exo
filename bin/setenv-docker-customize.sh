@@ -170,9 +170,16 @@ else
   # JMX configuration
   if [ "${EXO_JMX_ENABLED}" = "true" ]; then
     # insert the listener before the "Global JNDI resources" line
-    sed -i '/<!-- Global JNDI resources/i \
-    <Listener className="org.apache.catalina.mbeans.JmxRemoteLifecycleListener" rmiRegistryPortPlatform="'${EXO_JMX_RMI_REGISTRY_PORT}'" rmiServerPortPlatform="'${EXO_JMX_RMI_SERVER_PORT}'" useLocalPorts="false" />\
-    ' /opt/exo/conf/server.xml
+    xmlstarlet ed -L -i "/Server/GlobalNamingResources" -t elem -n ListenerTMP -v "" \
+      -i "//ListenerTMP" -t attr -n "className" -v "org.apache.catalina.mbeans.JmxRemoteLifecycleListener" \
+      -i "//ListenerTMP" -t attr -n "rmiRegistryPortPlatform" -v "${EXO_JMX_RMI_REGISTRY_PORT}" \
+      -i "//ListenerTMP" -t attr -n "rmiServerPortPlatform" -v "${EXO_JMX_RMI_SERVER_PORT}" \
+      -i "//ListenerTMP" -t attr -n "useLocalPorts" -v "false" \
+      -r "//ListenerTMP" -v "Listener" \
+      /opt/exo/conf/server.xml || {
+      echo "ERROR during xmlstarlet processing (adding JmxRemoteLifecycleListener)"
+      exit 1
+    }
     # Create the security files if required
     if [ "${EXO_JMX_USERNAME:-}" != "-" ]; then
       if [ "${EXO_JMX_PASSWORD:-}" = "-" ]; then
