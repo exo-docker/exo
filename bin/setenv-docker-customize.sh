@@ -161,6 +161,12 @@ else
     exit 1
   }
 
+  ## Remove AJP connector
+  xmlstarlet ed -L -d '//Connector[@protocol="AJP/1.3"]' /opt/exo/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (AJP connector removal)"
+    exit 1
+  }
+
   # JMX configuration
   if [ "${EXO_JMX_ENABLED}" = "true" ]; then
     # insert the listener before the "Global JNDI resources" line
