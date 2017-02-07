@@ -18,6 +18,13 @@ services:
     environment:
       EXO_DB_TYPE: mysql
       EXO_ADDONS_LIST: 
+    ports: 
+      # (Linux) open JMX ports for local connection only
+      #- "127.0.0.1:10001:10001"
+      #- "127.0.0.1:10002:10002"
+      # (macOS / Windows) open JMX ports on the host
+      - "10001:10001"
+      - "10002:10002"
     links:
       - db
       - mongo

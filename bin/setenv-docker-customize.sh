@@ -81,6 +81,14 @@ case "${EXO_DB_TYPE}" in
 esac
 [ -z "${EXO_DB_POOL_INIT_SIZE}" ] && EXO_DB_POOL_INIT_SIZE="5"
 [ -z "${EXO_DB_POOL_MAX_SIZE}" ] && EXO_DB_POOL_MAX_SIZE="20"
+
+[ -z "${EXO_JMX_ENABLED}" ] && EXO_JMX_ENABLED="true"
+[ -z "${EXO_JMX_RMI_REGISTRY_PORT}" ] && EXO_JMX_RMI_REGISTRY_PORT="10001"
+[ -z "${EXO_JMX_RMI_SERVER_PORT}" ] && EXO_JMX_RMI_SERVER_PORT="10002"
+[ -z "${EXO_JMX_RMI_SERVER_HOSTNAME}" ] && EXO_JMX_RMI_SERVER_HOSTNAME="localhost"
+[ -z "${EXO_JMX_USERNAME}" ] && EXO_JMX_USERNAME="-"
+[ -z "${EXO_JMX_PASSWORD}" ] && EXO_JMX_PASSWORD="-"
+
 [ -z "${EXO_MONGO_HOST}" ] && EXO_MONGO_HOST="mongo"
 [ -z "${EXO_MONGO_PORT}" ] && EXO_MONGO_PORT="27017"
 [ -z "${EXO_MONGO_USERNAME}" ] && EXO_MONGO_USERNAME="-"
@@ -146,6 +154,24 @@ else
       exit 1;;
   esac
   replace_in_file /opt/exo/conf/server.xml 'initialSize="5" maxActive="20"' 'initialSize="'${EXO_DB_POOL_INIT_SIZE}'" maxActive="'${EXO_DB_POOL_MAX_SIZE}'"'
+
+  # JMX configuration
+  if [ "${EXO_JMX_ENABLED}" = "true" ]; then
+    # insert the listener before the "Global JNDI resources" line
+    sed -i '/<!-- Global JNDI resources/i \
+    <Listener className="org.apache.catalina.mbeans.JmxRemoteLifecycleListener" rmiRegistryPortPlatform="'${EXO_JMX_RMI_REGISTRY_PORT}'" rmiServerPortPlatform="'${EXO_JMX_RMI_SERVER_PORT}'" useLocalPorts="false" />\
+    ' /opt/exo/conf/server.xml
+    # Create the security files if required
+    if [ "${EXO_JMX_USERNAME:-}" != "-" ]; then
+      if [ "${EXO_JMX_PASSWORD:-}" = "-" ]; then
+        EXO_JMX_PASSWORD="$(tr -dc '[:alnum:]' < /dev/urandom  | dd bs=2 count=6 2>/dev/null)"
+      fi
+    # /opt/exo/conf/jmxremote.password
+    echo "${EXO_JMX_USERNAME} ${EXO_JMX_PASSWORD}" > /opt/exo/conf/jmxremote.password
+    # /opt/exo/conf/jmxremote.access
+    echo "${EXO_JMX_USERNAME} readwrite" > /opt/exo/conf/jmxremote.access
+    fi
+  fi
 
   # Mongodb configuration (for the Chat)
   add_in_exo_configuration "# eXo Chat mongodb configuration"
@@ -261,6 +287,20 @@ fi
 # Define a better place for eXo Platform license file
 # -----------------------------------------------------------------------------
 CATALINA_OPTS="${CATALINA_OPTS:-} -Dexo.license.path=/etc/exo/license.xml"
+
+# JMX configuration
+if [ "${EXO_JMX_ENABLED}" = "true" ]; then
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote=true"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"
+  CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.server.hostname=${EXO_JMX_RMI_SERVER_HOSTNAME}"
+  if [ "${EXO_JMX_USERNAME:-}" = "-" ]; then
+    CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
+  else
+    CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=true"
+    CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.password.file=/opt/exo/conf/jmxremote.password"
+    CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.access.file=/opt/exo/conf/jmxremote.access"
+  fi
+fi
 
 # -----------------------------------------------------------------------------
 # Create the DATA directory if needed

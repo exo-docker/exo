@@ -61,6 +61,21 @@ The following environment variables should be passed to the container in order t
 | EXO_MONGO_PASSWORD | NO | - | the password to use to connect to the mongodb database (no authentification configured by default)
 | EXO_MONGO_DB_NAME | NO | `chat` | the mongodb database name to use for eXo Chat 
 
+## JMX
+
+The following environment variables should be passed to the container in order to configure JMX :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_JMX_ENABLED | NO | `true` | activate JMX listener
+| EXO_JMX_RMI_REGISTRY_PORT | NO | `10001` | JMX RMI Registry port
+| EXO_JMX_RMI_SERVER_PORT | NO | `10002` | JMX RMI Server port
+| EXO_JMX_RMI_SERVER_HOSTNAME | NO | `localhost` | JMX RMI Server hostname
+| EXO_JMX_USERNAME | NO | - | a username for JMX connection (if no username is provided, the JMX access is unprotected)
+| EXO_JMX_PASSWORD | NO | - | a password for JMX connection (if no password is specified a random one will be generated and stored in /opt/exo/conf/jmxremote.password)
+
+With the default parameters you can connect to JMX with `service:jmx:rmi://localhost:10002/jndi/rmi://localhost:10001/jmxrmi` without authentication.
+
 ## License
 
 The eXo Platform license file location must be `/etc/exo/license.xml`
