@@ -110,9 +110,6 @@ else
       replace_in_file /opt/exo/conf/server.xml "address=\"0.0.0.0\"" "address=\"0.0.0.0\" proxyName=\"${EXO_PROXY_VHOST}\"";;
   esac
 
-  # Declare the new valve to pass the replace the proxy ip by the client ip
-  replace_in_file /opt/exo/conf/server.xml "</Host>" "  <Valve className=\"org.apache.catalina.valves.RemoteIpValve\" remoteIpHeader=\"x-forwarded-for\" proxiesHeader=\"x-forwarded-by\" protocolHeader=\"x-forwarded-proto\" />\n      </Host>"
-
   # Database configuration
   case "${EXO_DB_TYPE}" in
     hsqldb)
@@ -164,6 +161,18 @@ else
   ## Remove AJP connector
   xmlstarlet ed -L -d '//Connector[@protocol="AJP/1.3"]' /opt/exo/conf/server.xml || {
     echo "ERROR during xmlstarlet processing (AJP connector removal)"
+    exit 1
+  }
+
+  # Add a new valve to replace the proxy ip by the client ip (just before the end of Host)
+  xmlstarlet ed -L -s "/Server/Service/Engine/Host" -t elem -n "ValveTMP" -v "" \
+  -i "//ValveTMP" -t attr -n "className" -v "org.apache.catalina.valves.RemoteIpValve" \
+  -i "//ValveTMP" -t attr -n "remoteIpHeader" -v "x-forwarded-for" \
+  -i "//ValveTMP" -t attr -n "proxiesHeader" -v "x-forwarded-by" \
+  -i "//ValveTMP" -t attr -n "protocolHeader" -v "x-forwarded-proto" \
+  -r "//ValveTMP" -v Valve \
+  /opt/exo/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (adding RemoteIpValve)"
     exit 1
   }
 
