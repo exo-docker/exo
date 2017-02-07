@@ -16,6 +16,21 @@ The image is now compatible with the following databases system :
 
 # Configuration
 
+## JVM
+
+The standard eXo Platform environment variables can be used :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_JVM_SIZE_MIN | NO | `512m` | specify the jvm minimum allocated memory size (-Xms parameter)
+| EXO_JVM_SIZE_MAX | NO | `3g` | specify the jvm maximum allocated memory size (-Xmx parameter)
+| EXO_JVM_PERMSIZE_MAX | NO | `256m` | (Java 7) specify the jvm maximum allocated memory to Permgen (-XX:MaxPermSize parameter)
+| EXO_JVM_METASPACE_SIZE_MAX | NO | `512m` | (Java 8+) specify the jvm maximum allocated memory to MetaSpace (-XX:MaxMetaspaceSize parameter)
+| EXO_JVM_USER_LANGUAGE | NO | `en` | specify the jvm maximum allocated memory size (-Duser.language parameter)
+| EXO_JVM_USER_REGION | NO | `US` | specify the jvm maximum allocated memory size (-Duser.region parameter)
+
+This list is not exhaustive (see eXo Platform documentation or {EXO_HOME}/bin/setenv.sh for more parameters)
+
 ## Frontend proxy
 
 The following environment variables must be passed to the container in order to work :

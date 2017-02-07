@@ -19,6 +19,8 @@ services:
       EXO_DB_POOL_MAX_SIZE: 15
       EXO_PROXY_VHOST: localhost
       EXO_PROXY_SSL: "false"
+      EXO_JVM_SIZE_MIN: "2g"
+      EXO_JVM_SIZE_MAX: "3g"
     expose:
       - "8080"
     volumes:
