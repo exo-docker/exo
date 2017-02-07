@@ -155,6 +155,12 @@ else
   esac
   replace_in_file /opt/exo/conf/server.xml 'initialSize="5" maxActive="20"' 'initialSize="'${EXO_DB_POOL_INIT_SIZE}'" maxActive="'${EXO_DB_POOL_MAX_SIZE}'"'
 
+  ## Remove file comments
+  xmlstarlet ed -L -d "//comment()" /opt/exo/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (xml comments removal)"
+    exit 1
+  }
+
   # JMX configuration
   if [ "${EXO_JMX_ENABLED}" = "true" ]; then
     # insert the listener before the "Global JNDI resources" line
