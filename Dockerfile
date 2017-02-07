@@ -15,6 +15,7 @@ MAINTAINER eXo Platform <docker@exoplatform.com>
 # Install the needed packages
 RUN apt-get -qq update && \
   apt-get -qq -y upgrade ${_APT_OPTIONS} && \
+  apt-get -qq -y install ${_APT_OPTIONS} xmlstarlet && \
   apt-get -qq -y install ${_APT_OPTIONS} libreoffice-calc libreoffice-draw libreoffice-impress libreoffice-math libreoffice-writer && \
   apt-get -qq -y autoremove && \
   apt-get -qq -y clean && \
