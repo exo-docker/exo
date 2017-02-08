@@ -82,6 +82,9 @@ esac
 [ -z "${EXO_DB_POOL_INIT_SIZE}" ] && EXO_DB_POOL_INIT_SIZE="5"
 [ -z "${EXO_DB_POOL_MAX_SIZE}" ] && EXO_DB_POOL_MAX_SIZE="20"
 
+[ -z "${EXO_HTTP_THREAD_MIN}" ] && EXO_HTTP_THREAD_MIN="10"
+[ -z "${EXO_HTTP_THREAD_MAX}" ] && EXO_HTTP_THREAD_MAX="200"
+
 [ -z "${EXO_JMX_ENABLED}" ] && EXO_JMX_ENABLED="true"
 [ -z "${EXO_JMX_RMI_REGISTRY_PORT}" ] && EXO_JMX_RMI_REGISTRY_PORT="10001"
 [ -z "${EXO_JMX_RMI_SERVER_PORT}" ] && EXO_JMX_RMI_SERVER_PORT="10002"
@@ -171,6 +174,14 @@ else
       exit 1
     }
   fi
+
+  # Tomcat HTTP Thread pool configuration
+  xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "maxThreads" -v "${EXO_HTTP_THREAD_MAX}" \
+    -s "/Server/Service/Connector" -t attr -n "minSpareThreads" -v "${EXO_HTTP_THREAD_MIN}" \
+    /opt/exo/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (adding Connector proxyName)"
+    exit 1
+  }
 
   # Add a new valve to replace the proxy ip by the client ip (just before the end of Host)
   xmlstarlet ed -L -s "/Server/Service/Engine/Host" -t elem -n "ValveTMP" -v "" \
