@@ -14,21 +14,35 @@ services:
     extends:
       file: common-plf43-stack.yml
       service: exo
-    image: exoplatform/exo:4.3.1
+    image: exoplatform/exo:4.3_latest
     environment:
-      EXO_DB_TYPE: hsqldb
+      EXO_DB_TYPE: pgsql
       EXO_ADDONS_LIST: 
+    ports: 
+      # (Linux) open JMX ports for local connection only
+      #- "127.0.0.1:10001:10001"
+      #- "127.0.0.1:10002:10002"
+      # (macOS / Windows) open JMX ports on the host
+      - "10001:10001"
+      - "10002:10002"
     links:
+      - db
       - mongo
     depends_on:
+      - db
       - mongo
   mongo:
     extends:
       file: common-plf43-stack.yml
       service: mongo
+  db:
+    extends:
+      file: common-plf43-stack.yml
+      service: pgsql
 volumes:
   exo_data:
   exo_logs:
+  db_data:
   mongo_data:
 networks:
   front:

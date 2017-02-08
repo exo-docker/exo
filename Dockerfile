@@ -1,8 +1,7 @@
 # Dockerizing base image for eXo Platform hosting offer with:
 #
+# - eXo Platform
 # - Libre Office
-# - MongoDB
-# - eXo Platform Trial edition
 
 # Build:    docker build -t exoplatform/exo .
 #
@@ -46,13 +45,9 @@ RUN useradd --create-home -u 999 --user-group --shell /bin/bash ${EXO_USER}
 RUN echo "exo   ALL = NOPASSWD: ALL" > /etc/sudoers.d/exo && chmod 440 /etc/sudoers.d/exo
 
 # Create needed directories
-# RUN mkdir -p ${EXO_APP_DIR}
-RUN mkdir -p ${EXO_DATA_DIR}    && chown ${EXO_USER}:${EXO_GROUP} ${EXO_DATA_DIR}
-# && \
-#   mkdir ${EXO_DATA_DIR}/.eXo/   && chown ${EXO_USER}:${EXO_GROUP} ${EXO_DATA_DIR}/.eXo && \
-#   ln -s ${EXO_DATA_DIR}/.eXo    /home/${EXO_USER}/.eXo
-RUN mkdir -p ${EXO_TMP_DIR}     && chown ${EXO_USER}:${EXO_GROUP} ${EXO_TMP_DIR}
-RUN mkdir -p ${EXO_LOG_DIR}     && chown ${EXO_USER}:${EXO_GROUP} ${EXO_LOG_DIR}
+RUN mkdir -p ${EXO_DATA_DIR}    && chown ${EXO_USER}:${EXO_GROUP} ${EXO_DATA_DIR} && \
+    mkdir -p ${EXO_TMP_DIR}     && chown ${EXO_USER}:${EXO_GROUP} ${EXO_TMP_DIR}  && \
+    mkdir -p ${EXO_LOG_DIR}     && chown ${EXO_USER}:${EXO_GROUP} ${EXO_LOG_DIR}
 
 # Install eXo Platform
 RUN if [ -n "${DOWNLOAD_USER}" ]; then PARAMS="-u ${DOWNLOAD_USER}"; fi && \
@@ -65,9 +60,9 @@ RUN if [ -n "${DOWNLOAD_USER}" ]; then PARAMS="-u ${DOWNLOAD_USER}"; fi && \
     unzip -q /srv/downloads/eXo-Platform-${EXO_VERSION}.zip -d /srv/downloads/ && \
     rm -f /srv/downloads/eXo-Platform-${EXO_VERSION}.zip && \
     mv /srv/downloads/platform-${EXO_VERSION} ${EXO_APP_DIR} && \
-    chown -R ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR}
-RUN ln -s ${EXO_APP_DIR}/gatein/conf /etc/exo
-RUN rm -rf ${EXO_APP_DIR}/logs && ln -s ${EXO_LOG_DIR} ${EXO_APP_DIR}/logs
+    chown -R ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR} && \
+    ln -s ${EXO_APP_DIR}/gatein/conf /etc/exo && \
+    rm -rf ${EXO_APP_DIR}/logs && ln -s ${EXO_LOG_DIR} ${EXO_APP_DIR}/logs
 
 # Install Docker customization file
 ADD bin/setenv-docker-customize.sh ${EXO_APP_DIR}/bin/setenv-docker-customize.sh
@@ -84,7 +79,6 @@ RUN chmod 755 ${EXO_APP_DIR}/bin/setenv-docker-customize.sh && \
 COPY bin/wait-for-it.sh /opt/wait-for-it.sh
 RUN chmod 755 /opt/wait-for-it.sh && \
     chown ${EXO_USER}:${EXO_GROUP} /opt/wait-for-it.sh
-
 
 USER ${EXO_USER}
 

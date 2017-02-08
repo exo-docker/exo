@@ -5,7 +5,7 @@ services:
     expose:
       - "80"
     volumes:
-      - ./nginx-plf43.conf:/etc/nginx/nginx.conf:ro
+      - ./conf/nginx-plf43.conf:/etc/nginx/nginx.conf:ro
     networks:
       - front
   exo:
