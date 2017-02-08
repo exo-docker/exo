@@ -33,7 +33,7 @@ This list is not exhaustive (see eXo Platform documentation or {EXO_HOME}/bin/se
 
 ## Frontend proxy
 
-The following environment variables must be passed to the container in order to work :
+The following environment variables must be passed to the container to configure proxy settings:
 
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |--------------------------|-------------|--------------------------|----------------

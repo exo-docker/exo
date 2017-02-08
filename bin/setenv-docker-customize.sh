@@ -102,14 +102,6 @@ set -u		# REACTIVATE unbound variable check
 if [ -f /opt/exo/_done.configuration ]; then
   echo "INFO: Configuration already done! skipping this step."
 else
-  # Proxy configuration
-  case "${EXO_PROXY_SSL}" in
-    true|1)
-      replace_in_file /opt/exo/conf/server.xml "address=\"0.0.0.0\"" "address=\"0.0.0.0\" scheme=\"https\" secure=\"false\" proxyPort=\"443\" proxyName=\"${EXO_PROXY_VHOST}\"";;
-    *)
-      replace_in_file /opt/exo/conf/server.xml "address=\"0.0.0.0\"" "address=\"0.0.0.0\" proxyName=\"${EXO_PROXY_VHOST}\"";;
-  esac
-
   # Database configuration
   case "${EXO_DB_TYPE}" in
     hsqldb)
@@ -163,6 +155,22 @@ else
     echo "ERROR during xmlstarlet processing (AJP connector removal)"
     exit 1
   }
+
+  # Proxy configuration
+  xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "proxyName" -v "${EXO_PROXY_VHOST}" /opt/exo/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (adding Connector proxyName)"
+    exit 1
+  }
+
+  if [ "${EXO_PROXY_SSL}" = "true" ]; then
+    xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "scheme" -v "https" \
+      -s "/Server/Service/Connector" -t attr -n "secure" -v "false" \
+      -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "443" \
+      /opt/exo/conf/server.xml || {
+      echo "ERROR during xmlstarlet processing (configuring Connector proxy ssl)"
+      exit 1
+    }
+  fi
 
   # Add a new valve to replace the proxy ip by the client ip (just before the end of Host)
   xmlstarlet ed -L -s "/Server/Service/Engine/Host" -t elem -n "ValveTMP" -v "" \
