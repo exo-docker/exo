@@ -15,8 +15,12 @@ services:
       EXO_DB_USER: exo
       EXO_DB_PASSWORD: exo
       EXO_DB_HOST: db
-      EXO_DB_POOL_INIT_SIZE: 1
-      EXO_DB_POOL_MAX_SIZE: 15
+      EXO_DB_POOL_IDM_INIT_SIZE: 1
+      EXO_DB_POOL_IDM_MAX_SIZE: 10
+      EXO_DB_POOL_JCR_INIT_SIZE: 2
+      EXO_DB_POOL_JCR_MAX_SIZE: 5
+      EXO_DB_POOL_JPA_INIT_SIZE: 3
+      EXO_DB_POOL_JPA_MAX_SIZE: 20
       EXO_PROXY_VHOST: localhost
       EXO_PROXY_SSL: "false"
       EXO_JVM_SIZE_MIN: "2g"

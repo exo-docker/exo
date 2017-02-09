@@ -79,8 +79,12 @@ case "${EXO_DB_TYPE}" in
     echo "ERROR: Postgresql (EXO_DB_TYPE = pgsql)"
     exit 1;;
 esac
-[ -z "${EXO_DB_POOL_INIT_SIZE}" ] && EXO_DB_POOL_INIT_SIZE="5"
-[ -z "${EXO_DB_POOL_MAX_SIZE}" ] && EXO_DB_POOL_MAX_SIZE="20"
+[ -z "${EXO_DB_POOL_IDM_INIT_SIZE}" ] && EXO_DB_POOL_IDM_INIT_SIZE="5"
+[ -z "${EXO_DB_POOL_IDM_MAX_SIZE}" ] && EXO_DB_POOL_IDM_MAX_SIZE="20"
+[ -z "${EXO_DB_POOL_JCR_INIT_SIZE}" ] && EXO_DB_POOL_JCR_INIT_SIZE="5"
+[ -z "${EXO_DB_POOL_JCR_MAX_SIZE}" ] && EXO_DB_POOL_JCR_MAX_SIZE="20"
+[ -z "${EXO_DB_POOL_JPA_INIT_SIZE}" ] && EXO_DB_POOL_JPA_INIT_SIZE="5"
+[ -z "${EXO_DB_POOL_JPA_MAX_SIZE}" ] && EXO_DB_POOL_JPA_MAX_SIZE="20"
 
 [ -z "${EXO_HTTP_THREAD_MIN}" ] && EXO_HTTP_THREAD_MIN="10"
 [ -z "${EXO_HTTP_THREAD_MAX}" ] && EXO_HTTP_THREAD_MAX="200"
@@ -145,11 +149,34 @@ else
     *) echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (current value is '${EXO_DB_TYPE}')";
       exit 1;;
   esac
-  replace_in_file /opt/exo/conf/server.xml 'initialSize="5" maxActive="20"' 'initialSize="'${EXO_DB_POOL_INIT_SIZE}'" maxActive="'${EXO_DB_POOL_MAX_SIZE}'"'
 
   ## Remove file comments
   xmlstarlet ed -L -d "//comment()" /opt/exo/conf/server.xml || {
     echo "ERROR during xmlstarlet processing (xml comments removal)"
+    exit 1
+  }
+
+  # Update IDM datasource settings
+  xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-idm_portal']/@initialSize" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-idm_portal']/@maxActive" -v "${EXO_DB_POOL_IDM_MAX_SIZE}" \
+    /opt/exo/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (configuring datasource exo-idm_portal)"
+    exit 1
+  }
+
+  # Update JCR datasource settings
+  xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@initialSize" -v "${EXO_DB_POOL_JCR_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@maxActive" -v "${EXO_DB_POOL_JCR_MAX_SIZE}" \
+    /opt/exo/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (configuring datasource exo-jcr_portal)"
+    exit 1
+  }
+
+  # Update JPA datasource settings
+  xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@initialSize" -v "${EXO_DB_POOL_JPA_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@maxActive" -v "${EXO_DB_POOL_JPA_MAX_SIZE}" \
+    /opt/exo/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (configuring datasource exo-jpa_portal)"
     exit 1
   }
 
