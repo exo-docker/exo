@@ -18,8 +18,8 @@ The image is now compatible with the following databases system :
 
 |    Image                          |  JDK  |   eXo Platform    |  Size
 |-----------------------------------|-------|-------------------|----------------
-| exoplatform/exo:latest            |   8   | 4.4.0             |[![](https://badge.imagelayers.io/exoplatform/exo:latest.svg)](https://imagelayers.io/?images=exoplatform/exo:latest 'Get your own badge on imagelayers.io')
-| exoplatform/exo:develop           |   8   | 4.4.0             |[![](https://badge.imagelayers.io/exoplatform/exo:develop.svg)](https://imagelayers.io/?images=exoplatform/exo:develop 'Get your own badge on imagelayers.io')
+| exoplatform/exo:latest            |   8   | 4.3.1             |[![](https://badge.imagelayers.io/exoplatform/exo:latest.svg)](https://imagelayers.io/?images=exoplatform/exo:latest 'Get your own badge on imagelayers.io')
+| exoplatform/exo:develop           |   8   | 4.3.1             |[![](https://badge.imagelayers.io/exoplatform/exo:develop.svg)](https://imagelayers.io/?images=exoplatform/exo:develop 'Get your own badge on imagelayers.io')
 | exoplatform/exo:4.3_latest        |   8   | 4.3.x             |[![](https://badge.imagelayers.io/exoplatform/exo:4.3_latest.svg)](https://imagelayers.io/?images=exoplatform/exo:4.3_latest 'Get your own badge on imagelayers.io')
 
 # Configuration

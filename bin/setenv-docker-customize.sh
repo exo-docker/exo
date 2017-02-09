@@ -377,7 +377,9 @@ fi
 # -----------------------------------------------------------------------------
 CATALINA_OPTS="${CATALINA_OPTS:-} -Dexo.license.path=/etc/exo/license.xml"
 
+# -----------------------------------------------------------------------------
 # JMX configuration
+# -----------------------------------------------------------------------------
 if [ "${EXO_JMX_ENABLED}" = "true" ]; then
   CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote=true"
   CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"
