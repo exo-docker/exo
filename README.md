@@ -18,8 +18,8 @@ The image is now compatible with the following databases system :
 
 |    Image                          |  JDK  |   eXo Platform    |  Size
 |-----------------------------------|-------|-------------------|----------------
-| exoplatform/exo:latest            |   8   | 4.3.1             |[![](https://badge.imagelayers.io/exoplatform/exo:latest.svg)](https://imagelayers.io/?images=exoplatform/exo:latest 'Get your own badge on imagelayers.io')
-| exoplatform/exo:develop           |   8   | 4.3.1             |[![](https://badge.imagelayers.io/exoplatform/exo:develop.svg)](https://imagelayers.io/?images=exoplatform/exo:develop 'Get your own badge on imagelayers.io')
+| exoplatform/exo:latest            |   8   | 4.4.0             |[![](https://badge.imagelayers.io/exoplatform/exo:latest.svg)](https://imagelayers.io/?images=exoplatform/exo:latest 'Get your own badge on imagelayers.io')
+| exoplatform/exo:develop           |   8   | 4.4.0             |[![](https://badge.imagelayers.io/exoplatform/exo:develop.svg)](https://imagelayers.io/?images=exoplatform/exo:develop 'Get your own badge on imagelayers.io')
 | exoplatform/exo:4.3_latest        |   8   | 4.3.x             |[![](https://badge.imagelayers.io/exoplatform/exo:4.3_latest.svg)](https://imagelayers.io/?images=exoplatform/exo:4.3_latest 'Get your own badge on imagelayers.io')
 
 # Configuration
@@ -96,6 +96,21 @@ The following environment variables should be passed to the container in order t
 | EXO_MONGO_USERNAME | NO | - | the username to use to connect to the mongodb database (no authentification configured by default)
 | EXO_MONGO_PASSWORD | NO | - | the password to use to connect to the mongodb database (no authentification configured by default)
 | EXO_MONGO_DB_NAME | NO | `chat` | the mongodb database name to use for eXo Chat 
+
+## ElasticSearch
+
+The following environment variables should be passed to the container in order to configure the search feature :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_ES_EMBEDDED | NO | `true` | do we use an elasticsearch server embedded in the eXo Platform JVM or do we use an external one ? (using an embedded elasticsearch server is not recommanded for production purpose)
+| EXO_ES_EMBEDDED_DATA | NO | `/srv/es/` | The directory to use for storing elasticsearch data (in embedded mode only).
+| EXO_ES_SCHEME | NO | `http` | the elasticsearch server scheme to use from the eXo Platform server jvm perspective (http / https).
+| EXO_ES_HOST | NO | `localhost` | the elasticsearch server hostname to use from the eXo Platform server jvm perspective.
+| EXO_ES_PORT | NO | `9200` | the elasticsearch server port to use from the eXo Platform server jvm perspective.
+| EXO_ES_USERNAME | NO | - | the username to connect to the elasticsearch server (if authentication is activated on the external elasticsearch).
+| EXO_ES_PASSWORD | NO | - | the password to connect to the elasticsearch server (if authentication is activated on the external elasticsearch).
+
 
 ## JMX
 

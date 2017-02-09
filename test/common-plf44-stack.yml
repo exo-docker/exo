@@ -1,0 +1,69 @@
+version: '2'
+services:
+  web:
+    image: nginx:1.10-alpine
+    expose:
+      - "80"
+    volumes:
+      - ./conf/nginx-plf44.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - front
+  exo:
+    image: exoplatform/exo:4.4
+    environment:
+      EXO_DB_NAME: exo
+      EXO_DB_USER: exo
+      EXO_DB_PASSWORD: exo
+      EXO_DB_HOST: db
+      EXO_DB_POOL_IDM_INIT_SIZE: 1
+      EXO_DB_POOL_IDM_MAX_SIZE: 10
+      EXO_DB_POOL_JCR_INIT_SIZE: 2
+      EXO_DB_POOL_JCR_MAX_SIZE: 5
+      EXO_DB_POOL_JPA_INIT_SIZE: 3
+      EXO_DB_POOL_JPA_MAX_SIZE: 20
+      EXO_PROXY_VHOST: localhost
+      EXO_PROXY_SSL: "false"
+      EXO_JVM_SIZE_MIN: "2g"
+      EXO_JVM_SIZE_MAX: "3g"
+    expose:
+      - "8080"
+    volumes:
+      - exo_data:/srv/exo
+      - search_data:/srv/es
+      - exo_logs:/var/log/exo
+    networks:
+      - front
+      - back
+  mongo:
+    image: mongo:3.2
+    volumes:
+      - mongo_data:/data/db:rw
+    networks:
+      - back
+  mysql:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: exo
+      MYSQL_USER: exo
+      MYSQL_PASSWORD: exo
+    volumes:
+      - db_data:/var/lib/mysql:rw
+    networks:
+      - back
+  pgsql:
+    image: postgres:9.4-alpine
+    environment:
+      POSTGRES_DB: exo
+      POSTGRES_USER: exo
+      POSTGRES_PASSWORD: exo
+    volumes:
+      - db_data:/var/lib/postgresql/data:rw
+    networks:
+      - back
+  es:
+    image: exoplatform/elasticsearch:0.3
+    volumes: 
+      - search_data:/usr/share/elasticsearch/data:rw
+    networks:
+      - back

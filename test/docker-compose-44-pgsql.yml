@@ -1,0 +1,63 @@
+version: '2'
+services:
+  web:
+    extends:
+      file: common-plf44-stack.yml
+      service: web
+    ports: 
+      - "80:80"
+    links:
+      - exo
+    depends_on: 
+      - exo
+  exo:
+    extends:
+      file: common-plf44-stack.yml
+      service: exo
+    image: exoplatform/exo:develop
+    environment:
+      EXO_DB_TYPE: pgsql
+      EXO_ADDONS_LIST: 
+      EXO_ES_EMBEDDED: "false"
+      EXO_ES_HOST: search
+    ports: 
+      # (Linux) open JMX ports for local connection only
+      #- "127.0.0.1:10001:10001"
+      #- "127.0.0.1:10002:10002"
+      # (macOS / Windows) open JMX ports on the host
+      - "10001:10001"
+      - "10002:10002"
+    links:
+      - db
+      - mongo
+      - search
+    depends_on:
+      - db
+      - mongo
+      - search
+  mongo:
+    extends:
+      file: common-plf44-stack.yml
+      service: mongo
+  db:
+    extends:
+      file: common-plf44-stack.yml
+      service: pgsql
+  search:
+    extends:
+      file: common-plf44-stack.yml
+      service: es
+    ports: 
+      # (Linux) open elasticsearch port for local connection only
+      #- "127.0.0.1:9200:9200"
+      # (macOS / Windows) open elasticsearch port for local connection only
+      - "9200:9200"
+volumes:
+  exo_data:
+  exo_logs:
+  db_data:
+  mongo_data:
+  search_data:
+networks:
+  front:
+  back:

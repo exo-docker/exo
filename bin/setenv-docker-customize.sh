@@ -116,6 +116,16 @@ esac
 [ -z "${EXO_MONGO_USERNAME}" ] && EXO_MONGO_USERNAME="-"
 [ -z "${EXO_MONGO_PASSWORD}" ] && EXO_MONGO_PASSWORD="-"
 [ -z "${EXO_MONGO_DB_NAME}" ] && EXO_MONGO_DB_NAME="chat"
+
+[ -z "${EXO_ES_EMBEDDED}" ] && EXO_ES_EMBEDDED="true"
+[ -z "${EXO_ES_EMBEDDED_DATA}" ] && EXO_ES_EMBEDDED_DATA="/srv/es"
+[ -z "${EXO_ES_SCHEME}" ] && EXO_ES_SCHEME="http"
+[ -z "${EXO_ES_HOST}" ] && EXO_ES_HOST="localhost"
+[ -z "${EXO_ES_PORT}" ] && EXO_ES_PORT="9200"
+EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
+[ -z "${EXO_ES_USERNAME}" ] && EXO_ES_USERNAME="-"
+[ -z "${EXO_ES_PASSWORD}" ] && EXO_ES_PASSWORD="-"
+
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -260,6 +270,31 @@ else
     # /opt/exo/conf/jmxremote.access
     echo "${EXO_JMX_USERNAME} readwrite" > /opt/exo/conf/jmxremote.access
     fi
+  fi
+
+  # Elasticsearch configuration
+  add_in_exo_configuration "# Elasticsearch configuration"
+  add_in_exo_configuration "exo.es.embedded.enabled=${EXO_ES_EMBEDDED}"
+  if [ "${EXO_ES_EMBEDDED}" = "true" ]; then
+    add_in_exo_configuration "es.network.host=0.0.0.0" # we listen on all IPs inside the container
+    add_in_exo_configuration "es.discovery.zen.ping.multicast.enabled=false"
+    add_in_exo_configuration "es.http.port=${EXO_ES_PORT}"
+    add_in_exo_configuration "es.path.data=${EXO_ES_EMBEDDED_DATA}"
+  fi
+  
+  add_in_exo_configuration "exo.es.search.server.url=${EXO_ES_URL}"
+  add_in_exo_configuration "exo.es.index.server.url=${EXO_ES_URL}"
+
+  if [ "${EXO_ES_USERNAME:-}" != "-" ]; then
+    add_in_exo_configuration "exo.es.index.server.username=${EXO_ES_USERNAME}"
+    add_in_exo_configuration "exo.es.index.server.password=${EXO_ES_PASSWORD}"
+    add_in_exo_configuration "exo.es.search.server.username=${EXO_ES_USERNAME}"
+    add_in_exo_configuration "exo.es.search.server.password=${EXO_ES_PASSWORD}"
+  else
+    add_in_exo_configuration "#exo.es.index.server.username="
+    add_in_exo_configuration "#exo.es.index.server.password="
+    add_in_exo_configuration "#exo.es.search.server.username="
+    add_in_exo_configuration "#exo.es.search.server.password="
   fi
 
   # Mongodb configuration (for the Chat)
@@ -423,6 +458,12 @@ esac
 if [ -f /opt/exo/addons/statuses/exo-chat.status ]; then
   echo "Waiting for mongodb availability at ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} ..."
   /opt/wait-for-it.sh ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} -s -t 60
+fi
+
+# Wait for elasticsearch availability (if external)
+if [ "${EXO_ES_EMBEDDED}" != "true" ]; then
+  echo "Waiting for external elastic search availability at ${EXO_ES_HOST}:${EXO_ES_PORT} ..."
+  /opt/wait-for-it.sh ${EXO_ES_HOST}:${EXO_ES_PORT} -s -t 60
 fi
 
 set +u		# DEACTIVATE unbound variable check
