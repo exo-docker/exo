@@ -104,6 +104,13 @@ esac
 [ -z "${EXO_HTTP_THREAD_MIN}" ] && EXO_HTTP_THREAD_MIN="10"
 [ -z "${EXO_HTTP_THREAD_MAX}" ] && EXO_HTTP_THREAD_MAX="200"
 
+[ -z "${EXO_MAIL_FROM}" ] && EXO_MAIL_FROM="noreply@exoplatform.com"
+[ -z "${EXO_MAIL_SMTP_HOST}" ] && EXO_MAIL_SMTP_HOST="localhost"
+[ -z "${EXO_MAIL_SMTP_PORT}" ] && EXO_MAIL_SMTP_PORT="25"
+[ -z "${EXO_MAIL_SMTP_STARTTLS}" ] && EXO_MAIL_SMTP_STARTTLS="false"
+[ -z "${EXO_MAIL_SMTP_USERNAME}" ] && EXO_MAIL_SMTP_USERNAME="-"
+[ -z "${EXO_MAIL_SMTP_PASSWORD}" ] && EXO_MAIL_SMTP_PASSWORD="-"
+
 [ -z "${EXO_JMX_ENABLED}" ] && EXO_JMX_ENABLED="true"
 [ -z "${EXO_JMX_RMI_REGISTRY_PORT}" ] && EXO_JMX_RMI_REGISTRY_PORT="10001"
 [ -z "${EXO_JMX_RMI_SERVER_PORT}" ] && EXO_JMX_RMI_SERVER_PORT="10002"
@@ -249,6 +256,24 @@ else
     echo "ERROR during xmlstarlet processing (adding RemoteIpValve)"
     exit 1
   }
+
+  # Mail configuration
+  add_in_exo_configuration "# Mail configuration"
+  add_in_exo_configuration "exo.email.smtp.from=${EXO_MAIL_FROM}"
+  add_in_exo_configuration "exo.email.smtp.host=${EXO_MAIL_SMTP_HOST}"
+  add_in_exo_configuration "exo.email.smtp.port=${EXO_MAIL_SMTP_PORT}"
+  add_in_exo_configuration "exo.email.smtp.starttls.enable=${EXO_MAIL_SMTP_STARTTLS}"
+  if [ "${EXO_MAIL_SMTP_USERNAME:-}" = "-" ]; then
+    add_in_exo_configuration "exo.email.smtp.auth=false"
+    add_in_exo_configuration "#exo.email.smtp.username="
+    add_in_exo_configuration "#exo.email.smtp.password="
+  else
+    add_in_exo_configuration "exo.email.smtp.auth=true"
+    add_in_exo_configuration "exo.email.smtp.username=${EXO_MAIL_SMTP_USERNAME}"
+    add_in_exo_configuration "exo.email.smtp.password=${EXO_MAIL_SMTP_PASSWORD}"
+  fi
+  add_in_exo_configuration "exo.email.smtp.socketFactory.port="
+  add_in_exo_configuration "exo.email.smtp.socketFactory.class="
 
   # JMX configuration
   if [ "${EXO_JMX_ENABLED}" = "true" ]; then

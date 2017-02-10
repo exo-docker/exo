@@ -112,6 +112,19 @@ The following environment variables should be passed to the container in order t
 | EXO_ES_PASSWORD | NO | - | the password to connect to the elasticsearch server (if authentication is activated on the external elasticsearch).
 
 
+## Mail
+
+The following environment variables should be passed to the container in order to configure the mail server configuration to use :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_MAIL_FROM | NO | `noreply@exoplatform.com` | "from" field of emails sent by eXo platform
+| EXO_MAIL_SMTP_HOST | NO | `localhost` | SMTP Server hostname
+| EXO_MAIL_SMTP_PORT | NO | `25` | SMTP Server port
+| EXO_MAIL_SMTP_STARTTLS | NO | `false` | true to enable the secure (TLS) SMTP. See RFC 3207.
+| EXO_MAIL_SMTP_USERNAME | NO | - | authentication username for smtp server (if needed)
+| EXO_MAIL_SMTP_PASSWORD | NO | - | authentication password for smtp server (if needed)
+
 ## JMX
 
 The following environment variables should be passed to the container in order to configure JMX :
