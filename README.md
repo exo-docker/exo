@@ -148,14 +148,19 @@ The eXo Platform license file location must be `/etc/exo/license.xml`
 
 We provide some docker-compose files for testing various configurations in the test folder
 
-    # eXo Platform 4.3.x + hsqldb
-    docker-compose -f test/docker-compose-43-hsqldb.yml -p exo43hsqldb up
+    # eXo Platform 4.4.x + hsqldb + mongodb 3.2
+    docker-compose -f test/docker-compose-44-hsqldb.yml -p exo44hsqldb up
 
-    # eXo Platform 4.3.x + MySQL 5.5
-    docker-compose -f test/docker-compose-43-mysql.yml -p exo43mysql up
+    # eXo Platform 4.4.x + MySQL 5.6 + mongodb 3.2
+    docker-compose -f test/docker-compose-44-mysql.yml -p exo44mysql up
 
-    # eXo Platform 4.3.x + Postgresql 9.4
-    docker-compose -f test/docker-compose-43-pgsql.yml -p exo43pgsql up
+    # eXo Platform 4.4.x + Postgresql 9.4 + mongodb 3.2
+    docker-compose -f test/docker-compose-44-pgsql.yml -p exo44pgsql up
+
+When everything is started you can use :
+
+* http://localhost for eXo Platform access
+* http://localhost/mail to see all the mails sent by eXo platform
 
 # Image build
 
