@@ -368,8 +368,8 @@ fi
 # -----------------------------------------------------------------------------
 # Change chat add-on security token at each start
 # -----------------------------------------------------------------------------
-if [ -f /etc/exo/exo.properties ]; then
-  sed -i 's/^chat.chatPassPhrase=.*$/chat.chatPassPhrase='"$(tr -dc '[:alnum:]' < /dev/urandom  | dd bs=4 count=6 2>/dev/null)"'/' /etc/exo/exo.properties
+if [ -f /etc/exo/chat.properties ]; then
+  sed -i 's/^chatPassPhrase=.*$/chatPassPhrase='"$(tr -dc '[:alnum:]' < /dev/urandom  | dd bs=4 count=6 2>/dev/null)"'/' /etc/exo/chat.properties
 fi
 
 # -----------------------------------------------------------------------------
