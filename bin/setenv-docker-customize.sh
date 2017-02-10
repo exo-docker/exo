@@ -136,6 +136,8 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_ES_USERNAME}" ] && EXO_ES_USERNAME="-"
 [ -z "${EXO_ES_PASSWORD}" ] && EXO_ES_PASSWORD="-"
 
+[ -z "${EXO_REGISTRATION}" ] && EXO_REGISTRATION="true"
+
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -336,6 +338,11 @@ else
 
   # JOD Converter
   add_in_exo_configuration "exo.jodconverter.portnumbers=${EXO_JODCONVERTER_PORTS}"
+
+  if [ "${EXO_REGISTRATION}" = "false" ]; then
+    add_in_exo_configuration "# Registration"
+    add_in_exo_configuration "exo.registration.skip=true"
+  fi
 
   # Mongodb configuration (for the Chat)
   add_in_chat_configuration "# eXo Chat mongodb configuration"
