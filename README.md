@@ -64,6 +64,8 @@ The following environment variables must be passed to the container in order to 
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |--------------------------|-------------|--------------------------|----------------
 | EXO_DATA_DIR | NO | `/srv/exo` | the directory to store eXo Platform data
+| EXO_FILE_STORAGE_DIR | NO | `${EXO_DATA_DIR}/files` | the directory to store eXo Platform data
+| EXO_FILE_STORAGE_RETENTION | NO | `30` | the number of days to keep deleted files on disk before definitively remove it from the disk
 
 ## Database
 

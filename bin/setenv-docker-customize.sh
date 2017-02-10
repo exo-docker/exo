@@ -54,6 +54,9 @@ set +u		# DEACTIVATE unbound variable check
 [ -z "${EXO_PROXY_VHOST}" ] && EXO_PROXY_VHOST="localhost"
 [ -z "${EXO_PROXY_SSL}" ] && EXO_PROXY_SSL="true"
 [ -z "${EXO_DATA_DIR}" ] && EXO_DATA_DIR="/srv/exo"
+[ -z "${EXO_FILE_STORAGE_DIR}" ] && EXO_FILE_STORAGE_DIR="${EXO_DATA_DIR}/files"
+[ -z "${EXO_FILE_STORAGE_RETENTION}" ] && EXO_FILE_STORAGE_RETENTION="30"
+
 [ -z "${EXO_DB_TYPE}" ] && EXO_DB_TYPE="mysql"
 case "${EXO_DB_TYPE}" in
   hsqldb)
@@ -141,6 +144,12 @@ set -u		# REACTIVATE unbound variable check
 if [ -f /opt/exo/_done.configuration ]; then
   echo "INFO: Configuration already done! skipping this step."
 else
+  # File storage configuration
+  add_in_exo_configuration "# File storage configuration"
+  add_in_exo_configuration "exo.files.binaries.storage.type=fs"
+  add_in_exo_configuration "exo.files.storage.dir=${EXO_FILE_STORAGE_DIR}"
+  add_in_exo_configuration "exo.commons.FileStorageCleanJob.retention-time=${EXO_FILE_STORAGE_RETENTION}"
+
   # Database configuration
   case "${EXO_DB_TYPE}" in
     hsqldb)
@@ -457,10 +466,14 @@ if [ "${EXO_JMX_ENABLED}" = "true" ]; then
 fi
 
 # -----------------------------------------------------------------------------
-# Create the DATA directory if needed
+# Create the DATA directories if needed
 # -----------------------------------------------------------------------------
 if [ ! -d "${EXO_DATA_DIR}" ]; then
   mkdir -p "${EXO_DATA_DIR}"
+fi
+
+if [ ! -d "${EXO_FILE_STORAGE_DIR}" ]; then
+  mkdir -p "${EXO_FILE_STORAGE_DIR}"
 fi
 
 # Change the device for antropy generation
