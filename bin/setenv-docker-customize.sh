@@ -225,6 +225,9 @@ else
       echo "ERROR during xmlstarlet processing (configuring Connector proxy ssl)"
       exit 1
     }
+    add_in_exo_configuration "exo.base.url=https://${EXO_PROXY_VHOST}"
+  else
+    add_in_exo_configuration "exo.base.url=http://${EXO_PROXY_VHOST}"
   fi
 
   # Tomcat HTTP Thread pool configuration
