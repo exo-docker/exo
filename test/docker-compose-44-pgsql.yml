@@ -10,6 +10,7 @@ services:
       - exo
     depends_on: 
       - exo
+      - mail
   exo:
     extends:
       file: common-plf44-stack.yml
@@ -35,6 +36,7 @@ services:
       - db
       - mongo
       - search
+      - mail
   mongo:
     extends:
       file: common-plf44-stack.yml
@@ -52,6 +54,12 @@ services:
       #- "127.0.0.1:9200:9200"
       # (macOS / Windows) open elasticsearch port for local connection only
       - "9200:9200"
+  mail:
+    extends:
+      file: common-plf44-stack.yml
+      service: mail
+    depends_on:
+      - mongo
 volumes:
   exo_data:
   exo_logs:
@@ -61,3 +69,4 @@ volumes:
 networks:
   front:
   back:
+  mail:

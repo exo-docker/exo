@@ -10,6 +10,7 @@ services:
       - exo
     depends_on: 
       - exo
+      - mail
   exo:
     extends:
       file: common-plf44-stack.yml
@@ -30,10 +31,17 @@ services:
       - mongo
     depends_on:
       - mongo
+      - mail
   mongo:
     extends:
       file: common-plf44-stack.yml
       service: mongo
+  mail:
+    extends:
+      file: common-plf44-stack.yml
+      service: mail
+    depends_on:
+      - mongo
 volumes:
   exo_data:
   exo_logs:
@@ -42,3 +50,4 @@ volumes:
 networks:
   front:
   back:
+  mail:
