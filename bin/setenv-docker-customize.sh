@@ -334,6 +334,9 @@ else
     add_in_exo_configuration "#exo.es.search.server.password="
   fi
 
+  # JOD Converter
+  add_in_exo_configuration "exo.jodconverter.portnumbers=${EXO_JODCONVERTER_PORTS}"
+
   # Mongodb configuration (for the Chat)
   add_in_chat_configuration "# eXo Chat mongodb configuration"
   add_in_chat_configuration "dbServerHost=${EXO_MONGO_HOST}"

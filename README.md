@@ -113,6 +113,13 @@ The following environment variables should be passed to the container in order t
 | EXO_ES_USERNAME | NO | - | the username to connect to the elasticsearch server (if authentication is activated on the external elasticsearch).
 | EXO_ES_PASSWORD | NO | - | the password to connect to the elasticsearch server (if authentication is activated on the external elasticsearch).
 
+## JOD Converter
+
+The following environment variables should be passed to the container in order to configure jodconverter :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE  |  DESCRIPTION
+|--------------------------|-------------|------------------|----------------
+| EXO_JODCONVERTER_PORTS   | NO          | `2002`           | comma separated list of ports to allocate to JOD Converter processes (ex: 2002,2003,2004)
 
 ## Mail
 
