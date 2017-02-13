@@ -112,6 +112,8 @@ The following environment variables should be passed to the container in order t
 | EXO_ES_PORT | NO | `9200` | the elasticsearch server port to use from the eXo Platform server jvm perspective.
 | EXO_ES_USERNAME | NO | - | the username to connect to the elasticsearch server (if authentication is activated on the external elasticsearch).
 | EXO_ES_PASSWORD | NO | - | the password to connect to the elasticsearch server (if authentication is activated on the external elasticsearch).
+| EXO_ES_INDEX_REPLICA_NB | NO | `0` | the number of replicat for elasticsearch indexes (leave 0 if you don't have an elasticsearch cluster).
+| EXO_ES_INDEX_SHARD_NB | NO | `0` | the number of shard for elasticsearch indexes.
 
 ## JOD Converter
 

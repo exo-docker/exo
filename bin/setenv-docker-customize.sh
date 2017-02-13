@@ -135,6 +135,9 @@ esac
 EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_ES_USERNAME}" ] && EXO_ES_USERNAME="-"
 [ -z "${EXO_ES_PASSWORD}" ] && EXO_ES_PASSWORD="-"
+[ -z "${EXO_ES_INDEX_REPLICA_NB}" ] && EXO_ES_INDEX_REPLICA_NB="1"
+[ -z "${EXO_ES_INDEX_SHARD_NB}" ] && EXO_ES_INDEX_SHARD_NB="5"
+
 
 [ -z "${EXO_REGISTRATION}" ] && EXO_REGISTRATION="true"
 
@@ -335,6 +338,9 @@ else
     add_in_exo_configuration "#exo.es.search.server.username="
     add_in_exo_configuration "#exo.es.search.server.password="
   fi
+
+  add_in_exo_configuration "exo.es.indexing.replica.number.default=${EXO_ES_INDEX_REPLICA_NB}"
+  add_in_exo_configuration "exo.es.indexing.shard.number.default=${EXO_ES_INDEX_SHARD_NB}"
 
   # JOD Converter
   add_in_exo_configuration "exo.jodconverter.portnumbers=${EXO_JODCONVERTER_PORTS}"
