@@ -28,6 +28,7 @@ services:
       EXO_JVM_SIZE_MAX: "3g"
       EXO_MAIL_SMTP_HOST: "mail"
       EXO_MAIL_SMTP_PORT: "1025"
+      EXO_JODCONVERTER_PORTS: "2002"
     expose:
       - "8080"
     volumes:
