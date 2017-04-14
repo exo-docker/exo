@@ -21,13 +21,13 @@ RUN apt-get -qq update && \
   rm -rf /var/lib/apt/lists/*
 
 # Build Arguments and environment variables
-ARG EXO_VERSION=4.4.0
+ARG EXO_VERSION=4.4.1
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
 # this allow to specifiy a user to download a protected binary
 ARG DOWNLOAD_USER
 # allow to override the list of addons to package by default
-ARG ADDONS="exo-chat:1.4.0 exo-tasks:1.2.0 exo-remote-edit:1.2.0"
+ARG ADDONS="exo-chat:1.4.1 exo-tasks:1.2.1 exo-remote-edit:1.2.1"
 
 ENV EXO_APP_DIR     /opt/exo
 ENV EXO_CONF_DIR    /etc/exo
