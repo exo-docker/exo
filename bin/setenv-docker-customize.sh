@@ -121,7 +121,7 @@ CATALINA_OPTS="${CATALINA_OPTS:-} -Dexo.license.path=/etc/exo/license.xml"
 # -----------------------------------------------------------------------------
 CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.jndi.ldap.connect.pool.timeout=${EXO_LDAP_POOL_TIMEOUT}"
 CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.jndi.ldap.connect.pool.maxsize=${EXO_LDAP_POOL_MAX_SIZE}"
-if [ "${EXO_LDAP_POOL_DEBUG:-}" != "-" ]; then
+if [ ! -z "${EXO_LDAP_POOL_DEBUG:-}" ]; then
   CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.jndi.ldap.connect.pool.debug=${EXO_LDAP_POOL_DEBUG}"
 fi
 
