@@ -28,11 +28,10 @@ set +u		# DEACTIVATE unbound variable check
 [ -z "${EXO_DB_HOST}" ] && EXO_DB_HOST="mysql"
 [ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="3306"
 [ -z "${EXO_DATA_DIR}" ] && EXO_DATA_DIR="/srv/exo"
-set -u		# REACTIVATE unbound variable check
 
-[ -z "${EXO_LDAP_POOL_DEBUG}" ] && EXO_LDAP_POOL_DEBUG="-"
 [ -z "${EXO_LDAP_POOL_TIMEOUT}" ] && EXO_LDAP_POOL_TIMEOUT="60000"
 [ -z "${EXO_LDAP_POOL_MAX_SIZE}" ] && EXO_LDAP_POOL_MAX_SIZE="100"
+set -u		# REACTIVATE unbound variable check
 
 
 # -----------------------------------------------------------------------------
@@ -122,7 +121,7 @@ CATALINA_OPTS="${CATALINA_OPTS:-} -Dexo.license.path=/etc/exo/license.xml"
 # -----------------------------------------------------------------------------
 CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.jndi.ldap.connect.pool.timeout=${EXO_LDAP_POOL_TIMEOUT}"
 CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.jndi.ldap.connect.pool.maxsize=${EXO_LDAP_POOL_MAX_SIZE}"
-if [ "${EXO_LDAP_POOL_DEBUG:-}" = "-" ]; then
+if [ "${EXO_LDAP_POOL_DEBUG:-}" != "-" ]; then
   CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.jndi.ldap.connect.pool.debug=${EXO_LDAP_POOL_DEBUG}"
 fi
 
