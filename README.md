@@ -116,6 +116,17 @@ The following environment variables should be passed to the container in order t
 | EXO_ES_INDEX_REPLICA_NB | NO | `0` | the number of replicat for elasticsearch indexes (leave 0 if you don't have an elasticsearch cluster).
 | EXO_ES_INDEX_SHARD_NB | NO | `0` | the number of shard for elasticsearch indexes.
 
+## LDAP / Active Directory
+
+The following environment variables should be passed to the container in order to configure the ldap connection pool :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_LDAP_POOL_DEBUG      | NO | - | the level of debug output to produce. Valid values are "fine" (trace connection creation and removal) and "all" (all debugging information).
+| EXO_LDAP_POOL_TIMEOUT    | NO | `60000` | the number of milliseconds that an idle connection may remain in the pool without being closed and removed from the pool.
+| EXO_LDAP_POOL_MAX_SIZE   | NO | `100` | the maximum number of connections per connection identity that can be maintained concurrently.
+
+
 ## JOD Converter
 
 The following environment variables should be passed to the container in order to configure jodconverter :

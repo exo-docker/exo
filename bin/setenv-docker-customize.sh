@@ -140,6 +140,9 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_ES_INDEX_REPLICA_NB}" ] && EXO_ES_INDEX_REPLICA_NB="1"
 [ -z "${EXO_ES_INDEX_SHARD_NB}" ] && EXO_ES_INDEX_SHARD_NB="5"
 
+[ -z "${EXO_LDAP_POOL_TIMEOUT}" ] && EXO_LDAP_POOL_TIMEOUT="60000"
+[ -z "${EXO_LDAP_POOL_MAX_SIZE}" ] && EXO_LDAP_POOL_MAX_SIZE="100"
+
 [ -z "${EXO_JODCONVERTER_PORTS}" ] && EXO_JODCONVERTER_PORTS="2002"
 
 [ -z "${EXO_REGISTRATION}" ] && EXO_REGISTRATION="true"
@@ -470,6 +473,15 @@ fi
 # Define a better place for eXo Platform license file
 # -----------------------------------------------------------------------------
 CATALINA_OPTS="${CATALINA_OPTS:-} -Dexo.license.path=/etc/exo/license.xml"
+
+# -----------------------------------------------------------------------------
+# LDAP configuration
+# -----------------------------------------------------------------------------
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.jndi.ldap.connect.pool.timeout=${EXO_LDAP_POOL_TIMEOUT}"
+CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.jndi.ldap.connect.pool.maxsize=${EXO_LDAP_POOL_MAX_SIZE}"
+if [ ! -z "${EXO_LDAP_POOL_DEBUG:-}" ]; then
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.jndi.ldap.connect.pool.debug=${EXO_LDAP_POOL_DEBUG}"
+fi
 
 # -----------------------------------------------------------------------------
 # JMX configuration
