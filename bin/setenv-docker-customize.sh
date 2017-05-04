@@ -275,6 +275,63 @@ else
     exit 1
   }
 
+  # Tomcat valves and listeners configuration
+  if [ -e /etc/exo/host.yml ]; then
+    echo "Override default valves and listeners configuration"
+
+    # Remove the default configuration
+    xmlstarlet ed -L -d "/Server/Service/Engine/Host/Valve" \
+        -d "/Server/Service/Engine/Host/Listener" \
+        /opt/exo/conf/server.xml || {
+      echo "ERROR during xmlstarlet processing (Remove default host configuration)"
+      exit 1
+    }
+
+    i=0
+    while [ $i -ge 0 ]; do
+      # Declare component
+      type=$(yaml read /etc/exo/host.yml components[$i].type)
+      if [ "${type}" != "null" ]; then
+        className=$(yaml read /etc/exo/host.yml components[$i].className)
+        echo "Declare ${type} ${className}"
+        xmlstarlet ed -L -s "/Server/Service/Engine/Host" -t elem -n "${type}TMP" -v "" \
+            -i "//${type}TMP" -t attr -n "className" -v "${className}" \
+            /opt/exo/conf/server.xml || {
+          echo "ERROR during xmlstarlet processing (adding ${className})"
+          exit 1
+        }
+
+        # Add component attributes
+        j=0
+        while [ $j -ge 0 ]; do
+          attributeName=$(yaml read /etc/exo/host.yml components[$i].attributes[$j].name)
+          if [ "${attributeName}" != "null" ]; then
+            attributeValue=$(yaml read /etc/exo/host.yml components[$i].attributes[$j].value | tr -d "'")
+            xmlstarlet ed -L -i "//${type}TMP" -t attr -n "${attributeName}" -v "${attributeValue}" \
+                /opt/exo/conf/server.xml || {
+              echo "ERROR during xmlstarlet processing (adding ${className} / ${attributeName})"
+            }
+
+            j=$(($j + 1))
+          else
+            j=-1
+          fi
+        done
+
+        # Rename the component to its final type
+        xmlstarlet ed -L -r "//${type}TMP" -v "${type}" \
+            /opt/exo/conf/server.xml || {
+          echo "ERROR during xmlstarlet processing (renaming ${type}TMP)"
+          exit 1
+        }
+
+        i=$(($i + 1))
+      else
+        i=-1
+      fi
+    done
+  fi
+
   # Add a new valve to replace the proxy ip by the client ip (just before the end of Host)
   xmlstarlet ed -L -s "/Server/Service/Engine/Host" -t elem -n "ValveTMP" -v "" \
   -i "//ValveTMP" -t attr -n "className" -v "org.apache.catalina.valves.RemoteIpValve" \
@@ -339,7 +396,7 @@ else
     add_in_exo_configuration "es.http.port=${EXO_ES_PORT}"
     add_in_exo_configuration "es.path.data=${EXO_ES_EMBEDDED_DATA}"
   fi
-  
+
   add_in_exo_configuration "exo.es.search.server.url=${EXO_ES_URL}"
   add_in_exo_configuration "exo.es.index.server.url=${EXO_ES_URL}"
 

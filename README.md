@@ -57,6 +57,31 @@ The following environment variables can be passed to the container to configure 
 | EXO_HTTP_THREAD_MAX | NO | `200` | maximum number of threads in the tomcat http connector
 | EXO_HTTP_THREAD_MIN | NO | `10` | minimum number of threads ready in the tomcat http connector
 
+### Valves and Listners
+
+A file containing the list of valves and listeners can be attached to the container in the path {{/etc/exo/host.yml}}. If a file is specified, the default valves and listeners configuraiton will be overriden.
+
+The file format is :
+```
+components:
+  - type: Valve
+    className: org.acme.myvalves.WthoutAttributes
+  - type: Valve
+    className: org.acme.myvalves.WthAttributes
+    attributes:
+      - name: param1
+        value: value1
+      - name: param2
+        value: value2
+  - type: Listener
+    className: org.acme.mylistener.WthAttributes
+    attributes:
+      - name: param1
+        value: value1
+      - name: param2
+        value: value2
+```
+
 ## Data on disk
 
 The following environment variables must be passed to the container in order to work :
