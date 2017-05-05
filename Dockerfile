@@ -38,7 +38,7 @@ RUN apt-get -qq update && \
   } && chmod a+x /usr/bin/yaml
 
 # Build Arguments and environment variables
-ARG EXO_VERSION=4.4.2
+ARG EXO_VERSION=5.0.0-M03-1
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
 # this allow to specifiy a user to download a protected binary
