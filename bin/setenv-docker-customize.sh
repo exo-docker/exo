@@ -254,6 +254,13 @@ else
     }
     add_in_exo_configuration "exo.base.url=https://${EXO_PROXY_VHOST}"
   else
+    xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "scheme" -v "http" \
+      -s "/Server/Service/Connector" -t attr -n "secure" -v "false" \
+      -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "80" \
+      /opt/exo/conf/server.xml || {
+      echo "ERROR during xmlstarlet processing (configuring Connector proxy)"
+      exit 1
+    }
     add_in_exo_configuration "exo.base.url=http://${EXO_PROXY_VHOST}"
   fi
 
