@@ -44,7 +44,7 @@ ARG DOWNLOAD_URL
 # this allow to specifiy a user to download a protected binary
 ARG DOWNLOAD_USER
 # allow to override the list of addons to package by default
-ARG ADDONS="exo-chat:1.4.2 exo-tasks:1.2.3 exo-remote-edit:1.2.2"
+ARG ADDONS=""
 
 ENV EXO_APP_DIR     /opt/exo
 ENV EXO_CONF_DIR    /etc/exo
@@ -71,7 +71,7 @@ RUN if [ -n "${DOWNLOAD_USER}" ]; then PARAMS="-u ${DOWNLOAD_USER}"; fi && \
     if [ ! -n "${DOWNLOAD_URL}" ]; then \
       echo "Building an image with eXo Platform version : ${EXO_VERSION}"; \
       EXO_VERSION_SHORT=$(echo ${EXO_VERSION} | awk -F "\." '{ print $1"."$2}'); \
-      DOWNLOAD_URL="https://downloads.exoplatform.org/public/releases/platform/${EXO_VERSION_SHORT}/${EXO_VERSION}/platform-${EXO_VERSION}.zip"; \
+      DOWNLOAD_URL="https://downloads.exoplatform.org/public/releases/platform/${EXO_VERSION_SHORT}/${EXO_VERSION}/platform-trial-${EXO_VERSION}.zip"; \
     fi && \
     curl ${PARAMS} -L -o /srv/downloads/eXo-Platform-${EXO_VERSION}.zip ${DOWNLOAD_URL} && \
     unzip -q /srv/downloads/eXo-Platform-${EXO_VERSION}.zip -d /srv/downloads/ && \
