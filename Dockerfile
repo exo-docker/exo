@@ -38,15 +38,15 @@ RUN apt-get -qq update && \
   } && chmod a+x /usr/bin/yaml
 
 # Build Arguments and environment variables
-ARG EXO_VERSION=4.4.3
+ARG EXO_VERSION=5.0.0-M09
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
 # this allow to specifiy a user to download a protected binary
 ARG DOWNLOAD_USER
 # allow to override the list of addons to package by default
-ARG ADDONS="exo-chat:1.5.0 exo-tasks:1.2.4 exo-remote-edit:1.2.3"
+ARG ADDONS="exo-enterprise-skin:5.0.0-M09"
 # Default base directory on the plf archive
-ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}
+ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}-trial
 
 ENV EXO_APP_DIR            /opt/exo
 ENV EXO_CONF_DIR           /etc/exo
@@ -75,7 +75,7 @@ RUN if [ -n "${DOWNLOAD_USER}" ]; then PARAMS="-u ${DOWNLOAD_USER}"; fi && \
     if [ ! -n "${DOWNLOAD_URL}" ]; then \
       echo "Building an image with eXo Platform version : ${EXO_VERSION}"; \
       EXO_VERSION_SHORT=$(echo ${EXO_VERSION} | awk -F "\." '{ print $1"."$2}'); \
-      DOWNLOAD_URL="https://downloads.exoplatform.org/public/releases/platform/${EXO_VERSION_SHORT}/${EXO_VERSION}/platform-${EXO_VERSION}.zip"; \
+      DOWNLOAD_URL="https://downloads.exoplatform.org/public/releases/platform/${EXO_VERSION_SHORT}/${EXO_VERSION}/platform-trial-${EXO_VERSION}.zip"; \
     fi && \
     curl ${PARAMS} -L -o /srv/downloads/eXo-Platform-${EXO_VERSION}.zip ${DOWNLOAD_URL} && \
     unzip -q /srv/downloads/eXo-Platform-${EXO_VERSION}.zip -d /srv/downloads/ && \
