@@ -2,6 +2,9 @@
 #
 # - eXo Platform
 # - Libre Office
+# - Oracle JAI (Java Advanced Imaging) API
+# - Oracle JAI (Java Advanced Imaging) Image I/O Tools
+# - Oracle JAI (Java Advanced Imaging) ICC Profiles
 
 # Build:    docker build -t exoplatform/exo .
 #
@@ -79,6 +82,43 @@ RUN chmod 755 ${EXO_APP_DIR}/bin/setenv-docker-customize.sh && \
 COPY bin/wait-for-it.sh /opt/wait-for-it.sh
 RUN chmod 755 /opt/wait-for-it.sh && \
     chown ${EXO_USER}:${EXO_GROUP} /opt/wait-for-it.sh
+
+# Install JAI (Java Advanced Imaging) API in the JVM
+RUN wget -q --no-cookies --no-check-certificate \
+  --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
+  -O "/tmp/jai.tar.gz" "http://download.oracle.com/otn-pub/java/jai/1.1.2_01-fcs/jai-1_1_2_01-lib-linux-i586.tar.gz" \
+  && cd "/tmp" \
+  && tar --no-same-owner -xvf "/tmp/jai.tar.gz" \
+  && mv -v /tmp/jai-*/lib/jai_*.jar "${JAVA_HOME}/jre/lib/ext/" \
+  # We don't install the shared library because the jvm complains about stack guard disabling
+  #&& chmod 755 /tmp/jai-*/lib/*.so \
+  #&& mv -v /tmp/jai-*/lib/*.so "${JAVA_HOME}/jre/lib/amd64/" \
+  && mv -v /tmp/jai-*/*-jai.txt "${JAVA_HOME}/" \
+  && mv -v /tmp/jai-*/UNINSTALL-jai "${JAVA_HOME}/" \
+  && rm -rf /tmp/*
+
+# Install JAI (Java Advanced Imaging) Image I/O Tools in the JVM
+RUN wget -q --no-cookies --no-check-certificate \
+  --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
+  -O "/tmp/jai_imageio.tar.gz" "http://download.oracle.com/otn-pub/java/jai_imageio/1.0_01/jai_imageio-1_0_01-lib-linux-i586.tar.gz" \
+  && cd "/tmp" \
+  && tar --no-same-owner -xvf "/tmp/jai_imageio.tar.gz" \
+  && mv -v /tmp/jai_imageio-*/lib/jai_*.jar "${JAVA_HOME}/jre/lib/ext/" \
+  # We don't install the shared library because the jvm complains about stack guard disabling
+  #&& chmod 755 /tmp/jai_imageio-*/lib/*.so \
+  #&& mv /tmp/jai_imageio-*/lib/*.so "${JAVA_HOME}/jre/lib/amd64/" \
+  && mv -v /tmp/jai_imageio-*/*-jai_imageio.txt "${JAVA_HOME}/" \
+  && mv -v /tmp/jai_imageio-*/UNINSTALL-jai_imageio "${JAVA_HOME}/" \
+  && rm -rf /tmp/*
+
+# Install JAI (Java Advanced Imaging) ICC Profiles in the JVM
+RUN wget -q --no-cookies --no-check-certificate \
+  --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
+  -O "/tmp/jai_ccm.tar.gz" "http://download.oracle.com/otn-pub/java/jai_jaicmm/1.0/JAICMM.tar.gz" \
+  && cd "/tmp" \
+  && tar --no-same-owner -xvf "/tmp/jai_ccm.tar.gz" \
+  && mv -v /tmp/*.pf "${JAVA_HOME}/jre/lib/cmm/" \
+  && rm -rf /tmp/*
 
 USER ${EXO_USER}
 
