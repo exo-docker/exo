@@ -41,6 +41,7 @@ The following environment variables must be passed to the container to configure
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |--------------------------|-------------|--------------------------|----------------
 | EXO_PROXY_VHOST | NO | `localhost` | specify the virtual host name to reach eXo Platform
+| EXO_PROXY_PORT | NO | - | which port to use on the proxy server ? (if empty it will automatically defined regarding EXO_PROXY_SSL value : true => 443 / false => 80)
 | EXO_PROXY_SSL | NO | `true` | is ssl activated on the proxy server ? (true / false)
 
 ## Tomcat

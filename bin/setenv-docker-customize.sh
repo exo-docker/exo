@@ -53,6 +53,13 @@ add_in_chat_configuration() {
 set +u		# DEACTIVATE unbound variable check
 [ -z "${EXO_PROXY_VHOST}" ] && EXO_PROXY_VHOST="localhost"
 [ -z "${EXO_PROXY_SSL}" ] && EXO_PROXY_SSL="true"
+[ -z "${EXO_PROXY_PORT}" ] && {
+  case "${EXO_PROXY_SSL}" in 
+    true) EXO_PROXY_PORT="443";;
+    false) EXO_PROXY_PORT="80";;
+    *) EXO_PROXY_PORT="80";;
+  esac
+}
 [ -z "${EXO_DATA_DIR}" ] && EXO_DATA_DIR="/srv/exo"
 [ -z "${EXO_FILE_STORAGE_DIR}" ] && EXO_FILE_STORAGE_DIR="${EXO_DATA_DIR}/files"
 [ -z "${EXO_FILE_STORAGE_RETENTION}" ] && EXO_FILE_STORAGE_RETENTION="30"
@@ -247,21 +254,29 @@ else
   if [ "${EXO_PROXY_SSL}" = "true" ]; then
     xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "scheme" -v "https" \
       -s "/Server/Service/Connector" -t attr -n "secure" -v "false" \
-      -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "443" \
+      -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "${EXO_PROXY_PORT}" \
       /opt/exo/conf/server.xml || {
       echo "ERROR during xmlstarlet processing (configuring Connector proxy ssl)"
       exit 1
     }
-    add_in_exo_configuration "exo.base.url=https://${EXO_PROXY_VHOST}"
+    if [ "${EXO_PROXY_PORT}" = "443" ]; then
+      add_in_exo_configuration "exo.base.url=https://${EXO_PROXY_VHOST}"
+    else
+      add_in_exo_configuration "exo.base.url=https://${EXO_PROXY_VHOST}:${EXO_PROXY_PORT}"
+    fi
   else
     xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "scheme" -v "http" \
       -s "/Server/Service/Connector" -t attr -n "secure" -v "false" \
-      -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "80" \
+      -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "${EXO_PROXY_PORT}" \
       /opt/exo/conf/server.xml || {
       echo "ERROR during xmlstarlet processing (configuring Connector proxy)"
       exit 1
     }
-    add_in_exo_configuration "exo.base.url=http://${EXO_PROXY_VHOST}"
+    if [ "${EXO_PROXY_PORT}" = "80" ]; then
+      add_in_exo_configuration "exo.base.url=http://${EXO_PROXY_VHOST}"
+    else
+      add_in_exo_configuration "exo.base.url=http://${EXO_PROXY_VHOST}:${EXO_PROXY_PORT}"
+    fi
   fi
 
   # Upload size
