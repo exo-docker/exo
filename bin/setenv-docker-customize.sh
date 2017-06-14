@@ -494,29 +494,14 @@ else
       # Install addon
       ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_addon} --force --batch-mode
       if [ $? != 0 ]; then
-        echo "Problem during add-on install, startup aborted !"
+        echo "[ERROR] Problem during add-on [${_addon}] install."
         exit 1
       fi
     done
-  fi
-  echo "# ------------------------------------ #"
-  if [ -f "/etc/exo/addons-list.conf" ]; then
-    echo "# installing add-ons from /etc/exo/addons-list.conf file:"
-    _addons_list="/etc/exo/addons-list.conf"
-    while read -r _addon; do
-      # Don't read empty lines
-      [ -z "${_addon}" ] && continue
-      # Don't read comments
-      [ "$(echo "$_addon" | awk  '{ string=substr($0, 1, 1); print string; }' )" = '#' ] && continue
-      # Install addon
-      ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_addon} --force --batch-mode
-      if [ $? != 0 ]; then
-        echo "Problem during add-on install, startup aborted !"
-        exit 1
-      fi
-    done < "$_addons_list"
-  else
-    echo "# no add-on to install from addons-list.conf because /etc/exo/addons-list.conf file is absent."
+    if [ $? != 0 ]; then
+      echo "[ERROR] An error during add-on installation phase aborted eXo startup !"
+      exit 1
+    fi
   fi
   echo "# ------------------------------------ #"
   echo "# eXo add-ons installation done."
