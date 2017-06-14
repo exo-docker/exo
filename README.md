@@ -1,28 +1,23 @@
-# eXo Docker container
+# eXo Platform Docker image
 
-[![Docker Stars](https://img.shields.io/docker/stars/exoplatform/exo.svg?maxAge=2592000)]() - [![Docker Pulls](https://img.shields.io/docker/pulls/exoplatform/exo.svg?maxAge=2592000)]()
+[![Docker Stars](https://img.shields.io/docker/stars/exoplatform/exo.svg)]() - [![Docker Pulls](https://img.shields.io/docker/pulls/exoplatform/exo.svg)]()
 
-The aim of this repository is to give the configuration to run eXo Platform in a Docker containers for production purpose.
+|    Image                          |  JDK  |   eXo Platform    
+|-----------------------------------|-------|-------------------
+| exoplatform/exo:latest            |   8   | 4.4.1 Enterprise edition
+| exoplatform/exo:develop           |   8   | 4.4.1 Enterprise edition
+| exoplatform/exo:5.0_latest        |   8   | 5.0.x Enterprise edition 
+| exoplatform/exo:4.4_latest        |   8   | 4.4.x Enterprise edition
+| exoplatform/exo:4.3_latest        |   8   | 4.3.x Enterprise edition
 
-# Image compatibility
-## Databases
-
-The image is now compatible with the following databases system :
+The image is compatible with the following databases system :
 
 * `MySQL` (default)
 * `HSQLDB`
 * `Postgresql`
 * `Oracle`
 
-## eXo Platform version
-
-|    Image                          |  JDK  |   eXo Platform    |  Size
-|-----------------------------------|-------|-------------------|----------------
-| exoplatform/exo:latest            |   8   | 4.4.1             |[![](https://badge.imagelayers.io/exoplatform/exo:latest.svg)](https://imagelayers.io/?images=exoplatform/exo:latest 'Get your own badge on imagelayers.io')
-| exoplatform/exo:develop           |   8   | 4.4.1             |[![](https://badge.imagelayers.io/exoplatform/exo:develop.svg)](https://imagelayers.io/?images=exoplatform/exo:develop 'Get your own badge on imagelayers.io')
-| exoplatform/exo:4.3_latest        |   8   | 4.3.x             |[![](https://badge.imagelayers.io/exoplatform/exo:4.3_latest.svg)](https://imagelayers.io/?images=exoplatform/exo:4.3_latest 'Get your own badge on imagelayers.io')
-
-# Configuration
+# Configuration options
 
 ## JVM
 
@@ -34,14 +29,14 @@ The standard eXo Platform environment variables can be used :
 | EXO_JVM_SIZE_MAX | NO | `3g` | specify the jvm maximum allocated memory size (-Xmx parameter)
 | EXO_JVM_PERMSIZE_MAX | NO | `256m` | (Java 7) specify the jvm maximum allocated memory to Permgen (-XX:MaxPermSize parameter)
 | EXO_JVM_METASPACE_SIZE_MAX | NO | `512m` | (Java 8+) specify the jvm maximum allocated memory to MetaSpace (-XX:MaxMetaspaceSize parameter)
-| EXO_JVM_USER_LANGUAGE | NO | `en` | specify the jvm maximum allocated memory size (-Duser.language parameter)
-| EXO_JVM_USER_REGION | NO | `US` | specify the jvm maximum allocated memory size (-Duser.region parameter)
+| EXO_JVM_USER_LANGUAGE | NO | `en` | specify the jvm locale for langage (-Duser.language parameter)
+| EXO_JVM_USER_REGION | NO | `US` | specify the jvm local for region (-Duser.region parameter)
 
-This list is not exhaustive (see eXo Platform documentation or {EXO_HOME}/bin/setenv.sh for more parameters)
+INFO: This list is not exhaustive (see eXo Platform documentation or {EXO_HOME}/bin/setenv.sh for more parameters)
 
 ## Frontend proxy
 
-The following environment variables must be passed to the container to configure proxy settings:
+The following environment variables must be passed to the container to configure Tomcat proxy settings:
 
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |--------------------------|-------------|--------------------------|----------------
@@ -100,11 +95,11 @@ The following environment variables must be passed to the container in order to 
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |--------------------------|-------------|--------------------------|----------------
 | EXO_DB_TYPE | NO | `mysql` | mysql / hsqldb / pgsql / ora
+| EXO_DB_HOST | NO | `mysql` | the host to connect to the database server
+| EXO_DB_PORT | NO | `3306` | the port to connect to the database server
 | EXO_DB_NAME | NO | `exo` | the name of the database / schema to use
 | EXO_DB_USER | NO | `exo` | the username to connect to the database
 | EXO_DB_PASSWORD | YES | - | the password to connect to the database
-| EXO_DB_HOST | NO | `mysql` | the host to connect to the database server
-| EXO_DB_PORT | NO | `3306` | the port to connect to the database server
 | EXO_DB_INSTALL_DRIVER | NO | `true` | automatically install the good jdbc driver add-on (true / false)
 | EXO_DB_POOL_IDM_INIT_SIZE | NO | `5` | the init size of IDM datasource pool
 | EXO_DB_POOL_IDM_MAX_SIZE | NO | `20` | the max size of IDM datasource pool
@@ -115,7 +110,7 @@ The following environment variables must be passed to the container in order to 
 
 ## Mongodb
 
-The following environment variables should be passed to the container in order to work if you use eXo Chat :
+The following environment variables should be passed to the container in order to work if you have installed eXo Chat :
 
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |--------------------------|-------------|--------------------------|----------------
@@ -124,6 +119,8 @@ The following environment variables should be passed to the container in order t
 | EXO_MONGO_USERNAME | NO | - | the username to use to connect to the mongodb database (no authentification configured by default)
 | EXO_MONGO_PASSWORD | NO | - | the password to use to connect to the mongodb database (no authentification configured by default)
 | EXO_MONGO_DB_NAME | NO | `chat` | the mongodb database name to use for eXo Chat 
+
+INFO: you must configure and start an external MongoDB server by yourself
 
 ## ElasticSearch
 
@@ -140,6 +137,8 @@ The following environment variables should be passed to the container in order t
 | EXO_ES_PASSWORD | NO | - | the password to connect to the elasticsearch server (if authentication is activated on the external elasticsearch).
 | EXO_ES_INDEX_REPLICA_NB | NO | `0` | the number of replicat for elasticsearch indexes (leave 0 if you don't have an elasticsearch cluster).
 | EXO_ES_INDEX_SHARD_NB | NO | `0` | the number of shard for elasticsearch indexes.
+
+INFO: the default embedded ElasticSearch in not recommended for production purpose.
 
 ## LDAP / Active Directory
 
@@ -193,6 +192,13 @@ With the default parameters you can connect to JMX with `service:jmx:rmi://local
 The eXo Platform license file location must be `/etc/exo/license.xml`
 
 # Testing
+
+The prerequisites are :
+* internet access
+* Docker daemon version 12+
+* Docker Compose 1.7+
+* 4GB of available RAM + 1GB of disk
+
 
 We provide some docker-compose files for testing various configurations in the test folder
 
