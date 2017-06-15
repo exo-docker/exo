@@ -179,6 +179,10 @@ else
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
       if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
         ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} exo-jdbc-driver-mysql --batch-mode
+        if [ $? != 0 ]; then
+          echo "[ERROR] Impossible to install MySQL Driver add-on."
+          exit 1
+        fi
       else
         echo "WARNING: no database driver will be automatically installed (EXO_DB_INSTALL_DRIVER=false)."
       fi
@@ -189,6 +193,10 @@ else
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
       if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
         ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} exo-jdbc-driver-postgresql --batch-mode
+        if [ $? != 0 ]; then
+          echo "[ERROR] Impossible to install PostgreSQL Driver add-on."
+          exit 1
+        fi
       else
         echo "WARNING: no database driver will be automatically installed (EXO_DB_INSTALL_DRIVER=false)."
       fi
@@ -201,6 +209,10 @@ else
       add_in_exo_configuration "exo.jpa.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect"
       if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
         ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} exo-jdbc-driver-oracle --batch-mode
+        if [ $? != 0 ]; then
+          echo "[ERROR] Impossible to install Oracle Driver add-on."
+          exit 1
+        fi
       else
         echo "WARNING: no database driver will be automatically installed (EXO_DB_INSTALL_DRIVER=false)."
       fi
