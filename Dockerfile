@@ -15,9 +15,16 @@ FROM       exoplatform/base-jdk:jdk8
 MAINTAINER eXo Platform <docker@exoplatform.com>
 
 # Install the needed packages
+RUN echo "deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs)-backports main universe multiverse restricted" > /etc/apt/sources.list \
+  && echo "deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs) main universe multiverse restricted" >> /etc/apt/sources.list \
+  && echo "deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs)-security main universe multiverse restricted" >> /etc/apt/sources.list \
+  && echo "deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs)-updates main universe multiverse restricted" >> /etc/apt/sources.list
 RUN apt-get -qq update && \
   apt-get -qq -y upgrade ${_APT_OPTIONS} && \
   apt-get -qq -y install ${_APT_OPTIONS} xmlstarlet && \
+  echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
+  echo "ttf-mscorefonts-installer msttcorefonts/present-mscorefonts-eula note" | debconf-set-selections && \
+  apt-get -qq -y install ${_APT_OPTIONS} ttf-mscorefonts-installer && \
   apt-get -qq -y install ${_APT_OPTIONS} libreoffice-calc libreoffice-draw libreoffice-impress libreoffice-math libreoffice-writer && \
   apt-get -qq -y autoremove && \
   apt-get -qq -y clean && \
