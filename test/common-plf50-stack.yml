@@ -66,7 +66,7 @@ services:
     networks:
       - back
   es:
-    image: exoplatform/elasticsearch:0.3
+    image: exoplatform/elasticsearch:1.0.2
     volumes: 
       - search_data:/usr/share/elasticsearch/data:rw
     networks:
