@@ -240,7 +240,7 @@ This will produce an image with the current eXo Platform enterprise version and 
 | EXO_VERSION | NO | latest stable version | the full version number of the eXo Platform to package
 | DOWNLOAD_URL | NO | public download url | the full url where the eXo Platform binary must be downloaded
 | DOWNLOAD_USER | NO | - | a username to use for downloading the eXo Platform binary
-
+| ARCHIVE_BASE_DIR | NO | platform-${EXO_VERSION} | Platform directory in the archive used for the installation
 
 If you want to bundle a particular list of add-ons :
 

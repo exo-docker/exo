@@ -45,6 +45,8 @@ ARG DOWNLOAD_URL
 ARG DOWNLOAD_USER
 # allow to override the list of addons to package by default
 ARG ADDONS="exo-chat:1.4.2 exo-tasks:1.2.3 exo-remote-edit:1.2.2"
+# Default base directory on the plf archive
+ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}
 
 ENV EXO_APP_DIR     /opt/exo
 ENV EXO_CONF_DIR    /etc/exo
@@ -76,7 +78,7 @@ RUN if [ -n "${DOWNLOAD_USER}" ]; then PARAMS="-u ${DOWNLOAD_USER}"; fi && \
     curl ${PARAMS} -L -o /srv/downloads/eXo-Platform-${EXO_VERSION}.zip ${DOWNLOAD_URL} && \
     unzip -q /srv/downloads/eXo-Platform-${EXO_VERSION}.zip -d /srv/downloads/ && \
     rm -f /srv/downloads/eXo-Platform-${EXO_VERSION}.zip && \
-    mv /srv/downloads/platform-${EXO_VERSION}* ${EXO_APP_DIR} && \
+    mv /srv/downloads/${ARCHIVE_BASE_DIR} ${EXO_APP_DIR} && \
     chown -R ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR} && \
     ln -s ${EXO_APP_DIR}/gatein/conf /etc/exo && \
     rm -rf ${EXO_APP_DIR}/logs && ln -s ${EXO_LOG_DIR} ${EXO_APP_DIR}/logs
