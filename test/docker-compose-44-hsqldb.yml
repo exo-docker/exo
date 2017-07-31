@@ -19,6 +19,7 @@ services:
     environment:
       EXO_DB_TYPE: hsqldb
       EXO_ADDONS_LIST: 
+      EXO_ADDONS_REMOVE_LIST: 
       EXO_ES_EMBEDDED: "true"
     ports: 
       # (Linux) open JMX ports for local connection only

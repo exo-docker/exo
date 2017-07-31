@@ -19,6 +19,15 @@ The image is compatible with the following databases system :
 
 # Configuration options
 
+## Add-ons
+
+Some add-ons are already installed in eXo image but you can install other one or remove some of the pre-installed one :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_ADDONS_LIST | NO | - | commas separated list of add-ons to install (ex: exo-answers,exo-skype:1.0.x-SNAPSHOT)
+| EXO_ADDONS_REMOVE_LIST | NO | - | commas separated list of add-ons to uninstall (ex: exo-chat,exo-es-embedded) (since: 4.4.2_3)
+
 ## JVM
 
 The standard eXo Platform environment variables can be used :
