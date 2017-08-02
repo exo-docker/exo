@@ -62,7 +62,7 @@ The following environment variables can be passed to the container to configure 
 | EXO_HTTP_THREAD_MAX | NO | `200` | maximum number of threads in the tomcat http connector
 | EXO_HTTP_THREAD_MIN | NO | `10` | minimum number of threads ready in the tomcat http connector
 
-### Valves and Listners
+### Valves and Listeners
 
 A file containing the list of valves and listeners can be attached to the container in the path {{/etc/exo/host.yml}}. If a file is specified, the default valves and listeners configuraiton will be overriden.
 
@@ -94,6 +94,7 @@ The following environment variables must be passed to the container in order to 
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |--------------------------|-------------|--------------------------|----------------
 | EXO_DATA_DIR | NO | `/srv/exo` | the directory to store eXo Platform data
+| EXO_JCR_STORAGE_DIR | NO | `${EXO_DATA_DIR}/jcr/values` | the directory to store eXo Platform JCR values data
 | EXO_FILE_STORAGE_DIR | NO | `${EXO_DATA_DIR}/files` | the directory to store eXo Platform data
 | EXO_FILE_STORAGE_RETENTION | NO | `30` | the number of days to keep deleted files on disk before definitively remove it from the disk
 | EXO_UPLOAD_MAX_FILE_SIZE | NO | `200` | maximum authorized size for file upload in MB.
@@ -196,6 +197,19 @@ The following environment variables should be passed to the container in order t
 | EXO_JMX_PASSWORD | NO | - | a password for JMX connection (if no password is specified a random one will be generated and stored in /opt/exo/conf/jmxremote.password)
 
 With the default parameters you can connect to JMX with `service:jmx:rmi://localhost:10002/jndi/rmi://localhost:10001/jmxrmi` without authentication.
+
+## Cluster
+
+The following environment variables should be passed to the container in order to configure the cluster configuration :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_CLUSTER | NO | `false` | Activate the cluster mode
+| EXO_CLUSTER_NODE_NAME | NO | the container id | Node name to use in the cluster for this node (ex: node1)
+| EXO_CLUSTER_HOSTS | NO | - | commas separated list of the nodes names or ips of the cluster (ex: node1,node2,172.16.250.11)
+| EXO_JGROUPS_ADDR | NO | `GLOBAL` | IP address used to bind jgroups (ex: 172.16.250.11). By default the first routable address found will be used.
+
+With the cluster mode active, the `EXO_JCR_STORAGE_DIR` and `EXO_FILE_STORAGE_DIR` properties must be set to a place shared between all the cluster nodes
 
 ## License
 

@@ -63,6 +63,7 @@ set +u		# DEACTIVATE unbound variable check
   esac
 }
 [ -z "${EXO_DATA_DIR}" ] && EXO_DATA_DIR="/srv/exo"
+[ -z "${EXO_JCR_STORAGE_DIR}" ] && EXO_JCR_STORAGE_DIR="${EXO_DATA_DIR}/jcr/values"
 [ -z "${EXO_FILE_STORAGE_DIR}" ] && EXO_FILE_STORAGE_DIR="${EXO_DATA_DIR}/files"
 [ -z "${EXO_FILE_STORAGE_RETENTION}" ] && EXO_FILE_STORAGE_RETENTION="30"
 
@@ -156,6 +157,13 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 
 [ -z "${EXO_REGISTRATION}" ] && EXO_REGISTRATION="true"
 
+[ -z "${EXO_CLUSTER}" ] && EXO_CLUSTER="false"
+[ -z "${EXO_CLUSTER_NODE_NAME}" ] && EXO_CLUSTER_NODE_NAME="${HOSTNAME}"
+[ -z "${EXO_CLUSTER_HOSTS}" ] && EXO_CLUSTER_HOSTS="-"
+[ -z "${EXO_JGROUPS_ADDR}" ] && EXO_JGROUPS_ADDR="GLOBAL"
+
+[ -z $EXO_PROFILES ] && EXO_PROFILES="all"
+
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -164,6 +172,9 @@ set -u		# REACTIVATE unbound variable check
 if [ -f /opt/exo/_done.configuration ]; then
   echo "INFO: Configuration already done! skipping this step."
 else
+  # Jcr storage configuration
+  add_in_exo_configuration "exo.jcr.storage.data.dir=${EXO_JCR_STORAGE_DIR}"
+
   # File storage configuration
   add_in_exo_configuration "# File storage configuration"
   add_in_exo_configuration "exo.files.binaries.storage.type=fs"
@@ -390,6 +401,38 @@ else
   fi
   add_in_exo_configuration "exo.email.smtp.socketFactory.port="
   add_in_exo_configuration "exo.email.smtp.socketFactory.class="
+
+  # Cluster configuration
+  if [ "${EXO_CLUSTER}" = "true" ]; then
+      EXO_PROFILES="${EXO_PROFILES},cluster,cluster-jgroups-tcp"
+      add_in_exo_configuration "exo.cluster.node.name=${EXO_CLUSTER_NODE_NAME}"
+      JCR_CLUSTER_HOSTS=""
+      IDM_CLUSTER_HOSTS=""
+      COMETD_CLUSTER_HOSTS=""
+
+      for cluster_host in $(echo ${EXO_CLUSTER_HOSTS} | tr ',' ' '); do
+        JCR_CLUSTER_HOSTS="${JCR_CLUSTER_HOSTS}${cluster_host}[7800],"
+        IDM_CLUSTER_HOSTS="${IDM_CLUSTER_HOSTS}${cluster_host}[7900],"
+        COMETD_CLUSTER_HOSTS="${COMETD_CLUSTER_HOSTS}http://${cluster_host}:8080/cometd/cometd,"
+      done
+
+      # JGROUPS properties
+      add_in_exo_configuration "exo.jcr.cluster.jgroups.tcpping.initial_hosts=${JCR_CLUSTER_HOSTS}"
+      add_in_exo_configuration "exo.idm.cluster.jgroups.tcpping.initial_hosts=${IDM_CLUSTER_HOSTS}"
+      add_in_exo_configuration "exo.jcr.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
+      add_in_exo_configuration "exo.idm.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
+
+      # WebSocket configuration
+      add_in_exo_configuration "exo.cometd.oort.url=http://${EXO_CLUSTER_NODE_NAME}:8080/cometd/cometd"
+      add_in_exo_configuration "exo.cometd.oort.configType=static"
+      add_in_exo_configuration "exo.cometd.oort.cloud=${COMETD_CLUSTER_HOSTS}"
+
+      # JCR configuration
+      add_in_exo_configuration "gatein.jcr.config.type=cluster"
+      # TODO allow to customize this
+      add_in_exo_configuration "gatein.jcr.index.changefilterclass=org.exoplatform.services.jcr.impl.core.query.ispn.LocalIndexChangesFilter"
+
+  fi
 
   # JMX configuration
   if [ "${EXO_JMX_ENABLED}" = "true" ]; then

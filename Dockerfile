@@ -48,11 +48,12 @@ ARG ADDONS="exo-chat:1.4.2 exo-tasks:1.2.3 exo-remote-edit:1.2.2"
 # Default base directory on the plf archive
 ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}
 
-ENV EXO_APP_DIR     /opt/exo
-ENV EXO_CONF_DIR    /etc/exo
-ENV EXO_DATA_DIR    /srv/exo
-ENV EXO_LOG_DIR     /var/log/exo
-ENV EXO_TMP_DIR     /tmp/exo-tmp
+ENV EXO_APP_DIR            /opt/exo
+ENV EXO_CONF_DIR           /etc/exo
+ENV EXO_DATA_DIR           /srv/exo
+ENV EXO_SHARED_DATA_DIR    /srv/exo/shared
+ENV EXO_LOG_DIR            /var/log/exo
+ENV EXO_TMP_DIR            /tmp/exo-tmp
 
 ENV EXO_USER exo
 ENV EXO_GROUP ${EXO_USER}
@@ -64,9 +65,10 @@ RUN useradd --create-home -u 999 --user-group --shell /bin/bash ${EXO_USER}
 RUN echo "exo   ALL = NOPASSWD: ALL" > /etc/sudoers.d/exo && chmod 440 /etc/sudoers.d/exo
 
 # Create needed directories
-RUN mkdir -p ${EXO_DATA_DIR}    && chown ${EXO_USER}:${EXO_GROUP} ${EXO_DATA_DIR} && \
-    mkdir -p ${EXO_TMP_DIR}     && chown ${EXO_USER}:${EXO_GROUP} ${EXO_TMP_DIR}  && \
-    mkdir -p ${EXO_LOG_DIR}     && chown ${EXO_USER}:${EXO_GROUP} ${EXO_LOG_DIR}
+RUN mkdir -p ${EXO_DATA_DIR}         && chown ${EXO_USER}:${EXO_GROUP} ${EXO_DATA_DIR} && \
+    mkdir -p ${EXO_SHARED_DATA_DIR}  && chown ${EXO_USER}:${EXO_GROUP} ${EXO_SHARED_DATA_DIR} && \
+    mkdir -p ${EXO_TMP_DIR}          && chown ${EXO_USER}:${EXO_GROUP} ${EXO_TMP_DIR}  && \
+    mkdir -p ${EXO_LOG_DIR}          && chown ${EXO_USER}:${EXO_GROUP} ${EXO_LOG_DIR}
 
 # Install eXo Platform
 RUN if [ -n "${DOWNLOAD_USER}" ]; then PARAMS="-u ${DOWNLOAD_USER}"; fi && \

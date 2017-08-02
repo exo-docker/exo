@@ -1,0 +1,151 @@
+version: '2'
+
+services:
+  web1:
+    extends:
+      file: common-plf44-stack.yml
+      service: web
+    ports:
+      - "81:80"
+    volumes:
+      - ./conf/nginx-plf44-node1.conf:/etc/nginx/nginx.conf:ro
+    links:
+      - exo1
+    depends_on:
+      - exo1
+      - mail
+  web2:
+    extends:
+      file: common-plf44-stack.yml
+      service: web
+    ports:
+      - "82:80"
+    volumes:
+      - ./conf/nginx-plf44-node2.conf:/etc/nginx/nginx.conf:ro
+    links:
+      - exo2
+    depends_on:
+      - exo2
+      - mail
+  exo1:
+    extends:
+      file: common-plf44-stack.yml
+      service: exo
+    image: exoplatform/exo:4.4_latest
+    hostname: exo1
+    environment:
+      EXO_DB_TYPE: mysql
+      EXO_ADDONS_LIST:
+      EXO_ADDONS_REMOVE_LIST:
+      EXO_ES_EMBEDDED: "false"
+      EXO_ES_HOST: search
+      EXO_PROXY_PORT: 81
+      EXO_CLUSTER: "true"
+      EXO_CLUSTER_HOSTS: "172.16.251.11,172.16.251.12"
+      EXO_JGROUPS_ADDR: "172.16.251.11"
+      EXO_FILE_STORAGE_DIR: /srv/exo/shared/files
+      EXO_JCR_STORAGE_DIR: /srv/exo/shared/jcrvalues
+    ports:
+      # (Linux) open JMX ports for local connection only
+      #- "127.0.0.1:10001:10001"
+      #- "127.0.0.1:10002:10002"
+      # (macOS / Windows) open JMX ports on the host
+      - "10001:10001"
+      - "10002:10002"
+    volumes:
+      - exo_shared:/srv/exo/shared
+      - exo1_data:/srv/exo
+    links:
+      - db
+      - mongo
+      - search
+    depends_on:
+      - db
+      - mongo
+      - search
+      - mail
+    networks:
+      back:
+        ipv4_address: 172.16.251.11
+  exo2:
+    extends:
+      file: common-plf44-stack.yml
+      service: exo
+    image: exoplatform/exo:4.4_latest
+    hostname: exo2
+    environment:
+      EXO_DB_TYPE: mysql
+      EXO_ADDONS_LIST:
+      EXO_ADDONS_REMOVE_LIST:
+      EXO_ES_EMBEDDED: "false"
+      EXO_ES_HOST: search
+      EXO_PROXY_PORT: 82
+      EXO_CLUSTER: "true"
+      EXO_CLUSTER_HOSTS: "172.16.251.11,172.16.251.12"
+      EXO_JGROUPS_ADDR: "172.16.251.12"
+      EXO_FILE_STORAGE_DIR: /srv/exo/shared/files
+      EXO_JCR_STORAGE_DIR: /srv/exo/shared/jcrvalues
+    ports:
+      # (Linux) open JMX ports for local connection only
+      #- "127.0.0.1:10001:10001"
+      #- "127.0.0.1:10002:10002"
+      # (macOS / Windows) open JMX ports on the host
+      - "10021:10001"
+      - "10022:10002"
+    volumes:
+      - exo_shared:/srv/exo/shared
+      - exo2_data:/srv/exo
+    links:
+      - db
+      - mongo
+      - search
+    depends_on:
+      - db
+      - mongo
+      - search
+      - mail
+    networks:
+      back:
+        ipv4_address: 172.16.251.12
+  mongo:
+    extends:
+      file: common-plf44-stack.yml
+      service: mongo
+  db:
+    extends:
+      file: common-plf44-stack.yml
+      service: mysql
+  search:
+    extends:
+      file: common-plf44-stack.yml
+      service: es
+    ports:
+      # (Linux) open elasticsearch port for local connection only
+      #- "127.0.0.1:9200:9200"
+      # (macOS / Windows) open elasticsearch port for local connection only
+      - "9200:9200"
+  mail:
+    extends:
+      file: common-plf44-stack.yml
+      service: mail
+    depends_on:
+      - mongo
+volumes:
+  exo_shared:
+  exo1_data:
+  exo2_data:
+  exo_logs:
+  db_data:
+  mongo_data:
+  search_data:
+
+networks:
+  front:
+  mail:
+  back:
+    driver: bridge
+    # enable_ipv6: false
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.16.251.0/24
