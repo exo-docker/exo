@@ -29,6 +29,8 @@ add_in_exo_configuration() {
       exit 1
     fi
   fi
+  # Ensure the content will be added on a new line
+  tail -c1 ${EXO_CONFIG_FILE}  | read -r _ || echo >> ${EXO_CONFIG_FILE}
   echo "${P1}" >> ${EXO_CONFIG_FILE}
 }
 
