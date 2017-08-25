@@ -35,6 +35,7 @@ services:
     hostname: exo1
     environment:
       EXO_DB_TYPE: mysql
+      EXO_ADDONS_CATALOG_URL: 
       EXO_ADDONS_LIST:
       EXO_ADDONS_REMOVE_LIST:
       EXO_ES_EMBEDDED: "false"

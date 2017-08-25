@@ -172,6 +172,12 @@ set -u		# REACTIVATE unbound variable check
 if [ -f /opt/exo/_done.configuration ]; then
   echo "INFO: Configuration already done! skipping this step."
 else
+
+  if [ ! -z "${EXO_ADDONS_CATALOG_URL:-}" ]; then
+    echo "The add-on manager catalog url was overriden with : ${EXO_ADDONS_CATALOG_URL}"
+    _ADDON_MGR_OPTION_CATALOG="--catalog=${EXO_ADDONS_CATALOG_URL}"
+  fi
+
   # Jcr storage configuration
   add_in_exo_configuration "exo.jcr.storage.data.dir=${EXO_JCR_STORAGE_DIR}"
 
@@ -191,7 +197,7 @@ else
       replace_in_file /opt/exo/conf/server.xml "jdbc:mysql://localhost:3306/plf" "jdbc:mysql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
       if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
-        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} exo-jdbc-driver-mysql --batch-mode
+        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-mysql --batch-mode
         if [ $? != 0 ]; then
           echo "[ERROR] Impossible to install MySQL Driver add-on."
           exit 1
@@ -205,7 +211,7 @@ else
       replace_in_file /opt/exo/conf/server.xml "jdbc:postgresql://localhost:5432/plf" "jdbc:postgresql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
       if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
-        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} exo-jdbc-driver-postgresql --batch-mode
+        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-postgresql --batch-mode
         if [ $? != 0 ]; then
           echo "[ERROR] Impossible to install PostgreSQL Driver add-on."
           exit 1
@@ -221,7 +227,7 @@ else
       add_in_exo_configuration "exo.jcr.datasource.dialect=org.hibernate.dialect.Oracle10gDialect"
       add_in_exo_configuration "exo.jpa.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect"
       if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
-        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} exo-jdbc-driver-oracle --batch-mode
+        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-oracle --batch-mode
         if [ $? != 0 ]; then
           echo "[ERROR] Impossible to install Oracle Driver add-on."
           exit 1
@@ -553,11 +559,6 @@ else
   echo "# eXo add-ons management start ..."
   echo "# ------------------------------------ #"
 
-  if [ ! -z "${EXO_ADDONS_CATALOG_URL:-}" ]; then
-    echo "The add-on manager catalog url was overriden with : ${EXO_ADDONS_CATALOG_URL}"
-    _ADDON_MGR_OPTIONS="--catalog=${EXO_ADDONS_CATALOG_URL}"
-  fi
-
   # add-ons removal
   if [ -z "${EXO_ADDONS_REMOVE_LIST:-}" ]; then
     echo "# no add-on to uninstall from EXO_ADDONS_REMOVE_LIST environment variable."
@@ -586,7 +587,7 @@ else
     echo "# installing add-ons from EXO_ADDONS_LIST environment variable:"
     echo ${EXO_ADDONS_LIST} | tr ',' '\n' | while read _addon ; do
       # Install addon
-      ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_addon} --force --batch-mode
+      ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} ${_addon} --force --batch-mode
       if [ $? != 0 ]; then
         echo "[ERROR] Problem during add-on [${_addon}] install."
         exit 1
