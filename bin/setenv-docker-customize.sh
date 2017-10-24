@@ -139,6 +139,10 @@ esac
 [ -z "${EXO_MONGO_PASSWORD}" ] && EXO_MONGO_PASSWORD="-"
 [ -z "${EXO_MONGO_DB_NAME}" ] && EXO_MONGO_DB_NAME="chat"
 
+[ -z "${EXO_CHAT_SERVER_STANDALONE}" ] && EXO_CHAT_SERVER_STANDALONE="false"
+[ -z "${EXO_CHAT_SERVER_URL}" ] && EXO_CHAT_SERVER_URL="http://localhost:8080"
+[ -z "${EXO_CHAT_SERVER_PASSPHRASE}" ] && EXO_CHAT_SERVER_PASSPHRASE="something2change"
+
 [ -z "${EXO_ES_EMBEDDED}" ] && EXO_ES_EMBEDDED="true"
 [ -z "${EXO_ES_EMBEDDED_DATA}" ] && EXO_ES_EMBEDDED_DATA="/srv/exo/es"
 [ -z "${EXO_ES_SCHEME}" ] && EXO_ES_SCHEME="http"
@@ -501,37 +505,15 @@ else
     add_in_exo_configuration "exo.registration.skip=true"
   fi
 
-  # Mongodb configuration (for the Chat)
-  add_in_chat_configuration "# eXo Chat mongodb configuration"
-  add_in_chat_configuration "dbServerHost=${EXO_MONGO_HOST}"
-  add_in_chat_configuration "dbServerPort=${EXO_MONGO_PORT}"
-  add_in_chat_configuration "dbName=${EXO_MONGO_DB_NAME}"
-  if [ "${EXO_MONGO_USERNAME:-}" = "-" ]; then
-    add_in_chat_configuration "dbAuthentication=false"
-    add_in_chat_configuration "#dbUser="
-    add_in_chat_configuration "#dbPassword="
-  else
-    add_in_chat_configuration "dbAuthentication=true"
-    add_in_chat_configuration "dbUser=${EXO_MONGO_USERNAME}"
-    add_in_chat_configuration "dbPassword=${EXO_MONGO_PASSWORD}"
-  fi
 
   # eXo Chat configuration
   add_in_chat_configuration "# eXo Chat server configuration"
   # The password to access REST service on the eXo Chat server.
-  add_in_chat_configuration "chatPassPhrase=something2change"
-  # The notifications are cleaned up every one hour by default.
-  add_in_chat_configuration "chatCronNotifCleanup=0 0/60 * * * ?"
+  add_in_chat_configuration "chatPassPhrase=${EXO_CHAT_SERVER_PASSPHRASE}"
   # The eXo group who can create teams.
   add_in_chat_configuration "teamAdminGroup=/platform/users"
-  # When a user reads a chat, the application displays messages of some days in the past.
-  add_in_chat_configuration "chatReadDays=30"
-  # The number of messages that you can get in the Chat room.
-  add_in_chat_configuration "chatReadTotalJson=200"
   # We must override this to remain inside the docker container (works only for embedded chat server)
-  add_in_chat_configuration "chatServerBase=http://localhost:8080"
-
-  add_in_chat_configuration "# eXo Chat client configuration"
+  add_in_chat_configuration "chatServerBase=${EXO_CHAT_SERVER_URL}"
   # Time interval to refresh messages in a chat.
   add_in_chat_configuration "chatIntervalChat=3000"
   # Time interval to keep a chat session alive in milliseconds.
@@ -544,6 +526,42 @@ else
   add_in_chat_configuration "chatIntervalUsers=5000"
   # Time after which a token will be invalid. The use will then be considered offline.
   add_in_chat_configuration "chatTokenValidity=30000"
+
+  if [ "${EXO_CHAT_SERVER_STANDALONE}" = "false" ]; then
+    # Mongodb configuration (for the Chat)
+    add_in_chat_configuration "# eXo Chat mongodb configuration"
+    add_in_chat_configuration "dbServerHost=${EXO_MONGO_HOST}"
+    add_in_chat_configuration "dbServerPort=${EXO_MONGO_PORT}"
+    add_in_chat_configuration "dbName=${EXO_MONGO_DB_NAME}"
+    if [ "${EXO_MONGO_USERNAME:-}" = "-" ]; then
+      add_in_chat_configuration "dbAuthentication=false"
+      add_in_chat_configuration "#dbUser="
+      add_in_chat_configuration "#dbPassword="
+    else
+      add_in_chat_configuration "dbAuthentication=true"
+      add_in_chat_configuration "dbUser=${EXO_MONGO_USERNAME}"
+      add_in_chat_configuration "dbPassword=${EXO_MONGO_PASSWORD}"
+    fi
+
+    # The notifications are cleaned up every one hour by default.
+    add_in_chat_configuration "chatCronNotifCleanup=0 0/60 * * * ?"
+    # When a user reads a chat, the application displays messages of some days in the past.
+    add_in_chat_configuration "chatReadDays=30"
+
+  else
+
+    ### Uninstall chat addon
+    echo "INFO: External chat server configured, removing charServer.war"
+    rm -vf ${EXO_APP_DIR}/webapps/chatServer.war
+
+    add_in_chat_configuration "# eXo Chat server configuration"
+    add_in_chat_configuration "standaloneChatServer=true"
+
+    # The password to access REST service on the eXo Chat server.
+    # TODO find a way to dynamically change the passphrase
+    add_in_chat_configuration "chatPassPhrase=${EXO_CHAT_SERVER_PASSPHRASE}"
+
+  fi
 
   # put a file to avoid doing the configuration twice
   touch /opt/exo/_done.configuration
@@ -609,7 +627,7 @@ fi
 # -----------------------------------------------------------------------------
 # Change chat add-on security token at each start
 # -----------------------------------------------------------------------------
-if [ -f /etc/exo/chat.properties ]; then
+if [ -f /etc/exo/chat.properties ] && [ "${EXO_CHAT_SERVER_STANDALONE}" = "false" ]; then
   sed -i 's/^chatPassPhrase=.*$/chatPassPhrase='"$(tr -dc '[:alnum:]' < /dev/urandom  | dd bs=4 count=6 2>/dev/null)"'/' /etc/exo/chat.properties
 fi
 
@@ -674,7 +692,7 @@ case "${EXO_DB_TYPE}" in
 esac
 
 # Wait for mongodb availability (if chat is installed)
-if [ -f /opt/exo/addons/statuses/exo-chat.status ]; then
+if [ -f /opt/exo/addons/statuses/exo-chat.status ] && [ "${EXO_CHAT_SERVER_STANDALONE}" = "false" ]; then
   echo "Waiting for mongodb availability at ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} ..."
   /opt/wait-for-it.sh ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} -s -t 60
 fi
