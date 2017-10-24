@@ -140,6 +140,10 @@ esac
 [ -z "${EXO_MONGO_PASSWORD}" ] && EXO_MONGO_PASSWORD="-"
 [ -z "${EXO_MONGO_DB_NAME}" ] && EXO_MONGO_DB_NAME="chat"
 
+[ -z "${EXO_CHAT_SERVER_STANDALONE}" ] && EXO_CHAT_SERVER_STANDALONE="false"
+[ -z "${EXO_CHAT_SERVER_URL}" ] && EXO_CHAT_SERVER_URL="http://localhost:8080"
+[ -z "${EXO_CHAT_SERVER_PASSPHRASE}" ] && EXO_CHAT_SERVER_PASSPHRASE="something2change"
+
 [ -z "${EXO_ES_EMBEDDED}" ] && EXO_ES_EMBEDDED="true"
 [ -z "${EXO_ES_EMBEDDED_DATA}" ] && EXO_ES_EMBEDDED_DATA="/srv/exo/es"
 [ -z "${EXO_ES_SCHEME}" ] && EXO_ES_SCHEME="http"
@@ -512,37 +516,15 @@ else
     add_in_exo_configuration "exo.registration.skip=true"
   fi
 
-  # Mongodb configuration (for the Chat)
-  add_in_chat_configuration "# eXo Chat mongodb configuration"
-  add_in_chat_configuration "dbServerHost=${EXO_MONGO_HOST}"
-  add_in_chat_configuration "dbServerPort=${EXO_MONGO_PORT}"
-  add_in_chat_configuration "dbName=${EXO_MONGO_DB_NAME}"
-  if [ "${EXO_MONGO_USERNAME:-}" = "-" ]; then
-    add_in_chat_configuration "dbAuthentication=false"
-    add_in_chat_configuration "#dbUser="
-    add_in_chat_configuration "#dbPassword="
-  else
-    add_in_chat_configuration "dbAuthentication=true"
-    add_in_chat_configuration "dbUser=${EXO_MONGO_USERNAME}"
-    add_in_chat_configuration "dbPassword=${EXO_MONGO_PASSWORD}"
-  fi
 
   # eXo Chat configuration
   add_in_chat_configuration "# eXo Chat server configuration"
   # The password to access REST service on the eXo Chat server.
-  add_in_chat_configuration "chatPassPhrase=something2change"
-  # The notifications are cleaned up every one hour by default.
-  add_in_chat_configuration "chatCronNotifCleanup=0 0/60 * * * ?"
+  add_in_chat_configuration "chatPassPhrase=${EXO_CHAT_SERVER_PASSPHRASE}"
   # The eXo group who can create teams.
   add_in_chat_configuration "teamAdminGroup=/platform/users"
-  # When a user reads a chat, the application displays messages of some days in the past.
-  add_in_chat_configuration "chatReadDays=30"
-  # The number of messages that you can get in the Chat room.
-  add_in_chat_configuration "chatReadTotalJson=200"
   # We must override this to remain inside the docker container (works only for embedded chat server)
-  add_in_chat_configuration "chatServerBase=http://localhost:8080"
-
-  add_in_chat_configuration "# eXo Chat client configuration"
+  add_in_chat_configuration "chatServerBase=${EXO_CHAT_SERVER_URL}"
   # Time interval to refresh messages in a chat.
   add_in_chat_configuration "chatIntervalChat=3000"
   # Time interval to keep a chat session alive in milliseconds.
@@ -555,6 +537,47 @@ else
   add_in_chat_configuration "chatIntervalUsers=5000"
   # Time after which a token will be invalid. The use will then be considered offline.
   add_in_chat_configuration "chatTokenValidity=30000"
+
+  if [ "${EXO_CHAT_SERVER_STANDALONE}" = "false" ]; then
+    # Mongodb configuration (for the Chat)
+    add_in_chat_configuration "# eXo Chat mongodb configuration"
+    add_in_chat_configuration "dbServerHost=${EXO_MONGO_HOST}"
+    add_in_chat_configuration "dbServerPort=${EXO_MONGO_PORT}"
+    add_in_chat_configuration "dbName=${EXO_MONGO_DB_NAME}"
+    if [ "${EXO_MONGO_USERNAME}" = "-" ]; then
+      add_in_chat_configuration "dbAuthentication=false"
+      add_in_chat_configuration "#dbUser="
+      add_in_chat_configuration "#dbPassword="
+    else
+      add_in_chat_configuration "dbAuthentication=true"
+      add_in_chat_configuration "dbUser=${EXO_MONGO_USERNAME}"
+      add_in_chat_configuration "dbPassword=${EXO_MONGO_PASSWORD}"
+    fi
+
+    # The notifications are cleaned up every one hour by default.
+    add_in_chat_configuration "chatCronNotifCleanup=0 0/60 * * * ?"
+    # When a user reads a chat, the application displays messages of some days in the past.
+    add_in_chat_configuration "chatReadDays=30"
+
+  else
+
+    # Remove the full chat-application addon and install only the client part
+    # Detect the previously installed version
+    if [ -f /opt/exo/addons/statuses/exo-chat.status ]; then
+      EXO_CHAT_VERSION="$(jq -r ".version" /opt/exo/addons/statuses/exo-chat.status)"
+    else
+      echo "[ERROR] Unable to detect the version of the exo-chat addon to install"
+      exit 1
+    fi
+
+    EXO_ADDONS_REMOVE_LIST="${EXO_ADDONS_REMOVE_LIST:-},exo-chat"
+    EXO_ADDONS_LIST="${EXO_ADDONS_LIST:-},exo-chat-client:${EXO_CHAT_VERSION}"
+
+    # Force standalone configuration
+    add_in_chat_configuration "# eXo Chat server configuration"
+    add_in_chat_configuration "standaloneChatServer=true"
+
+  fi
 
   # put a file to avoid doing the configuration twice
   touch /opt/exo/_done.configuration
@@ -576,11 +599,13 @@ else
   else
     echo "# uninstalling default add-ons from EXO_ADDONS_REMOVE_LIST environment variable:"
     echo ${EXO_ADDONS_REMOVE_LIST} | tr ',' '\n' | while read _addon ; do
-      # Uninstall addon
-      ${EXO_APP_DIR}/addon uninstall ${_ADDON_MGR_OPTIONS:-} ${_addon}
-      if [ $? != 0 ]; then
-        echo "[ERROR] Problem during add-on [${_addon}] uninstall."
-        exit 1
+      if [ -n "${_addon}" ]; then
+        # Uninstall addon
+        ${EXO_APP_DIR}/addon uninstall ${_ADDON_MGR_OPTIONS:-} ${_addon}
+        if [ $? != 0 ]; then
+          echo "[ERROR] Problem during add-on [${_addon}] uninstall."
+          exit 1
+        fi
       fi
     done
     if [ $? != 0 ]; then
@@ -597,11 +622,13 @@ else
   else
     echo "# installing add-ons from EXO_ADDONS_LIST environment variable:"
     echo ${EXO_ADDONS_LIST} | tr ',' '\n' | while read _addon ; do
-      # Install addon
-      ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} ${_addon} --force --batch-mode
-      if [ $? != 0 ]; then
-        echo "[ERROR] Problem during add-on [${_addon}] install."
-        exit 1
+      if [ -n "${_addon}" ]; then
+        # Install addon
+        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} ${_addon} --force --batch-mode
+        if [ $? != 0 ]; then
+          echo "[ERROR] Problem during add-on [${_addon}] install."
+          exit 1
+        fi
       fi
     done
     if [ $? != 0 ]; then

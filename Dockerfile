@@ -21,7 +21,7 @@ RUN echo "deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs)-backports main
   && echo "deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs)-updates main universe multiverse restricted" >> /etc/apt/sources.list
 RUN apt-get -qq update && \
   apt-get -qq -y upgrade ${_APT_OPTIONS} && \
-  apt-get -qq -y install ${_APT_OPTIONS} xmlstarlet && \
+  apt-get -qq -y install ${_APT_OPTIONS} xmlstarlet jq && \
   echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
   echo "ttf-mscorefonts-installer msttcorefonts/present-mscorefonts-eula note" | debconf-set-selections && \
   apt-get -qq -y install ${_APT_OPTIONS} ttf-mscorefonts-installer && \
@@ -39,6 +39,7 @@ RUN wget -q -O /usr/bin/yaml https://github.com/mikefarah/yaml/releases/download
 
 # Build Arguments and environment variables
 ARG EXO_VERSION=5.0.0-RC04
+
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
 # this allow to specifiy a user to download a protected binary
