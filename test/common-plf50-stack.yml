@@ -66,9 +66,11 @@ services:
     networks:
       - back
   es:
-    image: exoplatform/elasticsearch:1.0.2
+    image: exoplatform/elasticsearch:1.1.0
     volumes: 
       - search_data:/usr/share/elasticsearch/data:rw
+    environment:
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     networks:
       - back
   mail:
