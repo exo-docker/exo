@@ -197,7 +197,7 @@ else
       replace_in_file /opt/exo/conf/server.xml "jdbc:mysql://localhost:3306/plf" "jdbc:mysql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
       if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
-        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-mysql --batch-mode
+        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-mysql:1.0.0 --batch-mode
         if [ $? != 0 ]; then
           echo "[ERROR] Impossible to install MySQL Driver add-on."
           exit 1
@@ -211,7 +211,7 @@ else
       replace_in_file /opt/exo/conf/server.xml "jdbc:postgresql://localhost:5432/plf" "jdbc:postgresql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
       if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
-        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-postgresql --batch-mode
+        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-postgresql:1.0.0 --batch-mode
         if [ $? != 0 ]; then
           echo "[ERROR] Impossible to install PostgreSQL Driver add-on."
           exit 1
@@ -227,7 +227,7 @@ else
       add_in_exo_configuration "exo.jcr.datasource.dialect=org.hibernate.dialect.Oracle10gDialect"
       add_in_exo_configuration "exo.jpa.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect"
       if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
-        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-oracle --batch-mode
+        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-oracle:1.0.x-SNAPSHOT --batch-mode
         if [ $? != 0 ]; then
           echo "[ERROR] Impossible to install Oracle Driver add-on."
           exit 1
