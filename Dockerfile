@@ -28,9 +28,9 @@ RUN apt-get -qq update && \
   apt-get -qq -y install ${_APT_OPTIONS} libreoffice-calc libreoffice-draw libreoffice-impress libreoffice-math libreoffice-writer && \
   apt-get -qq -y autoremove && \
   apt-get -qq -y clean && \
-  rm -rf /var/lib/apt/lists/* && \
-  wget -q -O /usr/bin/yaml https://github.com/mikefarah/yaml/releases/download/1.10/yaml_linux_amd64 && \
-  # Check if the released binary was modified and make the build fail if it is the case
+  rm -rf /var/lib/apt/lists/*
+# Check if the released binary was modified and make the build fail if it is the case
+RUN wget -q -O /usr/bin/yaml https://github.com/mikefarah/yaml/releases/download/1.10/yaml_linux_amd64 && \
   echo "0e24302f71a14518dcc1bcdc6ff8d7da /usr/bin/yaml" | md5sum -c - \
   || { \
     echo "ERROR: the [/usr/bin/yaml] binary downloaded from a github release was modified while is should not !!"; \
@@ -102,29 +102,29 @@ RUN chmod 755 /opt/wait-for-it.sh && \
     chown ${EXO_USER}:${EXO_GROUP} /opt/wait-for-it.sh
 
 # Install JAI (Java Advanced Imaging) API in the JVM
+# We don't install the shared library because the jvm complains about stack guard disabling
+# && chmod 755 /tmp/jai-*/lib/*.so \
+# && mv -v /tmp/jai-*/lib/*.so "${JAVA_HOME}/jre/lib/amd64/" \
 RUN wget -q --no-cookies --no-check-certificate \
   --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
   -O "/tmp/jai.tar.gz" "http://download.oracle.com/otn-pub/java/jai/1.1.2_01-fcs/jai-1_1_2_01-lib-linux-i586.tar.gz" \
   && cd "/tmp" \
   && tar --no-same-owner -xvf "/tmp/jai.tar.gz" \
   && mv -v /tmp/jai-*/lib/jai_*.jar "${JAVA_HOME}/jre/lib/ext/" \
-  # We don't install the shared library because the jvm complains about stack guard disabling
-  #&& chmod 755 /tmp/jai-*/lib/*.so \
-  #&& mv -v /tmp/jai-*/lib/*.so "${JAVA_HOME}/jre/lib/amd64/" \
   && mv -v /tmp/jai-*/*-jai.txt "${JAVA_HOME}/" \
   && mv -v /tmp/jai-*/UNINSTALL-jai "${JAVA_HOME}/" \
   && rm -rf /tmp/*
 
 # Install JAI (Java Advanced Imaging) Image I/O Tools in the JVM
+# We don't install the shared library because the jvm complains about stack guard disabling
+# && chmod 755 /tmp/jai_imageio-*/lib/*.so \
+# && mv /tmp/jai_imageio-*/lib/*.so "${JAVA_HOME}/jre/lib/amd64/" \
 RUN wget -q --no-cookies --no-check-certificate \
   --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
   -O "/tmp/jai_imageio.tar.gz" "http://download.oracle.com/otn-pub/java/jai_imageio/1.0_01/jai_imageio-1_0_01-lib-linux-i586.tar.gz" \
   && cd "/tmp" \
   && tar --no-same-owner -xvf "/tmp/jai_imageio.tar.gz" \
   && mv -v /tmp/jai_imageio-*/lib/jai_*.jar "${JAVA_HOME}/jre/lib/ext/" \
-  # We don't install the shared library because the jvm complains about stack guard disabling
-  #&& chmod 755 /tmp/jai_imageio-*/lib/*.so \
-  #&& mv /tmp/jai_imageio-*/lib/*.so "${JAVA_HOME}/jre/lib/amd64/" \
   && mv -v /tmp/jai_imageio-*/*-jai_imageio.txt "${JAVA_HOME}/" \
   && mv -v /tmp/jai_imageio-*/UNINSTALL-jai_imageio "${JAVA_HOME}/" \
   && rm -rf /tmp/*
