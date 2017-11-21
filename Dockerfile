@@ -11,8 +11,8 @@
 # Run:      docker run -ti --rm --name=exo -p 80:8080 exoplatform/exo
 #           docker run -d --name=exo -p 80:8080 exoplatform/exo
 
-FROM       exoplatform/base-jdk:jdk8
-MAINTAINER eXo Platform <docker@exoplatform.com>
+FROM  exoplatform/base-jdk:jdk8
+LABEL maintainer="eXo Platform <docker@exoplatform.com>"
 
 # Install the needed packages
 RUN echo "deb http://archive.ubuntu.com/ubuntu $(lsb_release -cs)-backports main universe multiverse restricted" > /etc/apt/sources.list \
