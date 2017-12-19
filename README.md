@@ -56,10 +56,11 @@ The following environment variables must be passed to the container to configure
 
 The following environment variables can be passed to the container to configure Tomcat settings
 
-|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
-|--------------------------|-------------|--------------------------|----------------
-| EXO_HTTP_THREAD_MAX | NO | `200` | maximum number of threads in the tomcat http connector
-| EXO_HTTP_THREAD_MIN | NO | `10` | minimum number of threads ready in the tomcat http connector
+|    VARIABLE            |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|------------------------|-------------|--------------------------|----------------
+| EXO_HTTP_THREAD_MAX    | NO | `200` | maximum number of threads in the tomcat http connector
+| EXO_HTTP_THREAD_MIN    | NO | `10` | minimum number of threads ready in the tomcat http connector
+| EXO_ACCESS_LOG_ENABLED | NO | `false` | activate Tomcat access log with combine format and a daily log file rotation
 
 ### Valves and Listeners
 
