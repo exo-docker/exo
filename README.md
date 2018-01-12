@@ -4,9 +4,9 @@
 
 |    Image                          |  JDK  |   eXo Platform    
 |-----------------------------------|-------|-------------------
-| exoplatform/exo:develop           |   8   | 4.4.3 Enterprise edition
+| exoplatform/exo:develop           |   8   | 4.4.4 Enterprise edition
 | exoplatform/exo:5.0_latest        |   8   | 5.0.x Enterprise edition 
-| exoplatform/exo:4.4_latest        |   8   | 4.4.3 Enterprise edition
+| exoplatform/exo:4.4_latest        |   8   | 4.4.4 Enterprise edition
 | exoplatform/exo:4.3_latest        |   8   | 4.3.x Enterprise edition
 
 The image is compatible with the following databases system :
