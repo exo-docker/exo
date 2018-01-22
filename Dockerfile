@@ -38,7 +38,7 @@ RUN wget -q -O /usr/bin/yaml https://github.com/mikefarah/yaml/releases/download
   } && chmod a+x /usr/bin/yaml
 
 # Build Arguments and environment variables
-ARG EXO_VERSION=5.0.0-RC05
+ARG EXO_VERSION=5.0.0-RC06
 
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
