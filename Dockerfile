@@ -47,7 +47,7 @@ ARG DOWNLOAD_USER
 # allow to override the list of addons to package by default
 ARG ADDONS="exo-jdbc-driver-mysql:1.1.0"
 # Default base directory on the plf archive
-ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}-trial
+ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}
 
 ENV EXO_APP_DIR            /opt/exo
 ENV EXO_CONF_DIR           /etc/exo
@@ -76,7 +76,7 @@ RUN if [ -n "${DOWNLOAD_USER}" ]; then PARAMS="-u ${DOWNLOAD_USER}"; fi && \
     if [ ! -n "${DOWNLOAD_URL}" ]; then \
       echo "Building an image with eXo Platform version : ${EXO_VERSION}"; \
       EXO_VERSION_SHORT=$(echo ${EXO_VERSION} | awk -F "\." '{ print $1"."$2}'); \
-      DOWNLOAD_URL="https://downloads.exoplatform.org/public/releases/platform/${EXO_VERSION_SHORT}/${EXO_VERSION}/platform-trial-${EXO_VERSION}.zip"; \
+      DOWNLOAD_URL="https://downloads.exoplatform.org/public/releases/platform/${EXO_VERSION_SHORT}/${EXO_VERSION}/platform-${EXO_VERSION}.zip"; \
     fi && \
     curl ${PARAMS} -L -o /srv/downloads/eXo-Platform-${EXO_VERSION}.zip ${DOWNLOAD_URL} && \
     unzip -q /srv/downloads/eXo-Platform-${EXO_VERSION}.zip -d /srv/downloads/ && \

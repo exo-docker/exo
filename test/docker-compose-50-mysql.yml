@@ -18,7 +18,7 @@ services:
     image: exoplatform/exo:5.0_latest
     environment:
       EXO_DB_TYPE: mysql
-      EXO_ADDONS_LIST: 
+      EXO_ADDONS_LIST: exo-chat
       EXO_ES_EMBEDDED: "false"
       EXO_ES_HOST: search
     ports: 

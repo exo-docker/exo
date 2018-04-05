@@ -23,7 +23,7 @@ services:
     environment:
       EXO_DB_TYPE: pgsql
       EXO_ADDONS_CATALOG_URL:
-      EXO_ADDONS_LIST:
+      EXO_ADDONS_LIST: exo-chat-client
       EXO_ADDONS_REMOVE_LIST:
       EXO_ES_EMBEDDED: "false"
       EXO_ES_HOST: search
@@ -48,7 +48,7 @@ services:
       - mail
       - chatserver
   chatserver:
-    image: exoplatform/chat-server:1.6.0_latest
+    image: exoplatform/chat-server:2.0_latest
     environment:
       CHAT_PASSPHRASE: "mysecretkey"
       CHAT_MONGO_DB_NAME: "exo-chat"

@@ -4,9 +4,8 @@
 
 |    Image                          |  JDK  |   eXo Platform    
 |-----------------------------------|-------|-------------------
-| exoplatform/exo:develop           |   8   | 4.4.3 Enterprise edition
 | exoplatform/exo:5.0_latest        |   8   | 5.0.x Enterprise edition 
-| exoplatform/exo:4.4_latest        |   8   | 4.4.3 Enterprise edition
+| exoplatform/exo:4.4_latest        |   8   | 4.4.x Enterprise edition
 | exoplatform/exo:4.3_latest        |   8   | 4.3.x Enterprise edition
 
 The image is compatible with the following databases system :
@@ -119,9 +118,26 @@ The following environment variables must be passed to the container in order to 
 | EXO_DB_POOL_JPA_INIT_SIZE | NO | `5` | the init size of JPA datasource pool
 | EXO_DB_POOL_JPA_MAX_SIZE | NO | `20` | the max size of JPA datasource pool
 
-## Mongodb
+## eXo Chat
 
-The following environment variables should be passed to the container in order to work if you have installed eXo Chat :
+eXo Chat is available in 2 flavors :
+
+* embedded (default) : satisfy to most cases, the simplest to install and need only an external MongoDB instance. 
+* standalone : if you want to separate eXo and Chat JVM (for high throughput performance or architecture concerns).
+
+A switch is available to enable the standalone mode :
+
+|    VARIABLE                |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|----------------------------|-------------|--------------------------|----------------
+| EXO_CHAT_SERVER_STANDALONE | NO | `false` | are you using a standalone version of eXo Chat server 
+
+### embedded
+
+With eXo Chat embedded mode, the client and server part of the chat feature are installed in eXo container.
+
+* add-on to install : `exo-chat:<VERSION>`
+
+The following environment variables should be passed to eXo container to configure eXo Chat :
 
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |--------------------------|-------------|--------------------------|----------------
@@ -131,7 +147,21 @@ The following environment variables should be passed to the container in order t
 | EXO_MONGO_PASSWORD | NO | - | the password to use to connect to the mongodb database (no authentification configured by default)
 | EXO_MONGO_DB_NAME | NO | `chat` | the mongodb database name to use for eXo Chat 
 
-INFO: you must configure and start an external MongoDB server by yourself
+INFO: an external MongoDB server should be installed
+
+### standalone
+
+With eXo Chat standalone mode, only the client part of the chat feature is installed in eXo container. The server part must be installed separatly in another container ([doc](https://github.com/exo-docker/exo-chat-server)).
+
+* add-on to install : `exo-chat-client:<VERSION>`
+* eXo Chat standalone : see [exoplatform/chat-server](https://github.com/exo-docker/exo-chat-server) docker image documentation
+
+The following environment variables should be passed to eXo container to configure eXo Chat client :
+
+|    VARIABLE                |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|----------------------------|-------------|--------------------------|----------------
+| EXO_CHAT_SERVER_URL        | NO | `http://localhost:8080` | the url of the eXo Chat server (only needed for eXo Chat standalone edition)
+| EXO_CHAT_SERVER_PASSPHRASE | NO | `something2change` | the passphrase to secure the communication with eXo Chat standalone server (only used for eXo Chat standalone edition)
 
 ## ElasticSearch
 

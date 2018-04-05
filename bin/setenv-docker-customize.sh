@@ -565,13 +565,11 @@ else
     # Detect the previously installed version
     if [ -f /opt/exo/addons/statuses/exo-chat.status ]; then
       EXO_CHAT_VERSION="$(jq -r ".version" /opt/exo/addons/statuses/exo-chat.status)"
-    else
-      echo "[ERROR] Unable to detect the version of the exo-chat addon to install"
-      exit 1
+      echo "[WARN] Automatically replacing exo-chat:${EXO_CHAT_VERSION} addon by exo-chat-client:${EXO_CHAT_VERSION} (EXO_CHAT_SERVER_STANDALONE=true)"
+      EXO_ADDONS_REMOVE_LIST="${EXO_ADDONS_REMOVE_LIST:-},exo-chat"
+      EXO_ADDONS_LIST="${EXO_ADDONS_LIST:-},exo-chat-client:${EXO_CHAT_VERSION}"
     fi
 
-    EXO_ADDONS_REMOVE_LIST="${EXO_ADDONS_REMOVE_LIST:-},exo-chat"
-    EXO_ADDONS_LIST="${EXO_ADDONS_LIST:-},exo-chat-client:${EXO_CHAT_VERSION}"
 
     # Force standalone configuration
     add_in_chat_configuration "# eXo Chat server configuration"
@@ -647,7 +645,7 @@ fi
 # -----------------------------------------------------------------------------
 # Change chat add-on security token at each start
 # -----------------------------------------------------------------------------
-if [ -f /etc/exo/chat.properties ]; then
+if [ -f /etc/exo/chat.properties ] && [ "${EXO_CHAT_SERVER_STANDALONE}" = "false" ]; then
   sed -i 's/^chatPassPhrase=.*$/chatPassPhrase='"$(tr -dc '[:alnum:]' < /dev/urandom  | dd bs=4 count=6 2>/dev/null)"'/' /etc/exo/chat.properties
 fi
 
