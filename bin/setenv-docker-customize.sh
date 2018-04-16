@@ -599,7 +599,7 @@ else
     echo ${EXO_ADDONS_REMOVE_LIST} | tr ',' '\n' | while read _addon ; do
       if [ -n "${_addon}" ]; then
         # Uninstall addon
-        ${EXO_APP_DIR}/addon uninstall ${_ADDON_MGR_OPTIONS:-} ${_addon}
+        ${EXO_APP_DIR}/addon uninstall ${_addon}
         if [ $? != 0 ]; then
           echo "[ERROR] Problem during add-on [${_addon}] uninstall."
           exit 1
