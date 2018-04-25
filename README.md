@@ -118,6 +118,12 @@ The following environment variables must be passed to the container in order to 
 | EXO_DB_POOL_JPA_INIT_SIZE | NO | `5` | the init size of JPA datasource pool
 | EXO_DB_POOL_JPA_MAX_SIZE | NO | `20` | the max size of JPA datasource pool
 
+### MySQL
+
+|    VARIABLE          |  MANDATORY  |   DEFAULT VALUE  |  DESCRIPTION
+|----------------------|-------------|------------------|----------------
+| EXO_DB_MYSQL_USE_SSL | NO          | `false`          | connecting securely to MySQL using SSL (see MySQL Connector/J documentation for useSSL parameter)
+
 ## eXo Chat
 
 eXo Chat is available in 2 flavors :
