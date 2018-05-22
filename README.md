@@ -25,6 +25,16 @@ Some add-ons are already installed in eXo image but you can install other one or
 |--------------------------|-------------|--------------------------|----------------
 | EXO_ADDONS_LIST | NO | - | commas separated list of add-ons to install (ex: exo-answers,exo-skype:1.0.x-SNAPSHOT)
 | EXO_ADDONS_REMOVE_LIST | NO | - | commas separated list of add-ons to uninstall (ex: exo-chat,exo-es-embedded) (since: 4.4.2_3)
+| EXO_ADDONS_CATALOG_URL | NO | - | The url of a valid eXo Catalog
+
+## Patches
+
+Patches can be deployed in eXo image :
+
+|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|--------------------------|-------------|--------------------------|----------------
+| EXO_PATCHES_LIST | NO | - | commas separated list of patches to install (ex: patch-4.4.4:1,patch-4.4.4:2)
+| EXO_PATCHES_CATALOG_URL | YES | - | The url of a valid eXo Patches Catalog (mandatory if something is specified in EXO_PATCHES_LIST)
 
 ## JVM
 

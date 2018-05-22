@@ -21,6 +21,8 @@ services:
       EXO_ADDONS_CATALOG_URL: 
       EXO_ADDONS_LIST: 
       EXO_ADDONS_REMOVE_LIST: 
+      EXO_PATCHES_LIST: 
+      EXO_PATCHES_CATALOG_URL: 
       EXO_ES_EMBEDDED: "true"
     ports: 
       # (Linux) open JMX ports for local connection only

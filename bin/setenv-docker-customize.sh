@@ -184,6 +184,11 @@ else
     _ADDON_MGR_OPTION_CATALOG="--catalog=${EXO_ADDONS_CATALOG_URL}"
   fi
 
+  if [ ! -z "${EXO_PATCHES_CATALOG_URL:-}" ]; then
+    echo "The add-on manager patches catalog url was defined with : ${EXO_PATCHES_CATALOG_URL}"
+    _ADDON_MGR_OPTION_PATCHES_CATALOG="--catalog=${EXO_PATCHES_CATALOG_URL}"
+  fi
+
   # Jcr storage configuration
   add_in_exo_configuration "exo.jcr.storage.data.dir=${EXO_JCR_STORAGE_DIR}"
 
@@ -614,7 +619,7 @@ else
   fi
 
   echo "# ------------------------------------ #"
-  
+
   # add-on installation
   if [ -z "${EXO_ADDONS_LIST:-}" ]; then
     echo "# no add-on to install from EXO_ADDONS_LIST environment variable."
@@ -641,6 +646,49 @@ else
 
   # put a file to avoid doing the configuration twice
   touch /opt/exo/_done.addons
+fi
+
+# -----------------------------------------------------------------------------
+# Install patches if needed when the container is created for the first time
+# -----------------------------------------------------------------------------
+if [ -f /opt/exo/_done.patches ]; then
+  echo "INFO: patches installation already done! skipping this step."
+else
+  echo "# ------------------------------------ #"
+  echo "# eXo patches management start ..."
+  echo "# ------------------------------------ #"
+
+  # patches installation
+  if [ -z "${EXO_PATCHES_LIST:-}" ]; then
+    echo "# no patches to install from EXO_PATCHES_LIST environment variable."
+  else
+    echo "# installing patches from EXO_PATCHES_LIST environment variable:"
+    if [ -z "${_ADDON_MGR_OPTION_PATCHES_CATALOG:-}" ]; then
+      echo "[ERROR] you must configure a patches catalog url with _ADDON_MGR_OPTION_PATCHES_CATALOG variable for patches installation."
+      echo "[ERROR] An error during patches installation phase aborted eXo startup !"
+      exit 1
+    fi
+    echo ${EXO_PATCHES_LIST} | tr ',' '\n' | while read _patche ; do
+      if [ -n "${_patche}" ]; then
+        # Install patch
+        ${EXO_APP_DIR}/addon install --conflict=overwrite ${_ADDON_MGR_OPTION_PATCHES_CATALOG:-} ${_patche} --force --batch-mode
+        if [ $? != 0 ]; then
+          echo "[ERROR] Problem during patch [${_patche}] install."
+          exit 1
+        fi
+      fi
+    done
+    if [ $? != 0 ]; then
+      echo "[ERROR] An error during patches installation phase aborted eXo startup !"
+      exit 1
+    fi
+  fi
+  echo "# ------------------------------------ #"
+  echo "# eXo patches management done."
+  echo "# ------------------------------------ #"
+
+  # put a file to avoid doing the configuration twice
+  touch /opt/exo/_done.patches
 fi
 
 # -----------------------------------------------------------------------------
