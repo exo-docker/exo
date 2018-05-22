@@ -25,6 +25,8 @@ services:
       EXO_ADDONS_CATALOG_URL:
       EXO_ADDONS_LIST: exo-chat-client
       EXO_ADDONS_REMOVE_LIST:
+      EXO_PATCHES_LIST: 
+      EXO_PATCHES_CATALOG_URL: 
       EXO_ES_EMBEDDED: "false"
       EXO_ES_HOST: search
       EXO_CHAT_SERVER_STANDALONE: "true"

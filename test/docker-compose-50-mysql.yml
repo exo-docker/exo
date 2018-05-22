@@ -19,6 +19,8 @@ services:
     environment:
       EXO_DB_TYPE: mysql
       EXO_ADDONS_LIST: exo-chat
+      EXO_PATCHES_LIST: 
+      EXO_PATCHES_CATALOG_URL: 
       EXO_ES_EMBEDDED: "false"
       EXO_ES_HOST: search
     ports: 
