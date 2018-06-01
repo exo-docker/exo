@@ -1,33 +1,49 @@
-# eXo Platform Docker image
+# eXo Platform Docker image <!-- omit in toc -->
 
-[![Docker Stars](https://img.shields.io/docker/stars/exoplatform/exo.svg)]() - [![Docker Pulls](https://img.shields.io/docker/pulls/exoplatform/exo.svg)]()
+![Docker Stars](https://img.shields.io/docker/stars/exoplatform/exo.svg) - ![Docker Pulls](https://img.shields.io/docker/pulls/exoplatform/exo.svg)
+|    Image                                                    |  JDK  |   eXo Platform
+|-------------------------------------------------------------|-------|-------------------
+| exoplatform/exo:5.0_latest ([changelog](./CHANGELOG.md))    |   8   | 5.0.x Enterprise edition
+| exoplatform/exo:4.4_latest ([changelog](./CHANGELOG-44.md)) |   8   | 4.4.x Enterprise edition
+| exoplatform/exo:4.3_latest                                  |   8   | 4.3.x Enterprise edition
 
-|    Image                          |  JDK  |   eXo Platform    
-|-----------------------------------|-------|-------------------
-| exoplatform/exo:5.0_latest        |   8   | 5.0.x Enterprise edition 
-| exoplatform/exo:4.4_latest        |   8   | 4.4.x Enterprise edition
-| exoplatform/exo:4.3_latest        |   8   | 4.3.x Enterprise edition
+The image is compatible with the following databases system :  `MySQL` (default) / `HSQLDB` / `Postgresql` / `Oracle`
 
-The image is compatible with the following databases system :
+- [Configuration options](#configuration-options)
+  - [Add-ons](#add-ons)
+  - [Patches](#patches)
+  - [JVM](#jvm)
+  - [Frontend proxy](#frontend-proxy)
+  - [Tomcat](#tomcat)
+  - [Data on disk](#data-on-disk)
+  - [Database](#database)
+    - [MySQL](#mysql)
+  - [eXo Chat](#exo-chat)
+    - [embedded](#embedded)
+    - [standalone](#standalone)
+  - [ElasticSearch](#elasticsearch)
+  - [LDAP / Active Directory](#ldap--active-directory)
+  - [JOD Converter](#jod-converter)
+  - [Mail](#mail)
+  - [JMX](#jmx)
+  - [Cluster](#cluster)
+  - [License](#license)
+- [Testing](#testing)
+- [Image build](#image-build)
 
-* `MySQL` (default)
-* `HSQLDB`
-* `Postgresql`
-* `Oracle`
+## Configuration options
 
-# Configuration options
-
-## Add-ons
+### Add-ons
 
 Some add-ons are already installed in eXo image but you can install other one or remove some of the pre-installed one :
 
-|    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
-|--------------------------|-------------|--------------------------|----------------
-| EXO_ADDONS_LIST | NO | - | commas separated list of add-ons to install (ex: exo-answers,exo-skype:1.0.x-SNAPSHOT)
+|    VARIABLE            |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
+|------------------------|-------------|--------------------------|----------------
+| EXO_ADDONS_LIST        | NO | - | commas separated list of add-ons to install (ex: exo-answers,exo-skype:1.0.x-SNAPSHOT)
 | EXO_ADDONS_REMOVE_LIST | NO | - | commas separated list of add-ons to uninstall (ex: exo-chat,exo-es-embedded) (since: 4.4.2_3)
 | EXO_ADDONS_CATALOG_URL | NO | - | The url of a valid eXo Catalog
 
-## Patches
+### Patches
 
 Patches can be deployed in eXo image :
 
@@ -36,7 +52,7 @@ Patches can be deployed in eXo image :
 | EXO_PATCHES_LIST | NO | - | commas separated list of patches to install (ex: patch-4.4.4:1,patch-4.4.4:2)
 | EXO_PATCHES_CATALOG_URL | YES | - | The url of a valid eXo Patches Catalog (mandatory if something is specified in EXO_PATCHES_LIST)
 
-## JVM
+### JVM
 
 The standard eXo Platform environment variables can be used :
 
@@ -51,7 +67,7 @@ The standard eXo Platform environment variables can be used :
 
 INFO: This list is not exhaustive (see eXo Platform documentation or {EXO_HOME}/bin/setenv.sh for more parameters)
 
-## Frontend proxy
+### Frontend proxy
 
 The following environment variables must be passed to the container to configure Tomcat proxy settings:
 
@@ -61,7 +77,7 @@ The following environment variables must be passed to the container to configure
 | EXO_PROXY_PORT | NO | - | which port to use on the proxy server ? (if empty it will automatically defined regarding EXO_PROXY_SSL value : true => 443 / false => 80)
 | EXO_PROXY_SSL | NO | `true` | is ssl activated on the proxy server ? (true / false)
 
-## Tomcat
+### Tomcat
 
 The following environment variables can be passed to the container to configure Tomcat settings
 
@@ -71,12 +87,13 @@ The following environment variables can be passed to the container to configure 
 | EXO_HTTP_THREAD_MIN    | NO | `10` | minimum number of threads ready in the tomcat http connector
 | EXO_ACCESS_LOG_ENABLED | NO | `false` | activate Tomcat access log with combine format and a daily log file rotation
 
-### Valves and Listeners
+#### Valves and Listeners <!-- omit in toc -->
 
 A file containing the list of valves and listeners can be attached to the container in the path {{/etc/exo/host.yml}}. If a file is specified, the default valves and listeners configuraiton will be overriden.
 
 The file format is :
-```
+
+```yaml
 components:
   - type: Valve
     className: org.acme.myvalves.WthoutAttributes
@@ -96,7 +113,7 @@ components:
         value: value2
 ```
 
-## Data on disk
+### Data on disk
 
 The following environment variables must be passed to the container in order to work :
 
@@ -108,7 +125,7 @@ The following environment variables must be passed to the container in order to 
 | EXO_FILE_STORAGE_RETENTION | NO | `30` | the number of days to keep deleted files on disk before definitively remove it from the disk
 | EXO_UPLOAD_MAX_FILE_SIZE | NO | `200` | maximum authorized size for file upload in MB.
 
-## Database
+### Database
 
 The following environment variables must be passed to the container in order to work :
 
@@ -128,49 +145,49 @@ The following environment variables must be passed to the container in order to 
 | EXO_DB_POOL_JPA_INIT_SIZE | NO | `5` | the init size of JPA datasource pool
 | EXO_DB_POOL_JPA_MAX_SIZE | NO | `20` | the max size of JPA datasource pool
 
-### MySQL
+#### MySQL
 
 |    VARIABLE          |  MANDATORY  |   DEFAULT VALUE  |  DESCRIPTION
 |----------------------|-------------|------------------|----------------
 | EXO_DB_MYSQL_USE_SSL | NO          | `false`          | connecting securely to MySQL using SSL (see MySQL Connector/J documentation for useSSL parameter)
 
-## eXo Chat
+### eXo Chat
 
 eXo Chat is available in 2 flavors :
 
-* embedded (default) : satisfy to most cases, the simplest to install and need only an external MongoDB instance. 
-* standalone : if you want to separate eXo and Chat JVM (for high throughput performance or architecture concerns).
+- embedded (default) : satisfy to most cases, the simplest to install and need only an external MongoDB instance.
+- standalone : if you want to separate eXo and Chat JVM (for high throughput performance or architecture concerns).
 
 A switch is available to enable the standalone mode :
 
 |    VARIABLE                |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |----------------------------|-------------|--------------------------|----------------
-| EXO_CHAT_SERVER_STANDALONE | NO | `false` | are you using a standalone version of eXo Chat server 
+| EXO_CHAT_SERVER_STANDALONE | NO | `false` | are you using a standalone version of eXo Chat server
 
-### embedded
+#### embedded
 
 With eXo Chat embedded mode, the client and server part of the chat feature are installed in eXo container.
 
-* add-on to install : `exo-chat:<VERSION>`
+- add-on to install : `exo-chat:<VERSION>`
 
 The following environment variables should be passed to eXo container to configure eXo Chat :
 
 |    VARIABLE              |  MANDATORY  |   DEFAULT VALUE          |  DESCRIPTION
 |--------------------------|-------------|--------------------------|----------------
-| EXO_MONGO_HOST | NO | `mongo` | the hostname to connect to the mongodb database for eXo Chat 
+| EXO_MONGO_HOST | NO | `mongo` | the hostname to connect to the mongodb database for eXo Chat
 | EXO_MONGO_PORT | NO | `27017` | the port to connect to the mongodb server
 | EXO_MONGO_USERNAME | NO | - | the username to use to connect to the mongodb database (no authentification configured by default)
 | EXO_MONGO_PASSWORD | NO | - | the password to use to connect to the mongodb database (no authentification configured by default)
-| EXO_MONGO_DB_NAME | NO | `chat` | the mongodb database name to use for eXo Chat 
+| EXO_MONGO_DB_NAME | NO | `chat` | the mongodb database name to use for eXo Chat
 
 INFO: an external MongoDB server should be installed
 
-### standalone
+#### standalone
 
 With eXo Chat standalone mode, only the client part of the chat feature is installed in eXo container. The server part must be installed separatly in another container ([doc](https://github.com/exo-docker/exo-chat-server)).
 
-* add-on to install : `exo-chat-client:<VERSION>`
-* eXo Chat standalone : see [exoplatform/chat-server](https://github.com/exo-docker/exo-chat-server) docker image documentation
+- add-on to install : `exo-chat-client:<VERSION>`
+- eXo Chat standalone : see [exoplatform/chat-server](https://github.com/exo-docker/exo-chat-server) docker image documentation
 
 The following environment variables should be passed to eXo container to configure eXo Chat client :
 
@@ -179,7 +196,7 @@ The following environment variables should be passed to eXo container to configu
 | EXO_CHAT_SERVER_URL        | NO | `http://localhost:8080` | the url of the eXo Chat server (only needed for eXo Chat standalone edition)
 | EXO_CHAT_SERVER_PASSPHRASE | NO | `something2change` | the passphrase to secure the communication with eXo Chat standalone server (only used for eXo Chat standalone edition)
 
-## ElasticSearch
+### ElasticSearch
 
 The following environment variables should be passed to the container in order to configure the search feature :
 
@@ -197,7 +214,7 @@ The following environment variables should be passed to the container in order t
 
 INFO: the default embedded ElasticSearch in not recommended for production purpose.
 
-## LDAP / Active Directory
+### LDAP / Active Directory
 
 The following environment variables should be passed to the container in order to configure the ldap connection pool :
 
@@ -207,8 +224,7 @@ The following environment variables should be passed to the container in order t
 | EXO_LDAP_POOL_TIMEOUT    | NO | `60000` | the number of milliseconds that an idle connection may remain in the pool without being closed and removed from the pool.
 | EXO_LDAP_POOL_MAX_SIZE   | NO | `100` | the maximum number of connections per connection identity that can be maintained concurrently.
 
-
-## JOD Converter
+### JOD Converter
 
 The following environment variables should be passed to the container in order to configure jodconverter :
 
@@ -216,7 +232,7 @@ The following environment variables should be passed to the container in order t
 |--------------------------|-------------|------------------|----------------
 | EXO_JODCONVERTER_PORTS   | NO          | `2002`           | comma separated list of ports to allocate to JOD Converter processes (ex: 2002,2003,2004)
 
-## Mail
+### Mail
 
 The following environment variables should be passed to the container in order to configure the mail server configuration to use :
 
@@ -229,7 +245,7 @@ The following environment variables should be passed to the container in order t
 | EXO_MAIL_SMTP_USERNAME | NO | - | authentication username for smtp server (if needed)
 | EXO_MAIL_SMTP_PASSWORD | NO | - | authentication password for smtp server (if needed)
 
-## JMX
+### JMX
 
 The following environment variables should be passed to the container in order to configure JMX :
 
@@ -244,7 +260,7 @@ The following environment variables should be passed to the container in order t
 
 With the default parameters you can connect to JMX with `service:jmx:rmi://localhost:10002/jndi/rmi://localhost:10001/jmxrmi` without authentication.
 
-## Cluster
+### Cluster
 
 The following environment variables should be passed to the container in order to configure the cluster configuration :
 
@@ -257,36 +273,38 @@ The following environment variables should be passed to the container in order t
 
 With the cluster mode active, the `EXO_JCR_STORAGE_DIR` and `EXO_FILE_STORAGE_DIR` properties must be set to a place shared between all the cluster nodes
 
-## License
+### License
 
 The eXo Platform license file location must be `/etc/exo/license.xml`
 
-# Testing
+## Testing
 
 The prerequisites are :
-* internet access
-* Docker daemon version 12+
-* Docker Compose 1.7+
-* 4GB of available RAM + 1GB of disk
 
+- internet access
+- Docker daemon version 12+
+- Docker Compose 1.7+
+- 4GB of available RAM + 1GB of disk
 
 We provide some docker-compose files for testing various configurations in the test folder
 
-    # eXo Platform 4.4.x + hsqldb + mongodb 3.2
-    docker-compose -f test/docker-compose-44-hsqldb.yml -p exo44hsqldb up
+```bash
+# eXo Platform 4.4.x + hsqldb + mongodb 3.2
+docker-compose -f test/docker-compose-44-hsqldb.yml -p exo44hsqldb up
 
-    # eXo Platform 4.4.x + MySQL 5.6 + mongodb 3.2
-    docker-compose -f test/docker-compose-44-mysql.yml -p exo44mysql up
+# eXo Platform 4.4.x + MySQL 5.6 + mongodb 3.2
+docker-compose -f test/docker-compose-44-mysql.yml -p exo44mysql up
 
-    # eXo Platform 4.4.x + Postgresql 9.4 + mongodb 3.2
-    docker-compose -f test/docker-compose-44-pgsql.yml -p exo44pgsql up
+# eXo Platform 4.4.x + Postgresql 9.4 + mongodb 3.2
+docker-compose -f test/docker-compose-44-pgsql.yml -p exo44pgsql up
+```
 
 When everything is started you can use :
 
-* http://localhost for eXo Platform access
-* http://localhost/mail to see all the mails sent by eXo platform
+- <http://localhost> for eXo Platform access
+- <http://localhost/mail> to see all the mails sent by eXo platform
 
-# Image build
+## Image build
 
 The simplest way to build this image is to use default values :
 
@@ -304,27 +322,35 @@ This will produce an image with the current eXo Platform enterprise version and 
 
 If you want to bundle a particular list of add-ons :
 
-    docker build \
-        --build-arg ADDONS="exo-chat exo-staging-extension:2.6.0" \
-        -t exoplatform/exo:my_version .
+```bash
+docker build \
+  --build-arg ADDONS="exo-chat exo-staging-extension:2.6.0" \
+  -t exoplatform/exo:my_version .
+```
 
 If you want to build a particular version of eXo Platform just pass the good arguments :
 
-    docker build \
-        --build-arg EXO_VERSION=4.3.1 \
-        -t exoplatform/exo:4.3.1 .
+```bash
+docker build \
+  --build-arg EXO_VERSION=4.3.1 \
+  -t exoplatform/exo:4.3.1 .
+```
 
 If you want to specify an alternate public download url :
 
-    docker build \
-        --build-arg DOWNLOAD_URL=http://my.host/my-own-download-link.zip \
-        -t exoplatform/exo:my_version .
+```bash
+docker build \
+  --build-arg DOWNLOAD_URL=http://my.host/my-own-download-link.zip \
+  -t exoplatform/exo:my_version .
+```
 
 If you want to specify an alternate authenticated download url :
 
-    docker build \
-        --build-arg DOWNLOAD_URL=http://my.host/my-own-download-link.zip \
-        --build-arg DOWNLOAD_USER=my-username
-        -t exoplatform/exo:my_version .
+```bash
+docker build \
+  --build-arg DOWNLOAD_URL=http://my.host/my-own-download-link.zip \
+  --build-arg DOWNLOAD_USER=my-username
+  -t exoplatform/exo:my_version .
+```
 
 The password will be required during the build at the download step.
