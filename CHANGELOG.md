@@ -2,12 +2,34 @@
 
 Changelog for `exoplatform/exo:5.0.*_*` Docker image (older version : [4.4](./CHANGELOG-44.md))
 
+- [5.0.0_6 [2018-06-07]](#500_6-2018-06-07)
 - [5.0.0_5 [2018-06-01]](#500_5-2018-06-01)
 - [5.0.0_4 [2018-05-22]](#500_4-2018-05-22)
 - [5.0.0_3 [2018-04-25]](#500_3-2018-04-25)
 - [5.0.0_2 [2018-04-24]](#500_2-2018-04-24)
 - [5.0.0_1 [2018-04-16]](#500_1-2018-04-16)
 - [5.0.0_0 [2018-04-05]](#500_0-2018-04-05)
+
+## 5.0.0_6 [2018-06-07]
+
+- **Features**
+  - ability to override umask in eXo container (DOCKER-47)
+  - ability to override availability timeout delay for database / mongodb / elasticsearch (DOCKER-48)
+  - use Tini to start eXo process
+
+- **Upgrades**
+  - parent image : `exoplatform/base-jdk:jdk8` => `exoplatform/jdk:8` (DOCKER-45)
+    - upgrade JDK `8u151` => `8u171`
+    - upgrade Ubuntu `14.04` => `16.04`
+  - upgrade Libre Office 4.2 to 5.4 (ITOP-3747)
+  - upgrade yaml tool from `1.10` => `1.15.0`
+
+- **Bugfixes**
+  - fix umask for file produced by eXo container (DOCKER-47)
+  - starting the container fails if the service it depends on is not available before timeout (DOCKER-49)
+    - database
+    - elasticsearch (if not embedded mode)
+    - mongo (if chat add-on installed)
 
 ## 5.0.0_5 [2018-06-01]
 

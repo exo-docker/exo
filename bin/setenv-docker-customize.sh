@@ -346,9 +346,9 @@ else
     i=0
     while [ $i -ge 0 ]; do
       # Declare component
-      type=$(yaml read /etc/exo/host.yml components[$i].type)
+      type=$(yq read /etc/exo/host.yml components[$i].type)
       if [ "${type}" != "null" ]; then
-        className=$(yaml read /etc/exo/host.yml components[$i].className)
+        className=$(yq read /etc/exo/host.yml components[$i].className)
         echo "Declare ${type} ${className}"
         xmlstarlet ed -L -s "/Server/Service/Engine/Host" -t elem -n "${type}TMP" -v "" \
             -i "//${type}TMP" -t attr -n "className" -v "${className}" \
@@ -360,9 +360,9 @@ else
         # Add component attributes
         j=0
         while [ $j -ge 0 ]; do
-          attributeName=$(yaml read /etc/exo/host.yml components[$i].attributes[$j].name)
+          attributeName=$(yq read /etc/exo/host.yml components[$i].attributes[$j].name)
           if [ "${attributeName}" != "null" ]; then
-            attributeValue=$(yaml read /etc/exo/host.yml components[$i].attributes[$j].value | tr -d "'")
+            attributeValue=$(yq read /etc/exo/host.yml components[$i].attributes[$j].value | tr -d "'")
             xmlstarlet ed -L -i "//${type}TMP" -t attr -n "${attributeName}" -v "${attributeValue}" \
                 /opt/exo/conf/server.xml || {
               echo "ERROR during xmlstarlet processing (adding ${className} / ${attributeName})"
@@ -757,7 +757,7 @@ CATALINA_OPTS="${CATALINA_OPTS:-} -Djava.security.egd=file:/dev/./urandom"
 case "${EXO_DB_TYPE}" in
   mysql)
     echo "Waiting for database ${EXO_DB_TYPE} availability at ${EXO_DB_HOST}:${EXO_DB_PORT} ..."
-    /opt/wait-for-it.sh ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t ${EXO_DB_TIMEOUT}
+    wait-for ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t ${EXO_DB_TIMEOUT}
     if [ $? != 0 ]; then
       echo "[ERROR] The ${EXO_DB_TYPE} database ${EXO_DB_HOST}:${EXO_DB_PORT} was not available within ${EXO_DB_TIMEOUT}s ! eXo startup aborted ..."
       exit 1
@@ -765,7 +765,7 @@ case "${EXO_DB_TYPE}" in
     ;;
   pgsql|postgres|postgresql)
     echo "Waiting for database ${EXO_DB_TYPE} availability at ${EXO_DB_HOST}:${EXO_DB_PORT} ..."
-    /opt/wait-for-it.sh ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t ${EXO_DB_TIMEOUT}
+    wait-for ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t ${EXO_DB_TIMEOUT}
     if [ $? != 0 ]; then
       echo "[ERROR] The ${EXO_DB_TYPE} database ${EXO_DB_HOST}:${EXO_DB_PORT} was not available within ${EXO_DB_TIMEOUT}s ! eXo startup aborted ..."
       exit 1
@@ -773,7 +773,7 @@ case "${EXO_DB_TYPE}" in
     ;;
   oracle|ora)
     echo "Waiting for database ${EXO_DB_TYPE} availability at ${EXO_DB_HOST}:${EXO_DB_PORT} ..."
-    /opt/wait-for-it.sh ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t ${EXO_DB_TIMEOUT}
+    wait-for ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t ${EXO_DB_TIMEOUT}
     if [ $? != 0 ]; then
       echo "[ERROR] The ${EXO_DB_TYPE} database ${EXO_DB_HOST}:${EXO_DB_PORT} was not available within ${EXO_DB_TIMEOUT}s ! eXo startup aborted ..."
       exit 1
@@ -784,7 +784,7 @@ esac
 # Wait for mongodb availability (if chat is installed)
 if [ -f /opt/exo/addons/statuses/exo-chat.status ]; then
   echo "Waiting for mongodb availability at ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} ..."
-  /opt/wait-for-it.sh ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} -s -t ${EXO_MONGO_TIMEOUT}
+  wait-for ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} -s -t ${EXO_MONGO_TIMEOUT}
   if [ $? != 0 ]; then
     echo "[ERROR] The mongodb database ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} was not available within ${EXO_MONGO_TIMEOUT}s ! eXo startup aborted ..."
     exit 1
@@ -794,7 +794,7 @@ fi
 # Wait for elasticsearch availability (if external)
 if [ "${EXO_ES_EMBEDDED}" != "true" ]; then
   echo "Waiting for external elastic search availability at ${EXO_ES_HOST}:${EXO_ES_PORT} ..."
-  /opt/wait-for-it.sh ${EXO_ES_HOST}:${EXO_ES_PORT} -s -t ${EXO_ES_TIMEOUT}
+  wait-for ${EXO_ES_HOST}:${EXO_ES_PORT} -s -t ${EXO_ES_TIMEOUT}
   if [ $? != 0 ]; then
     echo "[ERROR] The external elastic search ${EXO_ES_HOST}:${EXO_ES_PORT} was not available within ${EXO_ES_TIMEOUT}s ! eXo startup aborted ..."
     exit 1
