@@ -11,7 +11,7 @@
 # Run:      docker run -ti --rm --name=exo -p 80:8080 exoplatform/exo
 #           docker run -d --name=exo -p 80:8080 exoplatform/exo
 
-FROM  exoplatform/jdk:8
+FROM  exoplatform/jdk:8-ubuntu-1604
 LABEL maintainer="eXo Platform <docker@exoplatform.com>"
 
 # Install ppa:libreoffice/libreoffice-5-4
@@ -46,7 +46,7 @@ RUN wget -nv -q -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download
   } && chmod a+x /usr/bin/yq
 
 # Build Arguments and environment variables
-ARG EXO_VERSION=5.0.0
+ARG EXO_VERSION=5.0.1-RC02
 
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
