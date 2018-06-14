@@ -11,7 +11,7 @@
 # Run:      docker run -ti --rm --name=exo -p 80:8080 exoplatform/exo
 #           docker run -d --name=exo -p 80:8080 exoplatform/exo
 
-FROM  exoplatform/jdk:8
+FROM  exoplatform/jdk:8-ubuntu-1604
 LABEL maintainer="eXo Platform <docker@exoplatform.com>"
 
 # Install ppa:libreoffice/libreoffice-5-4
