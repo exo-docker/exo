@@ -4,6 +4,7 @@ Changelog for `exoplatform/exo:5.0.*_*` Docker image (older version : [4.4](./CH
 
 - [5.0.1_2 [2018-06-19]](#501_2-2018-06-19)
 - [5.0.1_1 [2018-06-14]](#501_1-2018-06-14)
+- [5.0.1_0 [2018-06-14]](#501_0-2018-06-14)
 - [5.0.0_6 [2018-06-07]](#500_6-2018-06-07)
 - [5.0.0_5 [2018-06-01]](#500_5-2018-06-01)
 - [5.0.0_4 [2018-05-22]](#500_4-2018-05-22)
@@ -24,7 +25,11 @@ Changelog for `exoplatform/exo:5.0.*_*` Docker image (older version : [4.4](./CH
   - don't start eXo container if timeout is reached for database / mongodb / elasticsearch (DOCKER-49)
 
 - **Upgrades**
+  - parent image : `exoplatform/jdk:8` => `exoplatform/jdk:8-ubuntu-1604` (DOCKER-45)
 
+## 5.0.1_0 [2018-06-14]
+
+- **Upgrades**
   - upgrade to eXo Platform 5.0.1 GA (DOCKER-50)
 
 ## 5.0.0_6 [2018-06-07]
