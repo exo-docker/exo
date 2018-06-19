@@ -145,5 +145,7 @@ USER ${EXO_USER}
 
 RUN for a in ${ADDONS}; do echo "Installing addon $a"; /opt/exo/addon install $a; done
 
+WORKDIR ${EXO_LOG_DIR}
+
 ENTRYPOINT ["/usr/local/bin/tini", "--"]
 CMD [ "/opt/exo/start_eXo.sh" ]
