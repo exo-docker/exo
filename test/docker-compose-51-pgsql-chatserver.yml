@@ -1,0 +1,102 @@
+version: '2'
+services:
+  web:
+    extends:
+      file: common-plf51-stack.yml
+      service: web
+    volumes:
+      - ./conf/nginx-plf50-chatserver.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    links:
+      - exo
+      - chatserver
+    depends_on:
+      - exo
+      - mail
+      - chatserver
+  exo:
+    extends:
+      file: common-plf51-stack.yml
+      service: exo
+    image: exoplatform/exo:5.1_latest
+    environment:
+      EXO_DB_TYPE: pgsql
+      EXO_ADDONS_CATALOG_URL:
+      EXO_ADDONS_LIST: exo-chat-client
+      EXO_ADDONS_REMOVE_LIST:
+      EXO_PATCHES_LIST: 
+      EXO_PATCHES_CATALOG_URL: 
+      EXO_ES_EMBEDDED: "false"
+      EXO_ES_HOST: search
+      EXO_CHAT_SERVER_STANDALONE: "true"
+      EXO_CHAT_SERVER_URL: http://chatserver:8080
+      EXO_CHAT_SERVER_PASSPHRASE: "mysecretkey"
+      EXO_MONGO_DB_NAME: "exo-chat"
+    ports:
+      # (Linux) open JMX ports for local connection only
+      #- "127.0.0.1:10001:10001"
+      #- "127.0.0.1:10002:10002"
+      # (macOS / Windows) open JMX ports on the host
+      - "10001:10001"
+      - "10002:10002"
+    links:
+      - db
+      - search
+      - chatserver
+    depends_on:
+      - db
+      - search
+      - mail
+      - chatserver
+  chatserver:
+    image: exoplatform/chat-server:2.1_latest
+    environment:
+      CHAT_PASSPHRASE: "mysecretkey"
+      CHAT_MONGO_DB_NAME: "exo-chat"
+      CHAT_SMTP_HOST: "mail"
+      CHAT_SMTP_PORT: "1025"
+      CHAT_SMTP_FROM: chat@test.com
+    links:
+      - mongo
+    expose:
+      - 8080
+    depends_on:
+      - mongo
+    networks:
+      - front
+      - back
+      - mail
+  mongo:
+    extends:
+      file: common-plf51-stack.yml
+      service: mongo
+  db:
+    extends:
+      file: common-plf51-stack.yml
+      service: pgsql
+  search:
+    extends:
+      file: common-plf51-stack.yml
+      service: es
+    ports:
+      # (Linux) open elasticsearch port for local connection only
+      #- "127.0.0.1:9200:9200"
+      # (macOS / Windows) open elasticsearch port for local connection only
+      - "9200:9200"
+  mail:
+    extends:
+      file: common-plf51-stack.yml
+      service: mail
+    depends_on:
+      - mongo
+volumes:
+  exo_data:
+  exo_logs:
+  db_data:
+  mongo_data:
+  search_data:
+networks:
+  front:
+  back:
+  mail:
