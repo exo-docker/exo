@@ -16,15 +16,15 @@ LABEL maintainer="eXo Platform <docker@exoplatform.com>"
 
 # Install ppa:libreoffice/libreoffice-5-4
 RUN echo "deb http://ppa.launchpad.net/libreoffice/libreoffice-5-4/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/libreoffice.list \
-RUN set -ex \
-    && ( \
-        gpg --keyserver keyserver.ubuntu.com                    --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
-        || gpg --keyserver ha.pool.sks-keyservers.net           --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
-        || gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
-        || gpg --keyserver pgp.mit.edu                          --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
-        || gpg --keyserver keyserver.pgp.com                    --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
-    ) \
-    && gpg --export --armor 36E81C9267FD1383FCC4490983FBA1751378B444 | apt-key add -
+  RUN set -ex \
+  && ( \
+  gpg --keyserver keyserver.ubuntu.com                    --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
+  || gpg --keyserver ha.pool.sks-keyservers.net           --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
+  || gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
+  || gpg --keyserver pgp.mit.edu                          --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
+  || gpg --keyserver keyserver.pgp.com                    --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
+  ) \
+  && gpg --export --armor 36E81C9267FD1383FCC4490983FBA1751378B444 | apt-key add -
 
 # Install the needed packages
 RUN apt-get -qq update && \
@@ -41,12 +41,12 @@ RUN apt-get -qq update && \
 RUN wget -nv -q -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download/1.15.0/yq_linux_amd64 && \
   echo "35d8b1123849350daa5ff11dd23c81b8 /usr/bin/yq" | md5sum -c - \
   || { \
-    echo "ERROR: the [/usr/bin/yq] binary downloaded from a github release was modified while is should not !!"; \
-    return 1; \
+  echo "ERROR: the [/usr/bin/yq] binary downloaded from a github release was modified while is should not !!"; \
+  return 1; \
   } && chmod a+x /usr/bin/yq
 
 # Build Arguments and environment variables
-ARG EXO_VERSION=5.1.0-RC01
+ARG EXO_VERSION=5.1.0-RC02
 
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
@@ -73,35 +73,35 @@ RUN useradd --create-home -u 999 --user-group --shell /bin/bash ${EXO_USER}
 
 # Create needed directories
 RUN mkdir -p ${EXO_DATA_DIR}         && chown ${EXO_USER}:${EXO_GROUP} ${EXO_DATA_DIR} && \
-    mkdir -p ${EXO_SHARED_DATA_DIR}  && chown ${EXO_USER}:${EXO_GROUP} ${EXO_SHARED_DATA_DIR} && \
-    mkdir -p ${EXO_TMP_DIR}          && chown ${EXO_USER}:${EXO_GROUP} ${EXO_TMP_DIR}  && \
-    mkdir -p ${EXO_LOG_DIR}          && chown ${EXO_USER}:${EXO_GROUP} ${EXO_LOG_DIR}
+  mkdir -p ${EXO_SHARED_DATA_DIR}  && chown ${EXO_USER}:${EXO_GROUP} ${EXO_SHARED_DATA_DIR} && \
+  mkdir -p ${EXO_TMP_DIR}          && chown ${EXO_USER}:${EXO_GROUP} ${EXO_TMP_DIR}  && \
+  mkdir -p ${EXO_LOG_DIR}          && chown ${EXO_USER}:${EXO_GROUP} ${EXO_LOG_DIR}
 
 # Install eXo Platform
 RUN if [ -n "${DOWNLOAD_USER}" ]; then PARAMS="-u ${DOWNLOAD_USER}"; fi && \
-    if [ ! -n "${DOWNLOAD_URL}" ]; then \
-      echo "Building an image with eXo Platform version : ${EXO_VERSION}"; \
-      EXO_VERSION_SHORT=$(echo ${EXO_VERSION} | awk -F "\." '{ print $1"."$2}'); \
-      DOWNLOAD_URL="https://downloads.exoplatform.org/public/releases/platform/${EXO_VERSION_SHORT}/${EXO_VERSION}/platform-${EXO_VERSION}.zip"; \
-    fi && \
-    curl ${PARAMS} -sS -L -o /srv/downloads/eXo-Platform-${EXO_VERSION}.zip ${DOWNLOAD_URL} && \
-    unzip -q /srv/downloads/eXo-Platform-${EXO_VERSION}.zip -d /srv/downloads/ && \
-    rm -f /srv/downloads/eXo-Platform-${EXO_VERSION}.zip && \
-    mv /srv/downloads/${ARCHIVE_BASE_DIR} ${EXO_APP_DIR} && \
-    chown -R ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR} && \
-    ln -s ${EXO_APP_DIR}/gatein/conf /etc/exo && \
-    rm -rf ${EXO_APP_DIR}/logs && ln -s ${EXO_LOG_DIR} ${EXO_APP_DIR}/logs
+  if [ ! -n "${DOWNLOAD_URL}" ]; then \
+  echo "Building an image with eXo Platform version : ${EXO_VERSION}"; \
+  EXO_VERSION_SHORT=$(echo ${EXO_VERSION} | awk -F "\." '{ print $1"."$2}'); \
+  DOWNLOAD_URL="https://downloads.exoplatform.org/public/releases/platform/${EXO_VERSION_SHORT}/${EXO_VERSION}/platform-${EXO_VERSION}.zip"; \
+  fi && \
+  curl ${PARAMS} -sS -L -o /srv/downloads/eXo-Platform-${EXO_VERSION}.zip ${DOWNLOAD_URL} && \
+  unzip -q /srv/downloads/eXo-Platform-${EXO_VERSION}.zip -d /srv/downloads/ && \
+  rm -f /srv/downloads/eXo-Platform-${EXO_VERSION}.zip && \
+  mv /srv/downloads/${ARCHIVE_BASE_DIR} ${EXO_APP_DIR} && \
+  chown -R ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR} && \
+  ln -s ${EXO_APP_DIR}/gatein/conf /etc/exo && \
+  rm -rf ${EXO_APP_DIR}/logs && ln -s ${EXO_LOG_DIR} ${EXO_APP_DIR}/logs
 
 # Install Docker customization file
 ADD bin/setenv-docker-customize.sh ${EXO_APP_DIR}/bin/setenv-docker-customize.sh
 RUN chmod 755 ${EXO_APP_DIR}/bin/setenv-docker-customize.sh && \
-    chown ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR}/bin/setenv-docker-customize.sh && \
-    sed -i '/# Load custom settings/i \
-\# Load custom settings for docker environment\n\
-[ -r "$CATALINA_BASE/bin/setenv-docker-customize.sh" ] \
-&& . "$CATALINA_BASE/bin/setenv-docker-customize.sh" \
-|| echo "No Docker eXo Platform customization file : $CATALINA_BASE/bin/setenv-docker-customize.sh"\n\
-' ${EXO_APP_DIR}/bin/setenv.sh && \
+  chown ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR}/bin/setenv-docker-customize.sh && \
+  sed -i '/# Load custom settings/i \
+  \# Load custom settings for docker environment\n\
+  [ -r "$CATALINA_BASE/bin/setenv-docker-customize.sh" ] \
+  && . "$CATALINA_BASE/bin/setenv-docker-customize.sh" \
+  || echo "No Docker eXo Platform customization file : $CATALINA_BASE/bin/setenv-docker-customize.sh"\n\
+  ' ${EXO_APP_DIR}/bin/setenv.sh && \
   grep 'setenv-docker-customize.sh' ${EXO_APP_DIR}/bin/setenv.sh
 
 # Install JAI (Java Advanced Imaging) API in the JVM
