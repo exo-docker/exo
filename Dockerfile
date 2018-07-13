@@ -28,14 +28,15 @@ RUN apt-get -qq update && \
   apt-get -qq -y install ${_APT_OPTIONS} libreoffice-calc libreoffice-draw libreoffice-impress libreoffice-math libreoffice-writer && \
   apt-get -qq -y autoremove && \
   apt-get -qq -y clean && \
-  rm -rf /var/lib/apt/lists/* && \
-  wget -q -O /usr/bin/yaml https://github.com/mikefarah/yaml/releases/download/1.10/yaml_linux_amd64 && \
-  # Check if the released binary was modified and make the build fail if it is the case
-  echo "0e24302f71a14518dcc1bcdc6ff8d7da /usr/bin/yaml" | md5sum -c - \
+  rm -rf /var/lib/apt/lists/*
+
+# Check if the released binary was modified and make the build fail if it is the case
+RUN wget -nv -q -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download/1.15.0/yq_linux_amd64 && \
+  echo "35d8b1123849350daa5ff11dd23c81b8 /usr/bin/yq" | md5sum -c - \
   || { \
-    echo "ERROR: the [/usr/bin/yaml] binary downloaded from a github release was modified while is should not !!"; \
+    echo "ERROR: the [/usr/bin/yq] binary downloaded from a github release was modified while is should not !!"; \
     return 1; \
-  } && chmod a+x /usr/bin/yaml
+  } && chmod a+x /usr/bin/yq
 
 # Build Arguments and environment variables
 ARG EXO_VERSION=4.4.5-cp01

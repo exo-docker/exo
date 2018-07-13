@@ -343,9 +343,9 @@ else
     i=0
     while [ $i -ge 0 ]; do
       # Declare component
-      type=$(yaml read /etc/exo/host.yml components[$i].type)
+      type=$(yq read /etc/exo/host.yml components[$i].type)
       if [ "${type}" != "null" ]; then
-        className=$(yaml read /etc/exo/host.yml components[$i].className)
+        className=$(yq read /etc/exo/host.yml components[$i].className)
         echo "Declare ${type} ${className}"
         xmlstarlet ed -L -s "/Server/Service/Engine/Host" -t elem -n "${type}TMP" -v "" \
             -i "//${type}TMP" -t attr -n "className" -v "${className}" \
@@ -357,9 +357,9 @@ else
         # Add component attributes
         j=0
         while [ $j -ge 0 ]; do
-          attributeName=$(yaml read /etc/exo/host.yml components[$i].attributes[$j].name)
+          attributeName=$(yq read /etc/exo/host.yml components[$i].attributes[$j].name)
           if [ "${attributeName}" != "null" ]; then
-            attributeValue=$(yaml read /etc/exo/host.yml components[$i].attributes[$j].value | tr -d "'")
+            attributeValue=$(yq read /etc/exo/host.yml components[$i].attributes[$j].value | tr -d "'")
             xmlstarlet ed -L -i "//${type}TMP" -t attr -n "${attributeName}" -v "${attributeValue}" \
                 /opt/exo/conf/server.xml || {
               echo "ERROR during xmlstarlet processing (adding ${className} / ${attributeName})"
