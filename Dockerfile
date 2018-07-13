@@ -38,13 +38,13 @@ RUN apt-get -qq update && \
   } && chmod a+x /usr/bin/yaml
 
 # Build Arguments and environment variables
-ARG EXO_VERSION=4.4.4
+ARG EXO_VERSION=4.4.5-cp01
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
 # this allow to specifiy a user to download a protected binary
 ARG DOWNLOAD_USER
 # allow to override the list of addons to package by default
-ARG ADDONS="exo-chat:1.5.1 exo-tasks:1.2.5 exo-remote-edit:1.2.4"
+ARG ADDONS="exo-chat:1.5.2-cp01 exo-tasks:1.2.6-cp01 exo-remote-edit:1.2.5-cp01"
 # Default base directory on the plf archive
 ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}
 
