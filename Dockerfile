@@ -46,7 +46,7 @@ RUN wget -nv -q -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download
   } && chmod a+x /usr/bin/yq
 
 # Build Arguments and environment variables
-ARG EXO_VERSION=5.1.0-RC09
+ARG EXO_VERSION=5.1.0-RC10
 
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
