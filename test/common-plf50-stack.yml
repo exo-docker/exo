@@ -26,6 +26,7 @@ services:
       EXO_PROXY_SSL: "false"
       EXO_JVM_SIZE_MIN: "2g"
       EXO_JVM_SIZE_MAX: "3g"
+      EXO_JVM_LOG_GC_ENABLED: "true"
       EXO_MAIL_SMTP_HOST: "mail"
       EXO_MAIL_SMTP_PORT: "1025"
     expose:
