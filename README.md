@@ -35,6 +35,30 @@ The image is compatible with the following databases system :  `MySQL` (default)
 
 ## Configuration options
 
+All the following options can be defined with standard Docker `-e` parameter
+
+```bash
+docker run -e MY_ENV_VARIABLE="value" ... exoplatform/exo
+```
+
+or Docker Compose way of defining environment variables
+
+```yaml
+version: '2'
+services:
+...
+  exo:
+    image: exoplatform/exo
+    environment:
+...
+      EXO_ADDONS_LIST: exo-chat
+      EXO_PATCHES_LIST:
+      EXO_PATCHES_CATALOG_URL:
+      EXO_ES_EMBEDDED: "false"
+      EXO_ES_HOST: search
+...
+```
+
 ### Add-ons
 
 Some add-ons are already installed in eXo image but you can install other one or remove some of the pre-installed one :
@@ -283,6 +307,32 @@ With the cluster mode active, the `EXO_JCR_STORAGE_DIR` and `EXO_FILE_STORAGE_DI
 ### License
 
 The eXo Platform license file location must be `/etc/exo/license.xml`
+
+### exo.properties
+
+*(available since `exoplatform/exo:5.1.0` version only)*
+
+As specified in [eXo documentation](https://docs.exoplatform.org/PLF50/PLFAdminGuide.Configuration.Properties_reference.html), an external `exo.properties` file can be used to fine tune some aspect of eXo Platform. In that case you have to create an `exo.properties` file on the host filesystem and bind mount it in the docker image :
+
+- Docker way
+
+```bash
+docker run ... -v /absolute/path/to/exo.properties:/etc/exo/exo.properties:ro ... exoplatform/exo
+```
+
+- docker-compose.yml way
+
+```yaml
+version: '2'
+services:
+...
+  exo:
+    image: exoplatform/exo
+...
+    volumes:
+      - /absolute/path/to/exo.properties:/etc/exo/exo.properties:ro
+...
+```
 
 ## Testing
 
