@@ -9,7 +9,7 @@
 | exoplatform/exo:4.4_latest ([changelog](./CHANGELOG-44.md)) | 8   | 4.4.x Enterprise edition |
 | exoplatform/exo:4.3_latest                                  | 8   | 4.3.x Enterprise edition |
 
-The image is compatible with the following databases system :  `MySQL` (default) / `HSQLDB` / `Postgresql` / `Oracle`
+The image is compatible with the following databases system :  `MySQL` (default) / `HSQLDB` / `PostgreSQL` / `Oracle`
 
 - [Configuration options](#configuration-options)
   - [Add-ons](#add-ons)
@@ -92,16 +92,16 @@ The following environment variables can be passed to the container to configure 
 
 #### Valves and Listeners <!-- omit in toc -->
 
-A file containing the list of valves and listeners can be attached to the container in the path {{/etc/exo/host.yml}}. If a file is specified, the default valves and listeners configuraiton will be overriden.
+A file containing the list of valves and listeners can be attached to the container in the path {{/etc/exo/host.yml}}. If a file is specified, the default valves and listeners configuration will be overridden.
 
 The file format is :
 
 ```yaml
 components:
   - type: Valve
-    className: org.acme.myvalves.WthoutAttributes
+    className: org.acme.myvalves.WithoutAttributes
   - type: Valve
-    className: org.acme.myvalves.WthAttributes
+    className: org.acme.myvalves.WithAttributes
     attributes:
       - name: param1
         value: value1
@@ -181,8 +181,8 @@ The following environment variables should be passed to eXo container to configu
 | ------------------ | --------- | ------------- | -------------------------------------------------------------------------------------------------- |
 | EXO_MONGO_HOST     | NO        | `mongo`       | the hostname to connect to the mongodb database for eXo Chat                                       |
 | EXO_MONGO_PORT     | NO        | `27017`       | the port to connect to the mongodb server                                                          |
-| EXO_MONGO_USERNAME | NO        | -             | the username to use to connect to the mongodb database (no authentification configured by default) |
-| EXO_MONGO_PASSWORD | NO        | -             | the password to use to connect to the mongodb database (no authentification configured by default) |
+| EXO_MONGO_USERNAME | NO        | -             | the username to use to connect to the mongodb database (no authentication configured by default) |
+| EXO_MONGO_PASSWORD | NO        | -             | the password to use to connect to the mongodb database (no authentication configured by default) |
 | EXO_MONGO_DB_NAME  | NO        | `chat`        | the mongodb database name to use for eXo Chat                                                      |
 | EXO_MONGO_TIMEOUT  | NO        | `60`          | the number of seconds to wait for mongodb availability before cancelling eXo startup               |
 
@@ -190,7 +190,7 @@ INFO: an external MongoDB server should be installed
 
 #### standalone
 
-With eXo Chat standalone mode, only the client part of the chat feature is installed in eXo container. The server part must be installed separatly in another container ([doc](https://github.com/exo-docker/exo-chat-server)).
+With eXo Chat standalone mode, only the client part of the chat feature is installed in eXo container. The server part must be installed separately in another container ([doc](https://github.com/exo-docker/exo-chat-server)).
 
 - add-on to install : `exo-chat-client:<VERSION>`
 - eXo Chat standalone : see [exoplatform/chat-server](https://github.com/exo-docker/exo-chat-server) docker image documentation
@@ -208,7 +208,7 @@ The following environment variables should be passed to the container in order t
 
 | VARIABLE                | MANDATORY | DEFAULT VALUE  | DESCRIPTION                                                                                                                                                                                                                                                                    |
 | ----------------------- | --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| EXO_ES_EMBEDDED         | NO        | `true`         | do we use an elasticsearch server embedded in the eXo Platform JVM or do we use an external one ? (using an embedded elasticsearch server is not recommanded for production purpose) (if set to `false` the add-on `exo-es-embedded` is uninstalled during container creation) |
+| EXO_ES_EMBEDDED         | NO        | `true`         | do we use an elasticsearch server embedded in the eXo Platform JVM or do we use an external one ? (using an embedded elasticsearch server is not recommended for production purpose) (if set to `false` the add-on `exo-es-embedded` is uninstalled during container creation) |
 | EXO_ES_EMBEDDED_DATA    | NO        | `/srv/exo/es/` | The directory to use for storing elasticsearch data (in embedded mode only).                                                                                                                                                                                                   |
 | EXO_ES_SCHEME           | NO        | `http`         | the elasticsearch server scheme to use from the eXo Platform server jvm perspective (http / https).                                                                                                                                                                            |
 | EXO_ES_HOST             | NO        | `localhost`    | the elasticsearch server hostname to use from the eXo Platform server jvm perspective.                                                                                                                                                                                         |
@@ -302,7 +302,7 @@ docker-compose -f test/docker-compose-44-hsqldb.yml -p exo44hsqldb up
 # eXo Platform 4.4.x + MySQL 5.6 + mongodb 3.2
 docker-compose -f test/docker-compose-44-mysql.yml -p exo44mysql up
 
-# eXo Platform 4.4.x + Postgresql 9.4 + mongodb 3.2
+# eXo Platform 4.4.x + PostgreSQL 9.4 + mongodb 3.2
 docker-compose -f test/docker-compose-44-pgsql.yml -p exo44pgsql up
 ```
 
