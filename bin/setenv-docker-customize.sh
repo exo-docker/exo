@@ -543,7 +543,7 @@ else
   # The eXo group who can create teams.
   add_in_chat_configuration "teamAdminGroup=/platform/users"
   # We must override this to remain inside the docker container (works only for embedded chat server)
-  add_in_chat_configuration "chatServerBase=${EXO_CHAT_SERVER_URL}"
+  add_in_chat_configuration "chatServerUrl=${EXO_CHAT_SERVER_URL}/chatServer"
   # Time interval to refresh messages in a chat.
   add_in_chat_configuration "chatIntervalChat=3000"
   # Time interval to keep a chat session alive in milliseconds.
