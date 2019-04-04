@@ -5,12 +5,12 @@ services:
     expose:
       - "80"
     volumes:
-      - ./conf/nginx-plf50.conf:/etc/nginx/nginx.conf:ro
+      - ./conf/nginx-plf52.conf:/etc/nginx/nginx.conf:ro
     networks:
       - front
       - mail
   exo:
-    image: exoplatform/exo:5.1
+    image: exoplatform/exo:develop
     environment:
       EXO_DB_NAME: exo
       EXO_DB_USER: exo
@@ -43,7 +43,7 @@ services:
       - back
       - mail
   mongo:
-    image: mongo:3.6
+    image: mongo:4.0
     volumes:
       - mongo_data:/data/db:rw
     networks:

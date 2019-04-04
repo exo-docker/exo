@@ -97,14 +97,6 @@ case "${EXO_DB_TYPE}" in
     [ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="5432"
     [ -z "${EXO_DB_INSTALL_DRIVER}" ] && EXO_DB_INSTALL_DRIVER="true"
     ;;
-  oracle|ora)
-    [ -z "${EXO_DB_NAME}" ] && EXO_DB_NAME="exo"
-    [ -z "${EXO_DB_USER}" ] && EXO_DB_USER="exo"
-    [ -z "${EXO_DB_PASSWORD}" ] && { echo "ERROR: you must provide a database password with EXO_DB_PASSWORD environment variable"; exit 1;}
-    [ -z "${EXO_DB_HOST}" ] && EXO_DB_HOST="db"
-    [ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="1521"
-    [ -z "${EXO_DB_INSTALL_DRIVER}" ] && EXO_DB_INSTALL_DRIVER="false"
-    ;;
   *)
     echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (current value is '${EXO_DB_TYPE}')"
     echo "ERROR: supported database types are :"
@@ -226,22 +218,6 @@ else
         ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-postgresql:1.2.0 --batch-mode
         if [ $? != 0 ]; then
           echo "[ERROR] Impossible to install PostgreSQL Driver add-on."
-          exit 1
-        fi
-      else
-        echo "WARNING: no database driver will be automatically installed (EXO_DB_INSTALL_DRIVER=false)."
-      fi
-      ;;
-    oracle|ora)
-      cat /opt/exo/conf/server-oracle.xml > /opt/exo/conf/server.xml
-      replace_in_file /opt/exo/conf/server.xml "jdbc:oracle:thin:@localhost:1521:plf" "jdbc:oracle:thin://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
-      replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
-      add_in_exo_configuration "exo.jcr.datasource.dialect=org.hibernate.dialect.Oracle10gDialect"
-      add_in_exo_configuration "exo.jpa.hibernate.dialect=org.hibernate.dialect.Oracle10gDialect"
-      if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
-        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-oracle:1.2.O --batch-mode
-        if [ $? != 0 ]; then
-          echo "[ERROR] Impossible to install Oracle Driver add-on."
           exit 1
         fi
       else
@@ -786,14 +762,6 @@ case "${EXO_DB_TYPE}" in
     fi
     ;;
   pgsql|postgres|postgresql)
-    echo "Waiting for database ${EXO_DB_TYPE} availability at ${EXO_DB_HOST}:${EXO_DB_PORT} ..."
-    wait-for ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t ${EXO_DB_TIMEOUT}
-    if [ $? != 0 ]; then
-      echo "[ERROR] The ${EXO_DB_TYPE} database ${EXO_DB_HOST}:${EXO_DB_PORT} was not available within ${EXO_DB_TIMEOUT}s ! eXo startup aborted ..."
-      exit 1
-    fi
-    ;;
-  oracle|ora)
     echo "Waiting for database ${EXO_DB_TYPE} availability at ${EXO_DB_HOST}:${EXO_DB_PORT} ..."
     wait-for ${EXO_DB_HOST}:${EXO_DB_PORT} -s -t ${EXO_DB_TIMEOUT}
     if [ $? != 0 ]; then

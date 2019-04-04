@@ -4,12 +4,13 @@
 
 | Image                                                       | JDK | eXo Platform             |
 | ----------------------------------------------------------- | --- | ------------------------ |
-| exoplatform/exo:5.1_latest ([changelog](./CHANGELOG.md))    | 8   | 5.1.x Enterprise edition |
+| exoplatform/exo:5.2_latest ([changelog](./CHANGELOG.md))    | 8   | 5.2.x Enterprise edition |
+| exoplatform/exo:5.1_latest ([changelog](./CHANGELOG-51.md)) | 8   | 5.1.x Enterprise edition |
 | exoplatform/exo:5.0_latest ([changelog](./CHANGELOG-50.md)) | 8   | 5.0.x Enterprise edition |
 | exoplatform/exo:4.4_latest ([changelog](./CHANGELOG-44.md)) | 8   | 4.4.x Enterprise edition |
 | exoplatform/exo:4.3_latest                                  | 8   | 4.3.x Enterprise edition |
 
-The image is compatible with the following databases system :  `MySQL` (default) / `HSQLDB` / `PostgreSQL` / `Oracle`
+The image is compatible with the following databases system :  `MySQL` (default) / `HSQLDB` / `PostgreSQL`
 
 - [Configuration options](#configuration-options)
   - [Add-ons](#add-ons)
@@ -30,6 +31,7 @@ The image is compatible with the following databases system :  `MySQL` (default)
   - [JMX](#jmx)
   - [Cluster](#cluster)
   - [License](#license)
+  - [exo.properties](#exoproperties)
 - [Testing](#testing)
 - [Image build](#image-build)
 
