@@ -167,7 +167,6 @@ The following environment variables must be passed to the container in order to 
 | EXO_DB_NAME               | NO        | `exo`         | the name of the database / schema to use                                              |
 | EXO_DB_USER               | NO        | `exo`         | the username to connect to the database                                               |
 | EXO_DB_PASSWORD           | YES       | -             | the password to connect to the database                                               |
-| EXO_DB_INSTALL_DRIVER     | NO        | `true`        | automatically install the good jdbc driver add-on (true / false)                      |
 | EXO_DB_POOL_IDM_INIT_SIZE | NO        | `5`           | the init size of IDM datasource pool                                                  |
 | EXO_DB_POOL_IDM_MAX_SIZE  | NO        | `20`          | the max size of IDM datasource pool                                                   |
 | EXO_DB_POOL_JCR_INIT_SIZE | NO        | `5`           | the init size of JCR datasource pool                                                  |

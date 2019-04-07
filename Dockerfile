@@ -14,18 +14,6 @@
 FROM  exoplatform/jdk:8-ubuntu-1804
 LABEL maintainer="eXo Platform <docker@exoplatform.com>"
 
-# Install ppa:libreoffice/libreoffice-5-4
-# RUN echo "deb http://ppa.launchpad.net/libreoffice/libreoffice-5-4/ubuntu $(lsb_release -cs) main" > /etc/apt/sources.list.d/libreoffice.list \
-#   RUN set -ex \
-#   && ( \
-#   gpg --keyserver keyserver.ubuntu.com                    --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
-#   || gpg --keyserver ha.pool.sks-keyservers.net           --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
-#   || gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
-#   || gpg --keyserver pgp.mit.edu                          --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
-#   || gpg --keyserver keyserver.pgp.com                    --recv-keys 36E81C9267FD1383FCC4490983FBA1751378B444 \
-#   ) \
-#   && gpg --export --armor 36E81C9267FD1383FCC4490983FBA1751378B444 | apt-key add -
-
 # Install the needed packages
 RUN apt-get -qq update && \
   apt-get -qq -y upgrade ${_APT_OPTIONS} && \
@@ -53,7 +41,7 @@ ARG DOWNLOAD_URL
 # this allow to specifiy a user to download a protected binary
 ARG DOWNLOAD_USER
 # allow to override the list of addons to package by default
-ARG ADDONS="exo-jdbc-driver-mysql:1.3.0"
+ARG ADDONS="exo-jdbc-driver-mysql:1.3.0 exo-jdbc-driver-postgresql:1.3.0"
 # Default base directory on the plf archive
 ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}
 

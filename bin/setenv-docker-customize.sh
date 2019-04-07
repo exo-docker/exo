@@ -95,7 +95,6 @@ case "${EXO_DB_TYPE}" in
     [ -z "${EXO_DB_PASSWORD}" ] && { echo "ERROR: you must provide a database password with EXO_DB_PASSWORD environment variable"; exit 1;}
     [ -z "${EXO_DB_HOST}" ] && EXO_DB_HOST="db"
     [ -z "${EXO_DB_PORT}" ] && EXO_DB_PORT="5432"
-    [ -z "${EXO_DB_INSTALL_DRIVER}" ] && EXO_DB_INSTALL_DRIVER="true"
     ;;
   *)
     echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (current value is '${EXO_DB_TYPE}')"
@@ -214,15 +213,6 @@ else
       cat /opt/exo/conf/server-postgres.xml > /opt/exo/conf/server.xml
       replace_in_file /opt/exo/conf/server.xml "jdbc:postgresql://localhost:5432/plf" "jdbc:postgresql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}"
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
-      if [ "${EXO_DB_INSTALL_DRIVER}" = "true" ]; then
-        ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} exo-jdbc-driver-postgresql:1.2.0 --batch-mode
-        if [ $? != 0 ]; then
-          echo "[ERROR] Impossible to install PostgreSQL Driver add-on."
-          exit 1
-        fi
-      else
-        echo "WARNING: no database driver will be automatically installed (EXO_DB_INSTALL_DRIVER=false)."
-      fi
       ;;
     *) echo "ERROR: you must provide a supported database type with EXO_DB_TYPE environment variable (current value is '${EXO_DB_TYPE}')";
       exit 1;;
@@ -520,6 +510,8 @@ else
   add_in_chat_configuration "teamAdminGroup=/platform/users"
   # We must override this to remain inside the docker container (works only for embedded chat server)
   add_in_chat_configuration "chatServerUrl=${EXO_CHAT_SERVER_URL}/chatServer"
+
+  add_in_chat_configuration "# eXo Chat client configuration"
   # Time interval to refresh messages in a chat.
   add_in_chat_configuration "chatIntervalChat=3000"
   # Time interval to keep a chat session alive in milliseconds.
@@ -536,10 +528,9 @@ else
   if [ "${EXO_CHAT_SERVER_STANDALONE}" = "false" ]; then
     # Mongodb configuration (for the Chat)
     add_in_chat_configuration "# eXo Chat mongodb configuration"
-    add_in_chat_configuration "dbServerHost=${EXO_MONGO_HOST}"
-    add_in_chat_configuration "dbServerPort=${EXO_MONGO_PORT}"
+    add_in_chat_configuration "dbServerHosts=${EXO_MONGO_HOST}:${EXO_MONGO_PORT}"
     add_in_chat_configuration "dbName=${EXO_MONGO_DB_NAME}"
-    if [ "${EXO_MONGO_USERNAME}" = "-" ]; then
+    if [ "${EXO_MONGO_USERNAME:-}" = "-" ]; then
       add_in_chat_configuration "dbAuthentication=false"
       add_in_chat_configuration "#dbUser="
       add_in_chat_configuration "#dbPassword="

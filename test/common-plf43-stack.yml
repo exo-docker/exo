@@ -9,7 +9,7 @@ services:
     networks:
       - front
   exo:
-    image: exoplatform/exo:4.3
+    image: exoplatform/exo:4.3_latest
     environment:
       EXO_DB_NAME: exo
       EXO_DB_USER: exo
