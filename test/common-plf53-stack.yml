@@ -1,0 +1,93 @@
+version: '2'
+services:
+  web:
+    image: nginx:1.14-alpine
+    expose:
+      - "80"
+    volumes:
+      - ./conf/nginx-plf53.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - front
+      - mail
+  exo:
+    image: exoplatform/exo:develop
+    environment:
+      EXO_DB_NAME: exo
+      EXO_DB_USER: exo
+      EXO_DB_PASSWORD: exo
+      EXO_DB_HOST: db
+      EXO_DB_POOL_IDM_INIT_SIZE: 1
+      EXO_DB_POOL_IDM_MAX_SIZE: 10
+      EXO_DB_POOL_JCR_INIT_SIZE: 2
+      EXO_DB_POOL_JCR_MAX_SIZE: 5
+      EXO_DB_POOL_JPA_INIT_SIZE: 3
+      EXO_DB_POOL_JPA_MAX_SIZE: 20
+      EXO_PROXY_VHOST: localhost
+      EXO_PROXY_SSL: "false"
+      EXO_JVM_SIZE_MIN: "2g"
+      EXO_JVM_SIZE_MAX: "3g"
+      EXO_JVM_LOG_GC_ENABLED: "true"
+      EXO_MAIL_SMTP_HOST: "mail"
+      EXO_MAIL_SMTP_PORT: "1025"
+      EXO_ES_INDEX_REPLICA_NB: 0
+      EXO_ES_INDEX_SHARD_NB: 1
+    expose:
+      - "8080"
+    volumes:
+      - exo_data:/srv/exo
+      - exo_logs:/var/log/exo
+      # This is only needed if es embedded is used
+      - search_data:/srv/es
+    networks:
+      - front
+      - back
+      - mail
+  mongo:
+    image: mongo:4.0
+    volumes:
+      - mongo_data:/data/db:rw
+    networks:
+      - back
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: exo
+      MYSQL_USER: exo
+      MYSQL_PASSWORD: exo
+    volumes:
+      - db_data:/var/lib/mysql:rw
+    networks:
+      - back
+  pgsql:
+    image: postgres:10.0-alpine
+    environment:
+      POSTGRES_DB: exo
+      POSTGRES_USER: exo
+      POSTGRES_PASSWORD: exo
+    volumes:
+      - db_data:/var/lib/postgresql/data:rw
+    networks:
+      - back
+  es:
+    image: exoplatform/elasticsearch:1.2.1
+    volumes: 
+      - search_data:/usr/share/elasticsearch/data:rw
+    environment:
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.monitoring.enabled=false
+    networks:
+      - back
+  mail:
+    image: mailhog/mailhog
+    environment:
+      MH_SMTP_BIND_ADDR: 0.0.0.0:1025
+      MH_STORAGE: mongodb
+      MH_MONGO_URI: mongo:27017
+      MH_MONGO_DB: mailhog
+      MH_MONGO_COLLECTION: messages
+      MH_UI_WEB_PATH: mail
+    networks:
+      - back
+      - mail
+
