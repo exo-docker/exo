@@ -1,4 +1,4 @@
-version: '2'
+version: "2"
 services:
   web:
     image: nginx:1.14-alpine
@@ -70,8 +70,8 @@ services:
     networks:
       - back
   es:
-    image: exoplatform/elasticsearch:1.2.1
-    volumes: 
+    image: exoplatform/elasticsearch:1.2.2
+    volumes:
       - search_data:/usr/share/elasticsearch/data:rw
     environment:
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
@@ -90,4 +90,3 @@ services:
     networks:
       - back
       - mail
-
