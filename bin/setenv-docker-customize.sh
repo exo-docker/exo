@@ -177,6 +177,8 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_CLUSTER_NODE_NAME}" ] && EXO_CLUSTER_NODE_NAME="${HOSTNAME}"
 [ -z "${EXO_CLUSTER_HOSTS}" ] && EXO_CLUSTER_HOSTS="-"
 [ -z "${EXO_JGROUPS_ADDR}" ] && EXO_JGROUPS_ADDR="GLOBAL"
+[ -z "${EXO_JGROUPS_JCR_PORT}" ] && EXO_JGROUPS_JCR_PORT="7800"
+[ -z "${EXO_JGROUPS_SERVICE_PORT}" ] && EXO_JGROUPS_SERVICE_PORT="7900"
 
 [ -z $EXO_PROFILES ] && EXO_PROFILES="all"
 
@@ -425,20 +427,23 @@ else
     EXO_PROFILES="${EXO_PROFILES},cluster,cluster-jgroups-tcp"
     add_in_exo_configuration "exo.cluster.node.name=${EXO_CLUSTER_NODE_NAME}"
     JCR_CLUSTER_HOSTS=""
-    IDM_CLUSTER_HOSTS=""
+    SERVICE_CLUSTER_HOSTS=""
     COMETD_CLUSTER_HOSTS=""
 
     for cluster_host in $(echo ${EXO_CLUSTER_HOSTS} | tr ',' ' '); do
-      JCR_CLUSTER_HOSTS="${JCR_CLUSTER_HOSTS}${cluster_host}[7800],"
-      IDM_CLUSTER_HOSTS="${IDM_CLUSTER_HOSTS}${cluster_host}[7900],"
+      JCR_CLUSTER_HOSTS="${JCR_CLUSTER_HOSTS}${cluster_host}[${EXO_JGROUPS_JCR_PORT}],"
+      SERVICE_CLUSTER_HOSTS="${SERVICE_CLUSTER_HOSTS}${cluster_host}[${EXO_JGROUPS_SERVICE_PORT}],"
       COMETD_CLUSTER_HOSTS="${COMETD_CLUSTER_HOSTS}http://${cluster_host}:8080/cometd/cometd,"
     done
 
     # JGROUPS properties
     add_in_exo_configuration "exo.jcr.cluster.jgroups.tcpping.initial_hosts=${JCR_CLUSTER_HOSTS}"
-    add_in_exo_configuration "exo.idm.cluster.jgroups.tcpping.initial_hosts=${IDM_CLUSTER_HOSTS}"
     add_in_exo_configuration "exo.jcr.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
-    add_in_exo_configuration "exo.idm.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
+    add_in_exo_configuration "exo.jcr.cluster.jgroups.tcp.bind_port=${EXO_JGROUPS_JCR_PORT}"
+
+    add_in_exo_configuration "exo.service.cluster.jgroups.tcpping.initial_hosts=${SERVICE_CLUSTER_HOSTS}"
+    add_in_exo_configuration "exo.service.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
+    add_in_exo_configuration "exo.service.cluster.jgroups.tcp.bind_port=${EXO_JGROUPS_SERVICE_PORT}"
 
     # WebSocket configuration
     add_in_exo_configuration "exo.cometd.oort.url=http://${EXO_CLUSTER_NODE_NAME}:8080/cometd/cometd"
