@@ -422,33 +422,33 @@ else
 
   # Cluster configuration
   if [ "${EXO_CLUSTER}" = "true" ]; then
-      EXO_PROFILES="${EXO_PROFILES},cluster,cluster-jgroups-tcp"
-      add_in_exo_configuration "exo.cluster.node.name=${EXO_CLUSTER_NODE_NAME}"
-      JCR_CLUSTER_HOSTS=""
-      IDM_CLUSTER_HOSTS=""
-      COMETD_CLUSTER_HOSTS=""
+    EXO_PROFILES="${EXO_PROFILES},cluster,cluster-jgroups-tcp"
+    add_in_exo_configuration "exo.cluster.node.name=${EXO_CLUSTER_NODE_NAME}"
+    JCR_CLUSTER_HOSTS=""
+    IDM_CLUSTER_HOSTS=""
+    COMETD_CLUSTER_HOSTS=""
 
-      for cluster_host in $(echo ${EXO_CLUSTER_HOSTS} | tr ',' ' '); do
-        JCR_CLUSTER_HOSTS="${JCR_CLUSTER_HOSTS}${cluster_host}[7800],"
-        IDM_CLUSTER_HOSTS="${IDM_CLUSTER_HOSTS}${cluster_host}[7900],"
-        COMETD_CLUSTER_HOSTS="${COMETD_CLUSTER_HOSTS}http://${cluster_host}:8080/cometd/cometd,"
-      done
+    for cluster_host in $(echo ${EXO_CLUSTER_HOSTS} | tr ',' ' '); do
+      JCR_CLUSTER_HOSTS="${JCR_CLUSTER_HOSTS}${cluster_host}[7800],"
+      IDM_CLUSTER_HOSTS="${IDM_CLUSTER_HOSTS}${cluster_host}[7900],"
+      COMETD_CLUSTER_HOSTS="${COMETD_CLUSTER_HOSTS}http://${cluster_host}:8080/cometd/cometd,"
+    done
 
-      # JGROUPS properties
-      add_in_exo_configuration "exo.jcr.cluster.jgroups.tcpping.initial_hosts=${JCR_CLUSTER_HOSTS}"
-      add_in_exo_configuration "exo.idm.cluster.jgroups.tcpping.initial_hosts=${IDM_CLUSTER_HOSTS}"
-      add_in_exo_configuration "exo.jcr.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
-      add_in_exo_configuration "exo.idm.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
+    # JGROUPS properties
+    add_in_exo_configuration "exo.jcr.cluster.jgroups.tcpping.initial_hosts=${JCR_CLUSTER_HOSTS}"
+    add_in_exo_configuration "exo.idm.cluster.jgroups.tcpping.initial_hosts=${IDM_CLUSTER_HOSTS}"
+    add_in_exo_configuration "exo.jcr.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
+    add_in_exo_configuration "exo.idm.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
 
-      # WebSocket configuration
-      add_in_exo_configuration "exo.cometd.oort.url=http://${EXO_CLUSTER_NODE_NAME}:8080/cometd/cometd"
-      add_in_exo_configuration "exo.cometd.oort.configType=static"
-      add_in_exo_configuration "exo.cometd.oort.cloud=${COMETD_CLUSTER_HOSTS}"
+    # WebSocket configuration
+    add_in_exo_configuration "exo.cometd.oort.url=http://${EXO_CLUSTER_NODE_NAME}:8080/cometd/cometd"
+    add_in_exo_configuration "exo.cometd.oort.configType=static"
+    add_in_exo_configuration "exo.cometd.oort.cloud=${COMETD_CLUSTER_HOSTS}"
 
-      # JCR configuration
-      add_in_exo_configuration "gatein.jcr.config.type=cluster"
-      # TODO allow to customize this
-      add_in_exo_configuration "gatein.jcr.index.changefilterclass=org.exoplatform.services.jcr.impl.core.query.ispn.LocalIndexChangesFilter"
+    # JCR configuration
+    add_in_exo_configuration "gatein.jcr.config.type=cluster"
+    # TODO allow to customize this
+    add_in_exo_configuration "gatein.jcr.index.changefilterclass=org.exoplatform.services.jcr.impl.core.query.ispn.LocalIndexChangesFilter"
 
   fi
 
