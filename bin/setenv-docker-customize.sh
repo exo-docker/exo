@@ -171,7 +171,7 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_JGROUPS_JCR_PORT}" ] && EXO_JGROUPS_JCR_PORT="7800"
 [ -z "${EXO_JGROUPS_SERVICE_PORT}" ] && EXO_JGROUPS_SERVICE_PORT="7900"
 
-[ -z $EXO_PROFILES ] && EXO_PROFILES="all"
+[ -z "${EXO_PROFILES}" ] && EXO_PROFILES="all"
 
 set -u		# REACTIVATE unbound variable check
 
@@ -390,7 +390,6 @@ else
 
   # Cluster configuration
   if [ "${EXO_CLUSTER}" = "true" ]; then
-    EXO_PROFILES="${EXO_PROFILES},cluster,cluster-jgroups-tcp"
     add_in_exo_configuration "exo.cluster.node.name=${EXO_CLUSTER_NODE_NAME}"
     JCR_CLUSTER_HOSTS=""
     SERVICE_CLUSTER_HOSTS=""
@@ -681,6 +680,14 @@ fi
 # -----------------------------------------------------------------------------
 if [ -f /etc/exo/chat.properties ] && [ "${EXO_CHAT_SERVER_STANDALONE}" = "false" ]; then
   sed -i 's/^chatPassPhrase=.*$/chatPassPhrase='"$(tr -dc '[:alnum:]' < /dev/urandom  | dd bs=4 count=6 2>/dev/null)"'/' /etc/exo/chat.properties
+fi
+
+
+# -----------------------------------------------------------------------------
+# Configure the eXo profiles for clustering if needed
+# -----------------------------------------------------------------------------
+if [ "${EXO_CLUSTER}" = "true" ]; then
+  EXO_PROFILES="${EXO_PROFILES},cluster,cluster-jgroups-tcp"
 fi
 
 # -----------------------------------------------------------------------------
