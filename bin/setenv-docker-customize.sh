@@ -579,8 +579,8 @@ else
   add_in_exo_configuration "exo.wallet.admin.key=${EXO_REWARDS_WALLET_ADMIN_KEY}"
   add_in_exo_configuration "exo.wallet.accessPermission=${EXO_REWARDS_WALLET_ACCESS_PERMISSION}"
   add_in_exo_configuration "exo.wallet.blockchain.networkId=${EXO_REWARDS_WALLET_NETWORK_ID}"
-  add_in_exo_configuration "exo.wallet.blockchain.network.websocket=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP}"
-  add_in_exo_configuration "exo.wallet.blockchain.network.http=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET}"
+  add_in_exo_configuration "exo.wallet.blockchain.network.http=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP}"
+  add_in_exo_configuration "exo.wallet.blockchain.network.websocket=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET}"
   add_in_exo_configuration "exo.wallet.blockchain.token.address=${EXO_REWARDS_WALLET_TOKEN_ADDRESS}"
 
   # put a file to avoid doing the configuration twice
