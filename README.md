@@ -32,6 +32,7 @@ The image is compatible with the following databases system :  `MySQL` (default)
   - [Mail](#mail)
   - [JMX](#jmx)
   - [Cluster](#cluster)
+  - [Reward Wallet](#reward-wallet)
   - [License](#license)
   - [exo.properties](#exoproperties)
 - [Testing](#testing)
@@ -296,7 +297,7 @@ With the default parameters you can connect to JMX with `service:jmx:rmi://local
 
 ### Cluster
 
-The following environment variables should be passed to the container in order to configure the cluster configuration :
+The following environment variables should be passed to the container in order to configure the cluster :
 
 | VARIABLE              | MANDATORY | DEFAULT VALUE    | DESCRIPTION                                                                                                    |
 | --------------------- | --------- | ---------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -306,6 +307,19 @@ The following environment variables should be passed to the container in order t
 | EXO_JGROUPS_ADDR      | NO        | `GLOBAL`         | IP address used to bind jgroups (ex: 172.16.250.11). By default the first routable address found will be used. |
 
 With the cluster mode active, the `EXO_JCR_STORAGE_DIR` and `EXO_FILE_STORAGE_DIR` properties must be set to a place shared between all the cluster nodes
+
+### Reward Wallet
+
+The following environment variables should be passed to the container in order to configure eXo Rewards wallet:
+
+| VARIABLE                                      | MANDATORY | DEFAULT VALUE                                                    | DESCRIPTION                                                                                                                                                                                                                       |
+|-----------------------------------------------|-----------|------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| EXO_REWARDS_WALLET_ADMIN_KEY                  | YES       | `changeThisKey`                                                  | password used to encrypt the Admin wallet’s private key stored in database. If its value is modified after server startup, the private key of admin wallet won’t be decrypted anymore, preventing all administrative operations |
+| EXO_REWARDS_WALLET_ACCESS_PERMISSION          | NO        | `/platform/users`                                                | to restrict access to wallet application to a group of users (ex: member:/spaces/internal_space)                                                                                                                                  |
+| EXO_REWARDS_WALLET_NETWORK_ID                 | NO        | `1` (mainnet)                                                    | ID of the Ethereum network to use (see: <https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md#list-of-chain-ids>)                                                                                                         |
+| EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP      | NO        | `https://mainnet.infura.io/v3/a1ac85aea9ce4be88e9e87dad7c01d40`  | https url to access to the Ethereum API for the chosen network id                                                                                                                                                                 |
+| EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET | NO        | `wss://mainnet.infura.io/ws/v3/a1ac85aea9ce4be88e9e87dad7c01d40` | wss url to access to the Ethereum API for the chosen network id                                                                                                                                                                   |
+| EXO_REWARDS_WALLET_TOKEN_ADDRESS              | NO        | `0xc76987d43b77c45d51653b6eb110b9174acce8fb`                     | address of the contract for the official rewarding token promoted by eXo                                                                                                                                                          |                                                                                                  |
 
 ### License
 
