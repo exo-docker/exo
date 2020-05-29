@@ -4,7 +4,7 @@
 
 | Image                                                       | JDK | eXo Platform             |
 | ----------------------------------------------------------- | --- | ------------------------ |
-| exoplatform/exo:6.0_latest                                  | 8   | 6.0.x Enterprise edition |
+| exoplatform/exo:6.0_latest                                  | 11   | 6.0.x Enterprise edition |
 | exoplatform/exo:5.3_latest                                  | 8   | 5.3.x Enterprise edition |
 | exoplatform/exo:5.2_latest ([changelog](./CHANGELOG.md))    | 8   | 5.2.x Enterprise edition |
 | exoplatform/exo:5.1_latest ([changelog](./CHANGELOG-51.md)) | 8   | 5.1.x Enterprise edition |
@@ -236,7 +236,7 @@ The following environment variables should be passed to the container in order t
 
 | VARIABLE                | MANDATORY | DEFAULT VALUE  | DESCRIPTION                                                                                                                                                                                                                                                                    |
 | ----------------------- | --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| EXO_ES_EMBEDDED         | NO        | `true`         | do we use an elasticsearch server embedded in the eXo Platform JVM or do we use an external one ? (using an embedded elasticsearch server is not recommended for production purpose) (if set to `false` the add-on `exo-es-embedded` is uninstalled during container creation) |
+| EXO_ES_EMBEDDED         | NO        | `true`         | do we use an elasticsearch server embedded in the eXo Platform JVM or do we use an external one ? (using an embedded elasticsearch server is not recommended for production purpose) (if set to `false` the add-on `meeds-es-embedded` is uninstalled during container creation) |
 | EXO_ES_EMBEDDED_DATA    | NO        | `/srv/exo/es/` | The directory to use for storing elasticsearch data (in embedded mode only).                                                                                                                                                                                                   |
 | EXO_ES_SCHEME           | NO        | `http`         | the elasticsearch server scheme to use from the eXo Platform server jvm perspective (http / https).                                                                                                                                                                            |
 | EXO_ES_HOST             | NO        | `localhost`    | the elasticsearch server hostname to use from the eXo Platform server jvm perspective.                                                                                                                                                                                         |

@@ -484,7 +484,7 @@ else
     add_in_exo_configuration "es.path.data=${EXO_ES_EMBEDDED_DATA}"
   else
     # Remove eXo ES Embedded add-on
-    EXO_ADDONS_REMOVE_LIST="${EXO_ADDONS_REMOVE_LIST:-},exo-es-embedded"
+    EXO_ADDONS_REMOVE_LIST="${EXO_ADDONS_REMOVE_LIST:-},meeds-es-embedded"
   fi
 
   add_in_exo_configuration "exo.es.search.server.url=${EXO_ES_URL}"
@@ -744,9 +744,10 @@ if [ "${EXO_JVM_LOG_GC_ENABLED}" = "true" ]; then
   # -XX:+PrintGCDateStamps : print the absolute timestamp in the log statement (i.e. “2014-11-18T16:39:25.303-0800”)
   # -XX:+PrintGCTimeStamps : print the time when the GC event started, relative to the JVM startup time (unit: seconds)
   # -XX:+PrintGCDetails    : print the details of how much memory is reclaimed in each generation
-  EXO_JVM_LOG_GC_OPTS="-XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps"
+  # EXO_JVM_LOG_GC_OPTS="-XX:+PrintGC -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps"
+  EXO_JVM_LOG_GC_OPTS="-Xlog:gc=info:file=${EXO_LOG_DIR}/platform-gc.log:time"
   echo "Enabling eXo JVM GC logs with [${EXO_JVM_LOG_GC_OPTS}] options ..."
-  CATALINA_OPTS="${CATALINA_OPTS} ${EXO_JVM_LOG_GC_OPTS} -Xloggc:${EXO_LOG_DIR}/platform-gc.log"
+  CATALINA_OPTS="${CATALINA_OPTS} ${EXO_JVM_LOG_GC_OPTS}"
   # log rotation to backup previous log file (we don't use GC Log file rotation options because they are not suitable)
   # create the directory for older GC log file
   [ ! -d ${EXO_LOG_DIR}/platform-gc/ ] && mkdir ${EXO_LOG_DIR}/platform-gc/
