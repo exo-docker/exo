@@ -299,6 +299,7 @@ else
 
   # Upload size
   add_in_exo_configuration "exo.ecms.connector.drives.uploadLimit=${EXO_UPLOAD_MAX_FILE_SIZE}"
+  add_in_exo_configuration "exo.social.activity.uploadLimit=${EXO_UPLOAD_MAX_FILE_SIZE}"
 
   # Tomcat HTTP Thread pool configuration
   xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "maxThreads" -v "${EXO_HTTP_THREAD_MAX}" \
