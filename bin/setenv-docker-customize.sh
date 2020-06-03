@@ -366,18 +366,6 @@ else
     done
   fi
 
-  # Add a new valve to replace the proxy ip by the client ip (just before the end of Host)
-  xmlstarlet ed -L -s "/Server/Service/Engine/Host" -t elem -n "ValveTMP" -v "" \
-  -i "//ValveTMP" -t attr -n "className" -v "org.apache.catalina.valves.RemoteIpValve" \
-  -i "//ValveTMP" -t attr -n "remoteIpHeader" -v "x-forwarded-for" \
-  -i "//ValveTMP" -t attr -n "proxiesHeader" -v "x-forwarded-by" \
-  -i "//ValveTMP" -t attr -n "protocolHeader" -v "x-forwarded-proto" \
-  -r "//ValveTMP" -v Valve \
-  /opt/exo/conf/server.xml || {
-    echo "ERROR during xmlstarlet processing (adding RemoteIpValve)"
-    exit 1
-  }
-
   # Mail configuration
   add_in_exo_configuration "# Mail configuration"
   add_in_exo_configuration "exo.email.smtp.from=${EXO_MAIL_FROM}"
