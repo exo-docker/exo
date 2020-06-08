@@ -189,16 +189,6 @@ if [ -f /opt/exo/_done.configuration ]; then
   echo "INFO: Configuration already done! skipping this step."
 else
 
-  if [ ! -z "${EXO_ADDONS_CATALOG_URL:-}" ]; then
-    echo "The add-on manager catalog url was overriden with : ${EXO_ADDONS_CATALOG_URL}"
-    _ADDON_MGR_OPTION_CATALOG="--catalog=${EXO_ADDONS_CATALOG_URL}"
-  fi
-
-  if [ ! -z "${EXO_PATCHES_CATALOG_URL:-}" ]; then
-    echo "The add-on manager patches catalog url was defined with : ${EXO_PATCHES_CATALOG_URL}"
-    _ADDON_MGR_OPTION_PATCHES_CATALOG="--catalog=${EXO_PATCHES_CATALOG_URL}"
-  fi
-
   # Jcr storage configuration
   add_in_exo_configuration "exo.jcr.storage.data.dir=${EXO_JCR_STORAGE_DIR}"
 
@@ -585,6 +575,16 @@ else
   echo "# ------------------------------------ #"
   echo "# eXo add-ons management start ..."
   echo "# ------------------------------------ #"
+
+  if [ ! -z "${EXO_ADDONS_CATALOG_URL:-}" ]; then
+    echo "The add-on manager catalog url was overriden with : ${EXO_ADDONS_CATALOG_URL}"
+    _ADDON_MGR_OPTION_CATALOG="--catalog=${EXO_ADDONS_CATALOG_URL}"
+  fi
+
+  if [ ! -z "${EXO_PATCHES_CATALOG_URL:-}" ]; then
+    echo "The add-on manager patches catalog url was defined with : ${EXO_PATCHES_CATALOG_URL}"
+    _ADDON_MGR_OPTION_PATCHES_CATALOG="--catalog=${EXO_PATCHES_CATALOG_URL}"
+  fi
 
   # add-ons removal
   if [ -z "${EXO_ADDONS_REMOVE_LIST:-}" ]; then
