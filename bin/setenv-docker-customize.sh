@@ -612,7 +612,7 @@ else
   echo "# ------------------------------------ #"
 
   # add-on installation options
-  if [[ "${EXO_ADDONS_CONFLICT_MODE:-}" =~ ^(ignore|overwrite|fail)$ ]]; then 
+  if [ "${EXO_ADDONS_CONFLICT_MODE:-}" = "overwrite" ] || [ "${EXO_ADDONS_CONFLICT_MODE:-}" = "ignore" ]; then 
     _ADDON_MGR_OPTIONS="${_ADDON_MGR_OPTIONS:-} --conflict=${EXO_ADDONS_CONFLICT_MODE}"
   fi
 
