@@ -74,8 +74,6 @@ Some add-ons are already installed in eXo image but you can install other one or
 | EXO_ADDONS_REMOVE_LIST   | NO        | -             | commas separated list of add-ons to uninstall (ex: exo-chat,exo-es-embedded) (since: 4.4.2_3) |
 | EXO_ADDONS_CATALOG_URL   | NO        | -             | The url of a valid eXo Catalog                                                                |
 | EXO_ADDONS_CONFLICT_MODE | NO        | -             | decision to make in case of file conflicts (overwrite, ignore or fail)                        |
-| EXO_ADDONS_NOCOMPAT_MODE | NO        | -             | allow to install incompatible addons (true, false)                                            |
-
 
 ### Patches
 
