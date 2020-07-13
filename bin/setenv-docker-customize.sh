@@ -180,6 +180,8 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET}" ] && EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET="wss://mainnet.infura.io/ws/v3/a1ac85aea9ce4be88e9e87dad7c01d40"
 [ -z "${EXO_REWARDS_WALLET_TOKEN_ADDRESS}" ] && EXO_REWARDS_WALLET_TOKEN_ADDRESS="0xc76987d43b77c45d51653b6eb110b9174acce8fb"
 
+[ -z "${EXO_ADDONS_CONFLICT_MODE}" ] && EXO_ADDONS_CONFLICT_MODE=""
+
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -610,10 +612,10 @@ else
   echo "# ------------------------------------ #"
 
   # add-on installation options
-  if [[ "${EXO_ADDONS_CONFLICT_MODE:-}" =~ "^(ignore|overwrite|fail)$" ]]; then 
+  if [[ "${EXO_ADDONS_CONFLICT_MODE:-}" =~ ^(ignore|overwrite|fail)$ ]]; then 
     _ADDON_MGR_OPTIONS="${_ADDON_MGR_OPTIONS:-} --conflict=${EXO_ADDONS_CONFLICT_MODE}"
   fi
-  
+
   # add-on installation
   if [ -z "${EXO_ADDONS_LIST:-}" ]; then
     echo "# no add-on to install from EXO_ADDONS_LIST environment variable."
