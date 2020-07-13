@@ -609,6 +609,15 @@ else
 
   echo "# ------------------------------------ #"
 
+  # add-on installation options
+  if [[ "${EXO_ADDONS_CONFLICT_MODE:-}" =~ "^(ignore|overwrite|fail)$" ]]; then 
+    _ADDON_MGR_OPTIONS="${_ADDON_MGR_OPTIONS:-} --conflict=${EXO_ADDONS_CONFLICT_MODE}"
+  fi
+
+  if [ "${EXO_ADDONS_NOCOMPAT_MODE:-}" = "true" ]; then 
+    _ADDON_MGR_OPTIONS="${_ADDON_MGR_OPTIONS:-} --no-compat"
+  fi    
+
   # add-on installation
   if [ -z "${EXO_ADDONS_LIST:-}" ]; then
     echo "# no add-on to install from EXO_ADDONS_LIST environment variable."

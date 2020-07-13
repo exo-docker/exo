@@ -68,11 +68,14 @@ services:
 
 Some add-ons are already installed in eXo image but you can install other one or remove some of the pre-installed one :
 
-| VARIABLE               | MANDATORY | DEFAULT VALUE | DESCRIPTION                                                                                   |
-| ---------------------- | --------- | ------------- | --------------------------------------------------------------------------------------------- |
-| EXO_ADDONS_LIST        | NO        | -             | commas separated list of add-ons to install (ex: exo-answers,exo-skype:1.0.x-SNAPSHOT)        |
-| EXO_ADDONS_REMOVE_LIST | NO        | -             | commas separated list of add-ons to uninstall (ex: exo-chat,exo-es-embedded) (since: 4.4.2_3) |
-| EXO_ADDONS_CATALOG_URL | NO        | -             | The url of a valid eXo Catalog                                                                |
+| VARIABLE                 | MANDATORY | DEFAULT VALUE | DESCRIPTION                                                                                   |
+| ------------------------ | --------- | ------------- | --------------------------------------------------------------------------------------------- |
+| EXO_ADDONS_LIST          | NO        | -             | commas separated list of add-ons to install (ex: exo-answers,exo-skype:1.0.x-SNAPSHOT)        |
+| EXO_ADDONS_REMOVE_LIST   | NO        | -             | commas separated list of add-ons to uninstall (ex: exo-chat,exo-es-embedded) (since: 4.4.2_3) |
+| EXO_ADDONS_CATALOG_URL   | NO        | -             | The url of a valid eXo Catalog                                                                |
+| EXO_ADDONS_CONFLICT_MODE | NO        | -             | decision to make in case of file conflicts (overwrite, ignore or fail)                        |
+| EXO_ADDONS_NOCOMPAT_MODE | NO        | -             | allow to install incompatible addons (true, false)                                            |
+
 
 ### Patches
 
