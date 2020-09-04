@@ -4,7 +4,8 @@
 
 | Image                                                       | JDK | eXo Platform             |
 | ----------------------------------------------------------- | --- | ------------------------ |
-| exoplatform/exo:6.0_latest                                  | 11   | 6.0.x Enterprise edition |
+| exoplatform/exo:6.1_latest                                  | 11  | 6.1.x Enterprise edition |
+| exoplatform/exo:6.0_latest                                  | 11  | 6.0.x Enterprise edition |
 | exoplatform/exo:5.3_latest                                  | 8   | 5.3.x Enterprise edition |
 | exoplatform/exo:5.2_latest ([changelog](./CHANGELOG.md))    | 8   | 5.2.x Enterprise edition |
 | exoplatform/exo:5.1_latest ([changelog](./CHANGELOG-51.md)) | 8   | 5.1.x Enterprise edition |
