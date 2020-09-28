@@ -207,7 +207,7 @@ else
       ;;
     mysql)
       cat /opt/exo/conf/server-mysql.xml > /opt/exo/conf/server.xml
-      replace_in_file /opt/exo/conf/server.xml "jdbc:mysql://localhost:3306/plf?autoReconnect=true" "jdbc:mysql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}?autoReconnect=true\&amp;useSSL=${EXO_DB_MYSQL_USE_SSL}"
+      replace_in_file /opt/exo/conf/server.xml "jdbc:mysql://localhost:3306/plf?autoReconnect=true" "jdbc:mysql://${EXO_DB_HOST}:${EXO_DB_PORT}/${EXO_DB_NAME}?autoReconnect=true\&amp;useSSL=${EXO_DB_MYSQL_USE_SSL}&amp;allowPublicKeyRetrieval=true"
       replace_in_file /opt/exo/conf/server.xml 'username="plf" password="plf"' 'username="'${EXO_DB_USER}'" password="'${EXO_DB_PASSWORD}'"'
       ;;
     pgsql|postgres|postgresql)
