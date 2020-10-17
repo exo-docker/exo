@@ -164,13 +164,6 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 
 [ -z "${EXO_REGISTRATION}" ] && EXO_REGISTRATION="true"
 
-[ -z "${EXO_CLUSTER}" ] && EXO_CLUSTER="false"
-[ -z "${EXO_CLUSTER_NODE_NAME}" ] && EXO_CLUSTER_NODE_NAME="${HOSTNAME}"
-[ -z "${EXO_CLUSTER_HOSTS}" ] && EXO_CLUSTER_HOSTS="-"
-[ -z "${EXO_JGROUPS_ADDR}" ] && EXO_JGROUPS_ADDR="GLOBAL"
-[ -z "${EXO_JGROUPS_JCR_PORT}" ] && EXO_JGROUPS_JCR_PORT="7800"
-[ -z "${EXO_JGROUPS_SERVICE_PORT}" ] && EXO_JGROUPS_SERVICE_PORT="7900"
-
 [ -z "${EXO_PROFILES}" ] && EXO_PROFILES="all"
 
 [ -z "${EXO_REWARDS_WALLET_ADMIN_KEY}" ] && EXO_REWARDS_WALLET_ADMIN_KEY="changeThisKey"
@@ -375,40 +368,6 @@ else
   fi
   add_in_exo_configuration "exo.email.smtp.socketFactory.port="
   add_in_exo_configuration "exo.email.smtp.socketFactory.class="
-
-  # Cluster configuration
-  if [ "${EXO_CLUSTER}" = "true" ]; then
-    add_in_exo_configuration "exo.cluster.node.name=${EXO_CLUSTER_NODE_NAME}"
-    JCR_CLUSTER_HOSTS=""
-    SERVICE_CLUSTER_HOSTS=""
-    COMETD_CLUSTER_HOSTS=""
-
-    for cluster_host in $(echo ${EXO_CLUSTER_HOSTS} | tr ',' ' '); do
-      JCR_CLUSTER_HOSTS="${JCR_CLUSTER_HOSTS}${cluster_host}[${EXO_JGROUPS_JCR_PORT}],"
-      SERVICE_CLUSTER_HOSTS="${SERVICE_CLUSTER_HOSTS}${cluster_host}[${EXO_JGROUPS_SERVICE_PORT}],"
-      COMETD_CLUSTER_HOSTS="${COMETD_CLUSTER_HOSTS}http://${cluster_host}:8080/cometd/cometd,"
-    done
-
-    # JGROUPS properties
-    add_in_exo_configuration "exo.jcr.cluster.jgroups.tcpping.initial_hosts=${JCR_CLUSTER_HOSTS}"
-    add_in_exo_configuration "exo.jcr.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
-    add_in_exo_configuration "exo.jcr.cluster.jgroups.tcp.bind_port=${EXO_JGROUPS_JCR_PORT}"
-
-    add_in_exo_configuration "exo.service.cluster.jgroups.tcpping.initial_hosts=${SERVICE_CLUSTER_HOSTS}"
-    add_in_exo_configuration "exo.service.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
-    add_in_exo_configuration "exo.service.cluster.jgroups.tcp.bind_port=${EXO_JGROUPS_SERVICE_PORT}"
-
-    # WebSocket configuration
-    add_in_exo_configuration "exo.cometd.oort.url=http://${EXO_CLUSTER_NODE_NAME}:8080/cometd/cometd"
-    add_in_exo_configuration "exo.cometd.oort.configType=static"
-    add_in_exo_configuration "exo.cometd.oort.cloud=${COMETD_CLUSTER_HOSTS}"
-
-    # JCR configuration
-    add_in_exo_configuration "gatein.jcr.config.type=cluster"
-    # TODO allow to customize this
-    add_in_exo_configuration "gatein.jcr.index.changefilterclass=org.exoplatform.services.jcr.impl.core.query.ispn.LocalIndexChangesFilter"
-
-  fi
 
   # JMX configuration
   if [ "${EXO_JMX_ENABLED}" = "true" ]; then
@@ -692,14 +651,6 @@ fi
 # -----------------------------------------------------------------------------
 if [ -f /etc/exo/chat.properties ] && [ "${EXO_CHAT_SERVER_STANDALONE}" = "false" ]; then
   sed -i 's/^chatPassPhrase=.*$/chatPassPhrase='"$(tr -dc '[:alnum:]' < /dev/urandom  | dd bs=4 count=6 2>/dev/null)"'/' /etc/exo/chat.properties
-fi
-
-
-# -----------------------------------------------------------------------------
-# Configure the eXo profiles for clustering if needed
-# -----------------------------------------------------------------------------
-if [ "${EXO_CLUSTER}" = "true" ]; then
-  EXO_PROFILES="${EXO_PROFILES},cluster,cluster-jgroups-tcp"
 fi
 
 # -----------------------------------------------------------------------------
