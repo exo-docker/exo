@@ -164,13 +164,6 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 
 [ -z "${EXO_REGISTRATION}" ] && EXO_REGISTRATION="true"
 
-[ -z "${EXO_CLUSTER}" ] && EXO_CLUSTER="false"
-[ -z "${EXO_CLUSTER_NODE_NAME}" ] && EXO_CLUSTER_NODE_NAME="${HOSTNAME}"
-[ -z "${EXO_CLUSTER_HOSTS}" ] && EXO_CLUSTER_HOSTS="-"
-[ -z "${EXO_JGROUPS_ADDR}" ] && EXO_JGROUPS_ADDR="GLOBAL"
-[ -z "${EXO_JGROUPS_JCR_PORT}" ] && EXO_JGROUPS_JCR_PORT="7800"
-[ -z "${EXO_JGROUPS_SERVICE_PORT}" ] && EXO_JGROUPS_SERVICE_PORT="7900"
-
 [ -z "${EXO_PROFILES}" ] && EXO_PROFILES="all"
 
 [ -z "${EXO_REWARDS_WALLET_ADMIN_KEY}" ] && EXO_REWARDS_WALLET_ADMIN_KEY="changeThisKey"
@@ -192,11 +185,17 @@ if [ -f /opt/exo/_done.configuration ]; then
 else
 
   # Jcr storage configuration
+  add_in_exo_configuration "# JCR storage configuration"
+  if [ ! -z ${EXO_JCR_DB_STORAGE_ENABLED} ]; then
+    add_in_exo_configuration "exo.jcr.storage.enabled=${EXO_JCR_DB_STORAGE_ENABLED}"
+  fi
   add_in_exo_configuration "exo.jcr.storage.data.dir=${EXO_JCR_STORAGE_DIR}"
 
   # File storage configuration
   add_in_exo_configuration "# File storage configuration"
-  add_in_exo_configuration "exo.files.binaries.storage.type=fs"
+  if [ ! -z ${EXO_FILE_STORAGE_TYPE} ]; then
+    add_in_exo_configuration "exo.files.binaries.storage.type=${EXO_FILE_STORAGE_TYPE}"
+  fi
   add_in_exo_configuration "exo.files.storage.dir=${EXO_FILE_STORAGE_DIR}"
   add_in_exo_configuration "exo.commons.FileStorageCleanJob.retention-time=${EXO_FILE_STORAGE_RETENTION}"
 
@@ -227,6 +226,8 @@ else
 
   # Update IDM datasource settings
   xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-idm_portal']/@initialSize" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-idm_portal']/@minIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-idm_portal']/@maxIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-idm_portal']/@maxActive" -v "${EXO_DB_POOL_IDM_MAX_SIZE}" \
     /opt/exo/conf/server.xml || {
     echo "ERROR during xmlstarlet processing (configuring datasource exo-idm_portal)"
@@ -235,6 +236,8 @@ else
 
   # Update JCR datasource settings
   xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@initialSize" -v "${EXO_DB_POOL_JCR_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@minIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@maxIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@maxActive" -v "${EXO_DB_POOL_JCR_MAX_SIZE}" \
     /opt/exo/conf/server.xml || {
     echo "ERROR during xmlstarlet processing (configuring datasource exo-jcr_portal)"
@@ -243,6 +246,8 @@ else
 
   # Update JPA datasource settings
   xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@initialSize" -v "${EXO_DB_POOL_JPA_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@minIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@maxIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@maxActive" -v "${EXO_DB_POOL_JPA_MAX_SIZE}" \
     /opt/exo/conf/server.xml || {
     echo "ERROR during xmlstarlet processing (configuring datasource exo-jpa_portal)"
@@ -252,6 +257,22 @@ else
   ## Remove AJP connector
   xmlstarlet ed -L -d '//Connector[@protocol="AJP/1.3"]' /opt/exo/conf/server.xml || {
     echo "ERROR during xmlstarlet processing (AJP connector removal)"
+    exit 1
+  }
+
+  ## Add jvmRoute in server.xml, useful for Load balancing in cluster configuration
+  if [ -n "${EXO_CLUSTER_NODE_NAME}" ]; then
+    xmlstarlet ed -L -d "/Server/Service/Engine/@jvmRoute" /opt/exo/conf/server.xml && \
+      xmlstarlet ed -L -s "/Server/Service/Engine" -t attr -n "jvmRoute" -v "${EXO_CLUSTER_NODE_NAME}" /opt/exo/conf/server.xml || {
+      echo "ERROR during xmlstarlet processing (jvmRoute definition)"
+      exit 1
+    }
+  fi
+
+  ## Force JSESSIONID to be added in cookie instead of URL
+  xmlstarlet ed -L -d "/Context/@cookies" /opt/exo/conf/context.xml && \
+    xmlstarlet ed -L -s "/Context" -t attr -n "cookies" -v "true" /opt/exo/conf/context.xml || {
+    echo "ERROR during xmlstarlet processing (cookies definition)"
     exit 1
   }
 
@@ -376,53 +397,8 @@ else
   add_in_exo_configuration "exo.email.smtp.socketFactory.port="
   add_in_exo_configuration "exo.email.smtp.socketFactory.class="
 
-  # Cluster configuration
-  if [ "${EXO_CLUSTER}" = "true" ]; then
-    add_in_exo_configuration "exo.cluster.node.name=${EXO_CLUSTER_NODE_NAME}"
-    JCR_CLUSTER_HOSTS=""
-    SERVICE_CLUSTER_HOSTS=""
-    COMETD_CLUSTER_HOSTS=""
-
-    for cluster_host in $(echo ${EXO_CLUSTER_HOSTS} | tr ',' ' '); do
-      JCR_CLUSTER_HOSTS="${JCR_CLUSTER_HOSTS}${cluster_host}[${EXO_JGROUPS_JCR_PORT}],"
-      SERVICE_CLUSTER_HOSTS="${SERVICE_CLUSTER_HOSTS}${cluster_host}[${EXO_JGROUPS_SERVICE_PORT}],"
-      COMETD_CLUSTER_HOSTS="${COMETD_CLUSTER_HOSTS}http://${cluster_host}:8080/cometd/cometd,"
-    done
-
-    # JGROUPS properties
-    add_in_exo_configuration "exo.jcr.cluster.jgroups.tcpping.initial_hosts=${JCR_CLUSTER_HOSTS}"
-    add_in_exo_configuration "exo.jcr.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
-    add_in_exo_configuration "exo.jcr.cluster.jgroups.tcp.bind_port=${EXO_JGROUPS_JCR_PORT}"
-
-    add_in_exo_configuration "exo.service.cluster.jgroups.tcpping.initial_hosts=${SERVICE_CLUSTER_HOSTS}"
-    add_in_exo_configuration "exo.service.cluster.jgroups.tcp.bind_addr=${EXO_JGROUPS_ADDR}"
-    add_in_exo_configuration "exo.service.cluster.jgroups.tcp.bind_port=${EXO_JGROUPS_SERVICE_PORT}"
-
-    # WebSocket configuration
-    add_in_exo_configuration "exo.cometd.oort.url=http://${EXO_CLUSTER_NODE_NAME}:8080/cometd/cometd"
-    add_in_exo_configuration "exo.cometd.oort.configType=static"
-    add_in_exo_configuration "exo.cometd.oort.cloud=${COMETD_CLUSTER_HOSTS}"
-
-    # JCR configuration
-    add_in_exo_configuration "gatein.jcr.config.type=cluster"
-    # TODO allow to customize this
-    add_in_exo_configuration "gatein.jcr.index.changefilterclass=org.exoplatform.services.jcr.impl.core.query.ispn.LocalIndexChangesFilter"
-
-  fi
-
   # JMX configuration
   if [ "${EXO_JMX_ENABLED}" = "true" ]; then
-    # insert the listener before the "Global JNDI resources" line
-    xmlstarlet ed -L -i "/Server/GlobalNamingResources" -t elem -n ListenerTMP -v "" \
-      -i "//ListenerTMP" -t attr -n "className" -v "org.apache.catalina.mbeans.JmxRemoteLifecycleListener" \
-      -i "//ListenerTMP" -t attr -n "rmiRegistryPortPlatform" -v "${EXO_JMX_RMI_REGISTRY_PORT}" \
-      -i "//ListenerTMP" -t attr -n "rmiServerPortPlatform" -v "${EXO_JMX_RMI_SERVER_PORT}" \
-      -i "//ListenerTMP" -t attr -n "useLocalPorts" -v "false" \
-      -r "//ListenerTMP" -v "Listener" \
-      /opt/exo/conf/server.xml || {
-      echo "ERROR during xmlstarlet processing (adding JmxRemoteLifecycleListener)"
-      exit 1
-    }
     # Create the security files if required
     if [ "${EXO_JMX_USERNAME:-}" != "-" ]; then
       if [ "${EXO_JMX_PASSWORD:-}" = "-" ]; then
@@ -548,10 +524,12 @@ else
       EXO_ADDONS_LIST="${EXO_ADDONS_LIST:-},exo-chat-client:${EXO_CHAT_VERSION}"
     fi
 
+    [ -z "${EXO_CHAT_SERVICE_URL}" ] && EXO_CHAT_SERVICE_URL="http://localhost:8080"
 
     # Force standalone configuration
     add_in_chat_configuration "# eXo Chat server configuration"
     add_in_chat_configuration "standaloneChatServer=true"
+    add_in_chat_configuration "chatServiceUrl=${EXO_CHAT_SERVICE_URL}"
 
   fi
 
@@ -694,14 +672,6 @@ if [ -f /etc/exo/chat.properties ] && [ "${EXO_CHAT_SERVER_STANDALONE}" = "false
   sed -i 's/^chatPassPhrase=.*$/chatPassPhrase='"$(tr -dc '[:alnum:]' < /dev/urandom  | dd bs=4 count=6 2>/dev/null)"'/' /etc/exo/chat.properties
 fi
 
-
-# -----------------------------------------------------------------------------
-# Configure the eXo profiles for clustering if needed
-# -----------------------------------------------------------------------------
-if [ "${EXO_CLUSTER}" = "true" ]; then
-  EXO_PROFILES="${EXO_PROFILES},cluster,cluster-jgroups-tcp"
-fi
-
 # -----------------------------------------------------------------------------
 # Define a better place for eXo Platform license file
 # -----------------------------------------------------------------------------
@@ -771,6 +741,8 @@ case "${EXO_DB_TYPE}" in
     if [ $? != 0 ]; then
       echo "[ERROR] The ${EXO_DB_TYPE} database ${EXO_DB_HOST}:${EXO_DB_PORT} was not available within ${EXO_DB_TIMEOUT}s ! eXo startup aborted ..."
       exit 1
+    else
+      echo "Database ${EXO_DB_TYPE} is available, continue starting..."
     fi
     ;;
   pgsql|postgres|postgresql)
@@ -779,17 +751,21 @@ case "${EXO_DB_TYPE}" in
     if [ $? != 0 ]; then
       echo "[ERROR] The ${EXO_DB_TYPE} database ${EXO_DB_HOST}:${EXO_DB_PORT} was not available within ${EXO_DB_TIMEOUT}s ! eXo startup aborted ..."
       exit 1
+    else
+      echo "Database ${EXO_DB_TYPE} is available, continue starting..."
     fi
     ;;
 esac
 
 # Wait for mongodb availability (if chat is installed)
-if [ -f /opt/exo/addons/statuses/exo-chat.status ]; then
+if [ -f /opt/exo/addons/statuses/exo-chat.status && "${EXO_CHAT_SERVER_STANDALONE:false}" = "false" ]; then
   echo "Waiting for mongodb availability at ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} ..."
   wait-for ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} -s -t ${EXO_MONGO_TIMEOUT}
   if [ $? != 0 ]; then
     echo "[ERROR] The mongodb database ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} was not available within ${EXO_MONGO_TIMEOUT}s ! eXo startup aborted ..."
     exit 1
+  else
+    echo "Mongodb is available, continue starting..."
   fi
 fi
 
@@ -800,6 +776,8 @@ if [ "${EXO_ES_EMBEDDED}" != "true" ]; then
   if [ $? != 0 ]; then
     echo "[ERROR] The external elastic search ${EXO_ES_HOST}:${EXO_ES_PORT} was not available within ${EXO_ES_TIMEOUT}s ! eXo startup aborted ..."
     exit 1
+  else
+    echo "Elasticsearch is available, continue starting..."
   fi
 fi
 
