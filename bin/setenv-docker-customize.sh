@@ -502,10 +502,12 @@ else
       EXO_ADDONS_LIST="${EXO_ADDONS_LIST:-},exo-chat-client:${EXO_CHAT_VERSION}"
     fi
 
+    [ -z "${EXO_CHAT_SERVICE_URL}" ] && EXO_CHAT_SERVICE_URL="http://localhost:8080"
 
     # Force standalone configuration
     add_in_chat_configuration "# eXo Chat server configuration"
     add_in_chat_configuration "standaloneChatServer=true"
+    add_in_chat_configuration "chatServiceUrl=${EXO_CHAT_SERVICE_URL}"
 
   fi
 

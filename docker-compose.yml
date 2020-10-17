@@ -11,9 +11,11 @@ services:
     links:
       - exo-cluster-node1
       - exo-cluster-node2
+      - exo-chat
     depends_on: 
       - exo-cluster-node1
       - exo-cluster-node2
+      - exo-chat
       - exo-mail
     networks:
       - front
@@ -24,9 +26,13 @@ services:
       - ./data/exo-node1/:/srv/exo/:rw
       - ./logs/exo-node1/:/var/log/exo/:rw
     environment:
-      EXO_ADDONS_LIST:
+      EXO_ADDONS_LIST: exo-chat-client:3.0.x-SNAPSHOT
+      EXO_ADDONS_REMOVE_LIST: meeds-wallet,exo-chat
       EXO_PATCHES_LIST: 
       EXO_PATCHES_CATALOG_URL: 
+      EXO_CHAT_SERVER_URL: http://localhost
+      chatServerBase: http://exo-chat:8080
+      EXO_CHAT_SERVER_PASSPHRASE: change-this-password
       EXO_ES_HOST: exo-elasticsearch
       EXO_ES_EMBEDDED: "false"
       EXO_CLUSTER: "true"
@@ -43,8 +49,6 @@ services:
       EXO_DB_POOL_JCR_MAX_SIZE: 5
       EXO_DB_POOL_JPA_INIT_SIZE: 3
       EXO_DB_POOL_JPA_MAX_SIZE: 20
-      EXO_MONGO_HOST: exo-mongo
-      EXO_MONGO_PORT: 27017
       EXO_PROXY_VHOST: localhost
       EXO_PROXY_SSL: "false"
       EXO_JVM_SIZE_MIN: "4g"
@@ -56,31 +60,37 @@ services:
       EXO_ES_INDEX_SHARD_NB: 1
     expose:
       - "8080"
+    links:
+      - exo-chat
+      - exo-cluster-node2
     depends_on:
       - exo-db
       - exo-elasticsearch
-      - exo-mongo
       - exo-mail
+      - exo-chat
     networks:
       - front
       - back
       - mail
+    command: ["wait-for", "exo-chat:8080", "-s", "-t", "360", "--", "/opt/exo/start_eXo.sh"]
   exo-cluster-node2:
     image: exoplatform/exo:6.0.x-cluster-SNAPSHOT
     volumes:
       - ./data/exo-node2/:/srv/exo/:rw
       - ./logs/exo-node2/:/var/log/exo/:rw
     environment:
-      EXO_ADDONS_LIST:
+      EXO_ADDONS_LIST: exo-chat-client:3.0.x-SNAPSHOT
+      EXO_ADDONS_REMOVE_LIST: meeds-wallet,exo-chat
       EXO_PATCHES_LIST: 
       EXO_PATCHES_CATALOG_URL: 
+      EXO_CHAT_SERVER_URL: http://localhost
+      chatServerBase: http://exo-chat:8080
+      EXO_CHAT_SERVER_PASSPHRASE: change-this-password
       EXO_ES_HOST: exo-elasticsearch
       EXO_ES_EMBEDDED: "false"
       EXO_CLUSTER: "true"
       EXO_CLUSTER_NODE_NAME: "node2"
       EXO_CLUSTER_HOSTS: "name=node1,address=exo-cluster-node1 name=node2,address=exo-cluster-node2"
-      EXO_CLUSTER_WAIT_FOR: "exo-cluster-node1:8080"
-      EXO_CLUSTER_WAIT_TIMEOUT: 360
       EXO_DB_TYPE: mysql
       EXO_DB_NAME: exo
       EXO_DB_USER: exo
@@ -92,8 +102,6 @@ services:
       EXO_DB_POOL_JCR_MAX_SIZE: 5
       EXO_DB_POOL_JPA_INIT_SIZE: 3
       EXO_DB_POOL_JPA_MAX_SIZE: 20
-      EXO_MONGO_HOST: exo-mongo
-      EXO_MONGO_PORT: 27017
       EXO_PROXY_VHOST: localhost
       EXO_PROXY_SSL: "false"
       EXO_JVM_SIZE_MIN: "4g"
@@ -105,9 +113,33 @@ services:
       EXO_ES_INDEX_SHARD_NB: 1
     expose:
       - "8080"
+    links:
+      - exo-chat
+      - exo-cluster-node1
     depends_on:
       - exo-db
       - exo-elasticsearch
+      - exo-mail
+      - exo-chat
+    networks:
+      - front
+      - back
+      - mail
+    command: ["wait-for", "exo-cluster-node1:8080", "-s", "-t", "360", "--", "/opt/exo/start_eXo.sh"]
+  exo-chat:
+    image: exoplatform/chat-server:latest
+    environment:
+      CHAT_PORTAL_PAGE: /portal/dw/chat
+      CHAT_PASSPHRASE: change-this-password
+      CHAT_MONGO_DB_HOST: exo-mongo
+      CHAT_MONGO_DB_PORT: 27017
+      CHAT_SMTP_HOST: exo-mail
+      CHAT_SMTP_PORT: 1025
+    expose:
+      - "8080"
+    volumes:
+      - ./logs/exo-chat/:/opt/chat-server/logs/:rw
+    depends_on:
       - exo-mongo
       - exo-mail
     networks:
