@@ -220,6 +220,7 @@ else
 
   # Update IDM datasource settings
   xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-idm_portal']/@initialSize" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-idm_portal']/@minIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-idm_portal']/@maxIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-idm_portal']/@maxActive" -v "${EXO_DB_POOL_IDM_MAX_SIZE}" \
     /opt/exo/conf/server.xml || {
@@ -229,6 +230,7 @@ else
 
   # Update JCR datasource settings
   xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@initialSize" -v "${EXO_DB_POOL_JCR_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@minIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@maxIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@maxActive" -v "${EXO_DB_POOL_JCR_MAX_SIZE}" \
     /opt/exo/conf/server.xml || {
@@ -238,6 +240,7 @@ else
 
   # Update JPA datasource settings
   xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@initialSize" -v "${EXO_DB_POOL_JPA_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@minIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@maxIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@maxActive" -v "${EXO_DB_POOL_JPA_MAX_SIZE}" \
     /opt/exo/conf/server.xml || {
@@ -714,6 +717,8 @@ case "${EXO_DB_TYPE}" in
     if [ $? != 0 ]; then
       echo "[ERROR] The ${EXO_DB_TYPE} database ${EXO_DB_HOST}:${EXO_DB_PORT} was not available within ${EXO_DB_TIMEOUT}s ! eXo startup aborted ..."
       exit 1
+    else
+      echo "Database ${EXO_DB_TYPE} is available, continue starting..."
     fi
     ;;
   pgsql|postgres|postgresql)
@@ -722,6 +727,8 @@ case "${EXO_DB_TYPE}" in
     if [ $? != 0 ]; then
       echo "[ERROR] The ${EXO_DB_TYPE} database ${EXO_DB_HOST}:${EXO_DB_PORT} was not available within ${EXO_DB_TIMEOUT}s ! eXo startup aborted ..."
       exit 1
+    else
+      echo "Database ${EXO_DB_TYPE} is available, continue starting..."
     fi
     ;;
 esac
@@ -733,6 +740,8 @@ if [ -f /opt/exo/addons/statuses/exo-chat.status ]; then
   if [ $? != 0 ]; then
     echo "[ERROR] The mongodb database ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} was not available within ${EXO_MONGO_TIMEOUT}s ! eXo startup aborted ..."
     exit 1
+  else
+    echo "Mongodb is available, continue starting..."
   fi
 fi
 
@@ -743,6 +752,8 @@ if [ "${EXO_ES_EMBEDDED}" != "true" ]; then
   if [ $? != 0 ]; then
     echo "[ERROR] The external elastic search ${EXO_ES_HOST}:${EXO_ES_PORT} was not available within ${EXO_ES_TIMEOUT}s ! eXo startup aborted ..."
     exit 1
+  else
+    echo "Elasticsearch is available, continue starting..."
   fi
 fi
 
