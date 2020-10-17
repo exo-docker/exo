@@ -1,0 +1,167 @@
+version: '3'
+services:
+  exo-web:
+    image: nginx:1.18-alpine
+    volumes:
+      - ./conf/nginx-plf60.conf:/etc/nginx/nginx.conf:ro
+    expose:
+      - "80"
+    ports: 
+      - "80:80"
+    links:
+      - exo-cluster-node1
+      - exo-cluster-node2
+    depends_on: 
+      - exo-cluster-node1
+      - exo-cluster-node2
+      - exo-mail
+    networks:
+      - front
+      - mail
+  exo-cluster-node1:
+    image: exoplatform/exo:6.0.x-cluster-SNAPSHOT
+    volumes:
+      - ./data/exo-node1/:/srv/exo/:rw
+      - ./logs/exo-node1/:/var/log/exo/:rw
+    environment:
+      EXO_ADDONS_LIST:
+      EXO_PATCHES_LIST: 
+      EXO_ADDONS_REMOVE_LIST: meeds-wallet
+      EXO_PATCHES_CATALOG_URL: 
+      EXO_ES_HOST: exo-elasticsearch
+      EXO_ES_EMBEDDED: "false"
+      EXO_CLUSTER: "true"
+      EXO_CLUSTER_NODE_NAME: "node1"
+      EXO_CLUSTER_HOSTS: "name=node1,address=exo-cluster-node1 name=node2,address=exo-cluster-node2"
+      EXO_DB_TYPE: mysql
+      EXO_DB_NAME: exo
+      EXO_DB_USER: exo
+      EXO_DB_PASSWORD: exo
+      EXO_DB_HOST: exo-db
+      EXO_DB_POOL_IDM_INIT_SIZE: 1
+      EXO_DB_POOL_IDM_MAX_SIZE: 10
+      EXO_DB_POOL_JCR_INIT_SIZE: 2
+      EXO_DB_POOL_JCR_MAX_SIZE: 5
+      EXO_DB_POOL_JPA_INIT_SIZE: 3
+      EXO_DB_POOL_JPA_MAX_SIZE: 20
+      EXO_MONGO_HOST: exo-mongo
+      EXO_MONGO_PORT: 27017
+      EXO_PROXY_VHOST: localhost
+      EXO_PROXY_SSL: "false"
+      EXO_JVM_SIZE_MIN: "4g"
+      EXO_JVM_SIZE_MAX: "4g"
+      EXO_JVM_LOG_GC_ENABLED: "true"
+      EXO_MAIL_SMTP_HOST: exo-mail
+      EXO_MAIL_SMTP_PORT: 1025
+      EXO_ES_INDEX_REPLICA_NB: 0
+      EXO_ES_INDEX_SHARD_NB: 1
+    expose:
+      - "8080"
+    ports: 
+      - "8080:8080"
+    depends_on:
+      - exo-db
+      - exo-elasticsearch
+      - exo-mongo
+      - exo-mail
+    networks:
+      - front
+      - back
+      - mail
+  exo-cluster-node2:
+    image: exoplatform/exo:6.0.x-cluster-SNAPSHOT
+    volumes:
+      - ./data/exo-node2/:/srv/exo/:rw
+      - ./logs/exo-node2/:/var/log/exo/:rw
+    environment:
+      EXO_ADDONS_LIST:
+      EXO_ADDONS_REMOVE_LIST: meeds-wallet
+      EXO_PATCHES_LIST: 
+      EXO_PATCHES_CATALOG_URL: 
+      EXO_ES_HOST: exo-elasticsearch
+      EXO_ES_EMBEDDED: "false"
+      EXO_CLUSTER: "true"
+      EXO_CLUSTER_NODE_NAME: "node2"
+      EXO_CLUSTER_HOSTS: "name=node1,address=exo-cluster-node1 name=node2,address=exo-cluster-node2"
+      EXO_DB_TYPE: mysql
+      EXO_DB_NAME: exo
+      EXO_DB_USER: exo
+      EXO_DB_PASSWORD: exo
+      EXO_DB_HOST: exo-db
+      EXO_DB_POOL_IDM_INIT_SIZE: 1
+      EXO_DB_POOL_IDM_MAX_SIZE: 10
+      EXO_DB_POOL_JCR_INIT_SIZE: 2
+      EXO_DB_POOL_JCR_MAX_SIZE: 5
+      EXO_DB_POOL_JPA_INIT_SIZE: 3
+      EXO_DB_POOL_JPA_MAX_SIZE: 20
+      EXO_MONGO_HOST: exo-mongo
+      EXO_MONGO_PORT: 27017
+      EXO_PROXY_VHOST: localhost
+      EXO_PROXY_SSL: "false"
+      EXO_JVM_SIZE_MIN: "4g"
+      EXO_JVM_SIZE_MAX: "4g"
+      EXO_JVM_LOG_GC_ENABLED: "true"
+      EXO_MAIL_SMTP_HOST: exo-mail
+      EXO_MAIL_SMTP_PORT: 1025
+      EXO_ES_INDEX_REPLICA_NB: 0
+      EXO_ES_INDEX_SHARD_NB: 1
+    expose:
+      - "8080"
+    ports: 
+      - "8081:8080"
+    depends_on:
+      - exo-db
+      - exo-elasticsearch
+      - exo-mongo
+      - exo-mail
+    networks:
+      - front
+      - back
+      - mail
+    command: ["wait-for", "exo-cluster-node1:8080", "-s", "-t", "360", "--", "/opt/exo/start_eXo.sh"]
+  exo-mongo:
+    image: mongo:4.0
+    volumes:
+      - ./data/mongodb/:/data/db/:rw
+    networks:
+      - back
+  exo-db:
+    image: mysql:8.0
+    volumes:
+      - ./data/mysql/:/var/lib/mysql/:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: exo
+      MYSQL_USER: exo
+      MYSQL_PASSWORD: exo
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 5s
+      retries: 10
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - back
+  exo-elasticsearch:
+    image: exoplatform/elasticsearch:1.2.2
+    volumes:
+      - ./data/elasticsearch/:/usr/share/elasticsearch/data/:rw
+    environment:
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.monitoring.enabled=false
+    networks:
+      - back
+  exo-mail:
+    image: mailhog/mailhog:v1.0.1
+    volumes:
+      - ./data/mail/:/maildir/:rw
+    environment:
+      MH_SMTP_BIND_ADDR: 0.0.0.0:1025
+      MH_UI_WEB_PATH: mail
+      MH_STORAGE: maildir
+    networks:
+      - back
+      - mail
+networks:
+  front:
+  back:
+  mail:
