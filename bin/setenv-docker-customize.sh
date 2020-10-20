@@ -705,7 +705,7 @@ fi
 # -----------------------------------------------------------------------------
 # Define a better place for eXo Platform license file
 # -----------------------------------------------------------------------------
-CATALINA_OPTS="${CATALINA_OPTS:-} -Dexo.license.path=/etc/exo/license.xml"
+CATALINA_OPTS="${CATALINA_OPTS:-} -Dexo.license.path=/etc/exo"
 
 # -----------------------------------------------------------------------------
 # LDAP configuration
