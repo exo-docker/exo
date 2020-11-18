@@ -236,8 +236,8 @@ else
 
   # Update JCR datasource settings
   xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@initialSize" -v "${EXO_DB_POOL_JCR_INIT_SIZE}" \
-    -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@minIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
-    -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@maxIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@minIdle" -v "${EXO_DB_POOL_JCR_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@maxIdle" -v "${EXO_DB_POOL_JCR_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-jcr_portal']/@maxActive" -v "${EXO_DB_POOL_JCR_MAX_SIZE}" \
     /opt/exo/conf/server.xml || {
     echo "ERROR during xmlstarlet processing (configuring datasource exo-jcr_portal)"
@@ -246,8 +246,8 @@ else
 
   # Update JPA datasource settings
   xmlstarlet ed -L -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@initialSize" -v "${EXO_DB_POOL_JPA_INIT_SIZE}" \
-    -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@minIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
-    -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@maxIdle" -v "${EXO_DB_POOL_IDM_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@minIdle" -v "${EXO_DB_POOL_JPA_INIT_SIZE}" \
+    -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@maxIdle" -v "${EXO_DB_POOL_JPA_INIT_SIZE}" \
     -u "/Server/GlobalNamingResources/Resource[@name='exo-jpa_portal']/@maxActive" -v "${EXO_DB_POOL_JPA_MAX_SIZE}" \
     /opt/exo/conf/server.xml || {
     echo "ERROR during xmlstarlet processing (configuring datasource exo-jpa_portal)"
