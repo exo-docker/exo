@@ -175,6 +175,14 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 
 [ -z "${EXO_ADDONS_CONFLICT_MODE}" ] && EXO_ADDONS_CONFLICT_MODE=""
 
+[ -z "${EXO_JCR_DB_STORAGE_ENABLED}" ] && EXO_JCR_DB_STORAGE_ENABLED=""
+[ -z "${EXO_FILE_STORAGE_TYPE}" ] && EXO_FILE_STORAGE_TYPE=""
+[ -z "${EXO_CLUSTER_NODE_NAME}" ] && EXO_CLUSTER_NODE_NAME=""
+[ -z "${EXO_CHAT_SERVICE_URL}" ] && EXO_CHAT_SERVICE_URL=""
+
+
+
+
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -769,7 +777,7 @@ case "${EXO_DB_TYPE}" in
 esac
 
 # Wait for mongodb availability (if chat is installed)
-if [ -f /opt/exo/addons/statuses/exo-chat.status && "${EXO_CHAT_SERVER_STANDALONE:false}" = "false" ]; then
+if [ -f /opt/exo/addons/statuses/exo-chat.status && "${EXO_CHAT_SERVER_STANDALONE:-false}" = "false" ]; then
   echo "Waiting for mongodb availability at ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} ..."
   wait-for ${EXO_MONGO_HOST}:${EXO_MONGO_PORT} -s -t ${EXO_MONGO_TIMEOUT}
   if [ $? != 0 ]; then
