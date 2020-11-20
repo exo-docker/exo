@@ -155,7 +155,7 @@ The following environment variables must be passed to the container in order to 
 | -------------------------- | --------- | ---------------------------- | ------------------------------------------------------------------------------------------------------|
 | EXO_DATA_DIR               | NO        | `/srv/exo`                   | the directory to store eXo Platform data                                                              |
 | EXO_JCR_STORAGE_DIR        | NO        | `${EXO_DATA_DIR}/jcr/values` | the directory to store eXo Platform JCR values data                                                   |
-| EXO_JCR_DB_STORAGE_ENABLED | NO        | Default value of eXo Server  | Whether to store JCR Binary files in RDBMS or File system. Possible values: true (=FS) OR false (=DB) |
+| EXO_JCR_FS_STORAGE_ENABLED | NO        | Default value of eXo Server  | Whether to store JCR Binary files in RDBMS or File system. Possible values: true (=FS) OR false (=DB) |
 | EXO_FILE_STORAGE_DIR       | NO        | `${EXO_DATA_DIR}/files`      | the directory to store eXo Platform data                                                              |
 | EXO_FILE_STORAGE_TYPE      | NO        | Default value of eXo Server  | Whether to store Files API Binary files in RDBMS or File system. Possible values: rdbms OR fs         |
 | EXO_FILE_STORAGE_RETENTION | NO        | `30`                         | the number of days to keep deleted files on disk before definitively remove it from the disk          |
