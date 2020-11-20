@@ -143,6 +143,7 @@ esac
 
 [ -z "${EXO_CHAT_SERVER_STANDALONE}" ] && EXO_CHAT_SERVER_STANDALONE="false"
 [ -z "${EXO_CHAT_SERVER_URL}" ] && EXO_CHAT_SERVER_URL="http://localhost:8080"
+[ -z "${EXO_CHAT_SERVICE_URL}" ] && EXO_CHAT_SERVICE_URL=""
 [ -z "${EXO_CHAT_SERVER_PASSPHRASE}" ] && EXO_CHAT_SERVER_PASSPHRASE="something2change"
 
 [ -z "${EXO_ES_EMBEDDED}" ] && EXO_ES_EMBEDDED="true"
@@ -175,6 +176,11 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 
 [ -z "${EXO_ADDONS_CONFLICT_MODE}" ] && EXO_ADDONS_CONFLICT_MODE=""
 
+[ -z "${EXO_JCR_FS_STORAGE_ENABLED}" ] && EXO_JCR_FS_STORAGE_ENABLED=""
+[ -z "${EXO_FILE_STORAGE_TYPE}" ] && EXO_FILE_STORAGE_TYPE=""
+
+[ -z "${EXO_CLUSTER_NODE_NAME}" ] && EXO_CLUSTER_NODE_NAME=""
+
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -186,8 +192,8 @@ else
 
   # Jcr storage configuration
   add_in_exo_configuration "# JCR storage configuration"
-  if [ ! -z ${EXO_JCR_DB_STORAGE_ENABLED} ]; then
-    add_in_exo_configuration "exo.jcr.storage.enabled=${EXO_JCR_DB_STORAGE_ENABLED}"
+  if [ ! -z ${EXO_JCR_FS_STORAGE_ENABLED} ]; then
+    add_in_exo_configuration "exo.jcr.storage.enabled=${EXO_JCR_FS_STORAGE_ENABLED}"
   fi
   add_in_exo_configuration "exo.jcr.storage.data.dir=${EXO_JCR_STORAGE_DIR}"
 
