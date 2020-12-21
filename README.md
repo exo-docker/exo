@@ -34,6 +34,7 @@ The image is compatible with the following databases system :  `MySQL` (default)
   - [JMX](#jmx)
   - [Cluster](#cluster)
   - [Reward Wallet](#reward-wallet)
+  - [Agenda](#agenda)
   - [License](#license)
   - [exo.properties](#exoproperties)
 - [Testing](#testing)
@@ -321,6 +322,17 @@ The following environment variables should be passed to the container in order t
 | EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP      | NO        | `https://mainnet.infura.io/v3/a1ac85aea9ce4be88e9e87dad7c01d40`  | https url to access to the Ethereum API for the chosen network id                                                                                                                                                                 |
 | EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET | NO        | `wss://mainnet.infura.io/ws/v3/a1ac85aea9ce4be88e9e87dad7c01d40` | wss url to access to the Ethereum API for the chosen network id                                                                                                                                                                   |
 | EXO_REWARDS_WALLET_TOKEN_ADDRESS              | NO        | `0xc76987d43b77c45d51653b6eb110b9174acce8fb`                     | address of the contract for the official rewarding token promoted by eXo                                                                                                                                                          |                                                                                                  |
+
+### Agenda
+
+The following environment variables should be passed to the container in order to configure eXo Agenda remote connectors:
+
+| VARIABLE                                      | MANDATORY | DEFAULT VALUE  | DESCRIPTION                                                                                                                                                                                                                                                                                                                              |
+|-----------------------------------------------|-----------|----------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| EXO_AGENDA_GOOGLE_CONNECTOR_ENABLED           | NO        | `true`         | Whether to enable or not users to connect their personal Agenda to eXo Agenda or not.                                                                                                                                                                                                                                                    |
+| EXO_AGENDA_GOOGLE_CONNECTOR_CLIENT_API_KEY    | NO        |                | This Client API key has to be provided when turning `on` Google Remote Connector for users. In fact, the users requests to google account will use this key to be able to retrieve information from their account. ( See https://developers.google.com/calendar/auth )                                                                   |
+| EXO_AGENDA_OFFICE_CONNECTOR_ENABLED           | NO        | `true`         | Whether to enable or not users to connect their personal Agenda to eXo Agenda or not.                                                                                                                                                                                                                                                    |
+| EXO_AGENDA_OFFICE_CONNECTOR_CLIENT_API_KEY    | NO        |                | This Client API key has to be provided when turning `on` Office Remote Connector for users. In fact, the users requests to Office 365 Outlook account will use this key to be able to retrieve information from their account. ( See https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth2-client-creds-grant-flow ) |
 
 ### License
 
