@@ -174,6 +174,11 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET}" ] && EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET="wss://mainnet.infura.io/ws/v3/a1ac85aea9ce4be88e9e87dad7c01d40"
 [ -z "${EXO_REWARDS_WALLET_TOKEN_ADDRESS}" ] && EXO_REWARDS_WALLET_TOKEN_ADDRESS="0xc76987d43b77c45d51653b6eb110b9174acce8fb"
 
+[ -z "${EXO_AGENDA_GOOGLE_CONNECTOR_ENABLED}" ] && EXO_AGENDA_GOOGLE_CONNECTOR_ENABLED="true"
+[ -z "${EXO_AGENDA_OFFICE_CONNECTOR_ENABLED}" ] && EXO_AGENDA_OFFICE_CONNECTOR_ENABLED="true"
+[ -z "${EXO_AGENDA_GOOGLE_CONNECTOR_CLIENT_API_KEY}" ] && EXO_AGENDA_GOOGLE_CONNECTOR_CLIENT_API_KEY=""
+[ -z "${EXO_AGENDA_OFFICE_CONNECTOR_CLIENT_API_KEY}" ] && EXO_AGENDA_OFFICE_CONNECTOR_CLIENT_API_KEY=""
+
 [ -z "${EXO_ADDONS_CONFLICT_MODE}" ] && EXO_ADDONS_CONFLICT_MODE=""
 
 [ -z "${EXO_JCR_FS_STORAGE_ENABLED}" ] && EXO_JCR_FS_STORAGE_ENABLED=""
@@ -558,6 +563,13 @@ else
   add_in_exo_configuration "exo.wallet.blockchain.network.http=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP}"
   add_in_exo_configuration "exo.wallet.blockchain.network.websocket=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET}"
   add_in_exo_configuration "exo.wallet.blockchain.token.address=${EXO_REWARDS_WALLET_TOKEN_ADDRESS}"
+
+  # eXo Agenda
+  add_in_exo_configuration "# Agenda configuration"
+  add_in_exo_configuration "exo.agenda.google.connector.enabled=${EXO_AGENDA_GOOGLE_CONNECTOR_ENABLED}"
+  add_in_exo_configuration "exo.agenda.google.connector.key=${EXO_AGENDA_GOOGLE_CONNECTOR_CLIENT_API_KEY}"
+  add_in_exo_configuration "exo.agenda.office.connector.enabled=${EXO_AGENDA_OFFICE_CONNECTOR_ENABLED}"
+  add_in_exo_configuration "exo.agenda.office.connector.key=${EXO_AGENDA_OFFICE_CONNECTOR_CLIENT_API_KEY}"
 
   # put a file to avoid doing the configuration twice
   touch /opt/exo/_done.configuration
