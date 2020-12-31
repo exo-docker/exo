@@ -21,7 +21,7 @@ services:
       - front
       - mail
   exo-cluster-node1:
-    image: exoplatform/exo:6.1.x-cluster-SNAPSHOT
+    image: exoplatform/exo:6.2.0-clustering_latest
     volumes:
       - ./data/exo-node1/:/srv/exo/:rw
       - ./logs/exo-node1/:/var/log/exo/:rw
@@ -87,7 +87,7 @@ services:
     # Wait until chat server is started
     command: ["wait-for", "exo-chat:8080", "-s", "-t", "360", "--", "/opt/exo/start_eXo.sh"]
   exo-cluster-node2:
-    image: exoplatform/exo:6.1.x-cluster-SNAPSHOT
+    image: exoplatform/exo:6.2.0-clustering_latest
     volumes:
       - ./data/exo-node2/:/srv/exo/:rw
       - ./logs/exo-node2/:/var/log/exo/:rw
