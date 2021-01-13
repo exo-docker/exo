@@ -361,6 +361,7 @@ else
   # Mail configuration
   add_in_exo_configuration "# Mail configuration"
   add_in_exo_configuration "exo.email.smtp.from=${EXO_MAIL_FROM}"
+  add_in_exo_configuration "gatein.email.smtp.from=${EXO_MAIL_FROM}"
   add_in_exo_configuration "exo.email.smtp.host=${EXO_MAIL_SMTP_HOST}"
   add_in_exo_configuration "exo.email.smtp.port=${EXO_MAIL_SMTP_PORT}"
   add_in_exo_configuration "exo.email.smtp.starttls.enable=${EXO_MAIL_SMTP_STARTTLS}"
