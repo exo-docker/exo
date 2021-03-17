@@ -301,6 +301,15 @@ The following environment variables should be passed to the container in order t
 
 With the default parameters you can connect to JMX with `service:jmx:rmi://localhost:10002/jndi/rmi://localhost:10001/jmxrmi` without authentication.
 
+### Remote Debugging
+
+The following environment variables should be passed to the container in order to enable remote debugging mode :
+
+| VARIABLE                    | MANDATORY | DEFAULT VALUE | DESCRIPTION                                                                                                                               |
+| --------------------------- | --------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| EXO_DEBUG_ENABLED           | NO        | `true`        | enable remote debugging listener                                                                                                                     |
+| EXO_DEBUG_PORT              | NO        | `8000`        | Remote debugging port
+
 ### Cluster
 
 The following environment variables should be passed to the container in order to configure the cluster :
