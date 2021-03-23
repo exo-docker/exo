@@ -709,7 +709,7 @@ CATALINA_OPTS="${CATALINA_OPTS:-} -Dexo.license.path=/etc/exo"
 
 # Enable Debug Mode
 if [ "${EXO_DEBUG_ENABLED:-false}" = "true" ]; then
-  CATALINA_OPTS="${CATALINA_OPTS} -agentlib:jdwp=transport=dt_socket,address=${EXO_DEBUG_PORT:-8000},server=y,suspend=n"
+  CATALINA_OPTS="${CATALINA_OPTS} -agentlib:jdwp=transport=dt_socket,address=*:${EXO_DEBUG_PORT:-8000},server=y,suspend=n"
 fi
 # -----------------------------------------------------------------------------
 # LDAP configuration
