@@ -84,7 +84,7 @@ services:
       - back
       - mail
     # Wait until chat server is started
-    command: ["wait-for", "exo-chat:8080", "-s", "-t", "360", "--", "/opt/exo/start_eXo.sh"]
+    command: ["wait-for", "exo-chat:8080", "-q", "-t", "360", "--", "/opt/exo/start_eXo.sh"]
   exo-cluster-node2:
     image: exoplatform/exo:6.2.0-clustering_latest
     volumes:
@@ -149,7 +149,7 @@ services:
       - back
       - mail
     # Wait until first cluster node starts to avoid conflicts
-    command: ["wait-for", "exo-cluster-node1:8080", "-s", "-t", "360", "--", "/opt/exo/start_eXo.sh"]
+    command: ["wait-for", "exo-cluster-node1:8080", "-q", "-t", "360", "--", "/opt/exo/start_eXo.sh"]
   exo-chat:
     image: exoplatform/chat-server:latest
     environment:
