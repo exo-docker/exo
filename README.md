@@ -307,7 +307,7 @@ The following environment variables should be passed to the container in order t
 
 | VARIABLE                    | MANDATORY | DEFAULT VALUE | DESCRIPTION                                                                                                                               |
 | --------------------------- | --------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| EXO_DEBUG_ENABLED           | NO        | `true`        | enable remote debugging listener                                                                                                                     |
+| EXO_DEBUG_ENABLED           | NO        | `false`       | enable remote debugging listener                                                                                                                     |
 | EXO_DEBUG_PORT              | NO        | `8000`        | Remote debugging port
 
 ### Cluster
