@@ -408,7 +408,10 @@ else
   fi
   add_in_exo_configuration "exo.email.smtp.socketFactory.port="
   add_in_exo_configuration "exo.email.smtp.socketFactory.class="
-
+  # SMTP TLS Version, Example: TLSv1.2
+  if [ ! -z "${EXO_SMTP_SSL_PROTOCOLS:-}" ]; then 
+    add_in_exo_configuration "mail.smtp.ssl.protocols=${EXO_SMTP_SSL_PROTOCOLS}"
+  fi
   # JMX configuration
   if [ "${EXO_JMX_ENABLED}" = "true" ]; then
     # insert the listener before the "Global JNDI resources" line
