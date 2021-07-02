@@ -180,6 +180,7 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_AGENDA_OFFICE_CONNECTOR_CLIENT_API_KEY}" ] && EXO_AGENDA_OFFICE_CONNECTOR_CLIENT_API_KEY=""
 
 [ -z "${EXO_ADDONS_CONFLICT_MODE}" ] && EXO_ADDONS_CONFLICT_MODE=""
+[ -z "${EXO_ADDONS_NOCOMPAT_MODE}" ] && EXO_ADDONS_NOCOMPAT_MODE="false"
 
 [ -z "${EXO_JCR_FS_STORAGE_ENABLED}" ] && EXO_JCR_FS_STORAGE_ENABLED=""
 [ -z "${EXO_FILE_STORAGE_TYPE}" ] && EXO_FILE_STORAGE_TYPE=""
@@ -625,6 +626,10 @@ else
   # add-on installation options
   if [ "${EXO_ADDONS_CONFLICT_MODE:-}" = "overwrite" ] || [ "${EXO_ADDONS_CONFLICT_MODE:-}" = "ignore" ]; then 
     _ADDON_MGR_OPTIONS="${_ADDON_MGR_OPTIONS:-} --conflict=${EXO_ADDONS_CONFLICT_MODE}"
+  fi
+
+  if [ "${EXO_ADDONS_NOCOMPAT_MODE:-false}" = "true" ]; then 
+    _ADDON_MGR_OPTIONS="${_ADDON_MGR_OPTIONS:-} --no-compat"
   fi
 
   # add-on installation
