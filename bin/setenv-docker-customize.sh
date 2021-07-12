@@ -467,7 +467,7 @@ else
     add_in_exo_configuration "es.path.data=${EXO_ES_EMBEDDED_DATA}"
   else
     # Remove eXo ES Embedded add-on
-    EXO_ADDONS_REMOVE_LIST="${EXO_ADDONS_REMOVE_LIST:-},meeds-es-embedded"
+    EXO_ADDONS_REMOVE_LIST="${EXO_ADDONS_REMOVE_LIST:-}"
   fi
 
   add_in_exo_configuration "exo.es.search.server.url=${EXO_ES_URL}"
