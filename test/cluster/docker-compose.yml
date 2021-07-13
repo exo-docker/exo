@@ -38,7 +38,6 @@ services:
       # Chat URL for eXo Servers to communicate with exo-chat standalone
       EXO_CHAT_SERVICE_URL: http://exo-chat:8080/chatServer
       # Elasticsearch in standalone mode
-      EXO_ES_EMBEDDED: "false"
       EXO_ES_HOST: exo-elasticsearch
       # Clustering activation
       EXO_CLUSTER: "true"
@@ -104,7 +103,6 @@ services:
       # Chat URL for eXo Servers to communicate with exo-chat standalone
       EXO_CHAT_SERVICE_URL: http://exo-chat:8080/chatServer
       # Elasticsearch in standalone mode
-      EXO_ES_EMBEDDED: "false"
       EXO_ES_HOST: exo-elasticsearch
       # Clustering activation
       EXO_CLUSTER: "true"

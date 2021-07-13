@@ -146,9 +146,7 @@ esac
 [ -z "${EXO_CHAT_SERVICE_URL}" ] && EXO_CHAT_SERVICE_URL=""
 [ -z "${EXO_CHAT_SERVER_PASSPHRASE}" ] && EXO_CHAT_SERVER_PASSPHRASE="something2change"
 
-[ -z "${EXO_ES_EMBEDDED}" ] && EXO_ES_EMBEDDED="true"
 [ -z "${EXO_ES_TIMEOUT}" ] && EXO_ES_TIMEOUT="60"
-[ -z "${EXO_ES_EMBEDDED_DATA}" ] && EXO_ES_EMBEDDED_DATA="/srv/exo/es"
 [ -z "${EXO_ES_SCHEME}" ] && EXO_ES_SCHEME="http"
 [ -z "${EXO_ES_HOST}" ] && EXO_ES_HOST="localhost"
 [ -z "${EXO_ES_PORT}" ] && EXO_ES_PORT="9200"
@@ -459,16 +457,7 @@ else
 
   # Elasticsearch configuration
   add_in_exo_configuration "# Elasticsearch configuration"
-  add_in_exo_configuration "exo.es.embedded.enabled=${EXO_ES_EMBEDDED}"
-  if [ "${EXO_ES_EMBEDDED}" = "true" ]; then
-    add_in_exo_configuration "es.network.host=0.0.0.0" # we listen on all IPs inside the container
-    add_in_exo_configuration "es.discovery.zen.ping.multicast.enabled=false"
-    add_in_exo_configuration "es.http.port=${EXO_ES_PORT}"
-    add_in_exo_configuration "es.path.data=${EXO_ES_EMBEDDED_DATA}"
-  else
-    # Remove eXo ES Embedded add-on
-    EXO_ADDONS_REMOVE_LIST="${EXO_ADDONS_REMOVE_LIST:-}"
-  fi
+  add_in_exo_configuration "exo.es.embedded.enabled=false"
 
   add_in_exo_configuration "exo.es.search.server.url=${EXO_ES_URL}"
   add_in_exo_configuration "exo.es.index.server.url=${EXO_ES_URL}"
@@ -811,16 +800,14 @@ if [ -f /opt/exo/addons/statuses/exo-chat.status && "${EXO_CHAT_SERVER_STANDALON
   fi
 fi
 
-# Wait for elasticsearch availability (if external)
-if [ "${EXO_ES_EMBEDDED}" != "true" ]; then
-  echo "Waiting for external elastic search availability at ${EXO_ES_HOST}:${EXO_ES_PORT} ..."
-  wait-for ${EXO_ES_HOST}:${EXO_ES_PORT} -s -t ${EXO_ES_TIMEOUT}
-  if [ $? != 0 ]; then
-    echo "[ERROR] The external elastic search ${EXO_ES_HOST}:${EXO_ES_PORT} was not available within ${EXO_ES_TIMEOUT}s ! eXo startup aborted ..."
-    exit 1
-  else
-    echo "Elasticsearch is available, continue starting..."
-  fi
+# Wait for elasticsearch availability
+echo "Waiting for external elastic search availability at ${EXO_ES_HOST}:${EXO_ES_PORT} ..."
+wait-for ${EXO_ES_HOST}:${EXO_ES_PORT} -s -t ${EXO_ES_TIMEOUT}
+if [ $? != 0 ]; then
+  echo "[ERROR] The external elastic search ${EXO_ES_HOST}:${EXO_ES_PORT} was not available within ${EXO_ES_TIMEOUT}s ! eXo startup aborted ..."
+  exit 1
+else
+  echo "Elasticsearch is available, continue starting..."
 fi
 
 set +u		# DEACTIVATE unbound variable check

@@ -36,8 +36,6 @@ services:
     volumes:
       - exo_data:/srv/exo
       - exo_logs:/var/log/exo
-      # This is only needed if es embedded is used
-      - search_data:/srv/es
     networks:
       - front
       - back

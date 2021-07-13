@@ -62,7 +62,6 @@ services:
       EXO_ADDONS_LIST: exo-chat
       EXO_PATCHES_LIST:
       EXO_PATCHES_CATALOG_URL:
-      EXO_ES_EMBEDDED: "false"
       EXO_ES_HOST: search
 ...
 ```
@@ -74,7 +73,7 @@ Some add-ons are already installed in eXo image but you can install other one or
 | VARIABLE                 | MANDATORY | DEFAULT VALUE | DESCRIPTION                                                                                   |
 | ------------------------ | --------- | ------------- | --------------------------------------------------------------------------------------------- |
 | EXO_ADDONS_LIST          | NO        | -             | commas separated list of add-ons to install (ex: exo-answers,exo-skype:1.0.x-SNAPSHOT)        |
-| EXO_ADDONS_REMOVE_LIST   | NO        | -             | commas separated list of add-ons to uninstall (ex: exo-chat,exo-es-embedded) (since: 4.4.2_3) |
+| EXO_ADDONS_REMOVE_LIST   | NO        | -             | commas separated list of add-ons to uninstall (ex: exo-chat) (since: 4.4.2_3) |
 | EXO_ADDONS_CATALOG_URL   | NO        | -             | The url of a valid eXo Catalog                                                                |
 | EXO_ADDONS_CONFLICT_MODE | NO        | -             | decision to make in case of file conflicts (overwrite, ignore or fail)                        |
 | EXO_ADDONS_NOCOMPAT_MODE | NO        | false         | decision to allow to install incompatible addon |
@@ -243,8 +242,6 @@ The following environment variables should be passed to the container in order t
 
 | VARIABLE                | MANDATORY | DEFAULT VALUE  | DESCRIPTION                                                                                                                                                                                                                                                                    |
 | ----------------------- | --------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| EXO_ES_EMBEDDED         | NO        | `true`         | do we use an elasticsearch server embedded in the eXo Platform JVM or do we use an external one ? (using an embedded elasticsearch server is not recommended for production purpose) (if set to `false` the add-on `meeds-es-embedded` is uninstalled during container creation) |
-| EXO_ES_EMBEDDED_DATA    | NO        | `/srv/exo/es/` | The directory to use for storing elasticsearch data (in embedded mode only).                                                                                                                                                                                                   |
 | EXO_ES_SCHEME           | NO        | `http`         | the elasticsearch server scheme to use from the eXo Platform server jvm perspective (http / https).                                                                                                                                                                            |
 | EXO_ES_HOST             | NO        | `localhost`    | the elasticsearch server hostname to use from the eXo Platform server jvm perspective.                                                                                                                                                                                         |
 | EXO_ES_PORT             | NO        | `9200`         | the elasticsearch server port to use from the eXo Platform server jvm perspective.                                                                                                                                                                                             |
@@ -252,9 +249,7 @@ The following environment variables should be passed to the container in order t
 | EXO_ES_PASSWORD         | NO        | -              | the password to connect to the elasticsearch server (if authentication is activated on the external elasticsearch).                                                                                                                                                            |
 | EXO_ES_INDEX_REPLICA_NB | NO        | `0`            | the number of replicat for elasticsearch indexes (leave 0 if you don't have an elasticsearch cluster).                                                                                                                                                                         |
 | EXO_ES_INDEX_SHARD_NB   | NO        | `0`            | the number of shard for elasticsearch indexes.                                                                                                                                                                                                                                 |
-| EXO_ES_TIMEOUT          | NO        | `60`           | the number of seconds to wait for elasticsearch availability before cancelling eXo startup (only if EXO_ES_EMBEDDED=false)                                                                                                                                                     |
-
-INFO: the default embedded ElasticSearch in not recommended for production purpose.
+| EXO_ES_TIMEOUT          | NO        | `60`           | the number of seconds to wait for elasticsearch availability before cancelling eXo startup                                                                                                                                                     |
 
 ### LDAP / Active Directory
 
