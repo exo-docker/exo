@@ -1,7 +1,7 @@
 version: "2"
 services:
   web:
-    image: nginx:1.18-alpine
+    image: nginx:1.20-alpine
     expose:
       - "80"
     volumes:
@@ -10,18 +10,18 @@ services:
       - front
       - mail
   exo:
-    image: exoplatform/exo:develop
+    image: exoplatform/exo:6.2_latest
     environment:
       EXO_DB_NAME: exo
       EXO_DB_USER: exo
       EXO_DB_PASSWORD: exo
       EXO_DB_HOST: db
       EXO_DB_POOL_IDM_INIT_SIZE: 1
-      EXO_DB_POOL_IDM_MAX_SIZE: 10
+      EXO_DB_POOL_IDM_MAX_SIZE: 30
       EXO_DB_POOL_JCR_INIT_SIZE: 2
-      EXO_DB_POOL_JCR_MAX_SIZE: 5
+      EXO_DB_POOL_JCR_MAX_SIZE: 30
       EXO_DB_POOL_JPA_INIT_SIZE: 3
-      EXO_DB_POOL_JPA_MAX_SIZE: 20
+      EXO_DB_POOL_JPA_MAX_SIZE: 30
       EXO_PROXY_VHOST: localhost
       EXO_PROXY_SSL: "false"
       EXO_JVM_SIZE_MIN: "2g"
@@ -74,8 +74,11 @@ services:
     volumes:
       - search_data:/usr/share/elasticsearch/data:rw
     environment:
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - xpack.monitoring.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx2048m
+      - node.name=exo
+      - cluster.name=exo
+      - cluster.initial_master_nodes=exo
+      - network.host=_site_
     networks:
       - back
   mail:
