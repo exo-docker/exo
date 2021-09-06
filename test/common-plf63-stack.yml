@@ -5,12 +5,12 @@ services:
     expose:
       - "80"
     volumes:
-      - ./conf/nginx-plf62.conf:/etc/nginx/nginx.conf:ro
+      - ./conf/nginx-plf63.conf:/etc/nginx/nginx.conf:ro
     networks:
       - front
       - mail
   exo:
-    image: exoplatform/exo:6.2_latest
+    image: exoplatform/exo:develop
     environment:
       EXO_DB_NAME: exo
       EXO_DB_USER: exo
@@ -24,8 +24,8 @@ services:
       EXO_DB_POOL_JPA_MAX_SIZE: 30
       EXO_PROXY_VHOST: localhost
       EXO_PROXY_SSL: "false"
-      EXO_JVM_SIZE_MIN: "2g"
-      EXO_JVM_SIZE_MAX: "3g"
+      EXO_JVM_SIZE_MIN: "3g"
+      EXO_JVM_SIZE_MAX: "8g"
       EXO_JVM_LOG_GC_ENABLED: "true"
       EXO_MAIL_SMTP_HOST: "mail"
       EXO_MAIL_SMTP_PORT: "1025"
@@ -70,7 +70,7 @@ services:
     networks:
       - back
   es:
-    image: exoplatform/elasticsearch:1.2.2
+    image: exoplatform/elasticsearch:2.0.0
     volumes:
       - search_data:/usr/share/elasticsearch/data:rw
     environment:
