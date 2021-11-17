@@ -34,6 +34,7 @@ The image is compatible with the following databases system :  `MySQL` (default)
   - [JOD Converter](#jod-converter)
   - [Mail](#mail)
   - [JMX](#jmx)
+  - [Remote Debugging](#remote-debugging)
   - [Cluster](#cluster)
   - [Reward Wallet](#reward-wallet)
   - [Agenda](#agenda)
@@ -326,11 +327,15 @@ The following environment variables should be passed to the container in order t
 | VARIABLE                                      | MANDATORY | DEFAULT VALUE                                                    | DESCRIPTION                                                                                                                                                                                                                       |
 |-----------------------------------------------|-----------|------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | EXO_REWARDS_WALLET_ADMIN_KEY                  | YES       | `changeThisKey`                                                  | password used to encrypt the Admin wallet’s private key stored in database. If its value is modified after server startup, the private key of admin wallet won’t be decrypted anymore, preventing all administrative operations   |
+| EXO_REWARDS_WALLET_ADMIN_PRIVATE_KEY                  | NO       |                                                  | Admin wallet's private key. When set, it allows to apply an existant admin wallet in the new created instance |
 | EXO_REWARDS_WALLET_ACCESS_PERMISSION          | NO        | `/platform/users`                                                | to restrict access to wallet application to a group of users (ex: member:/spaces/internal_space)                                                                                                                                  |
 | EXO_REWARDS_WALLET_NETWORK_ID                 | NO        | `1` (mainnet)                                                    | ID of the Ethereum network to use (see: <https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md#list-of-chain-ids>)                                                                                                         |
 | EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP      | NO        | `https://mainnet.infura.io/v3/a1ac85aea9ce4be88e9e87dad7c01d40`  | https url to access to the Ethereum API for the chosen network id                                                                                                                                                                 |
 | EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET | NO        | `wss://mainnet.infura.io/ws/v3/a1ac85aea9ce4be88e9e87dad7c01d40` | wss url to access to the Ethereum API for the chosen network id                                                                                                                                                                   |
-| EXO_REWARDS_WALLET_TOKEN_ADDRESS              | NO        | `0xc76987d43b77c45d51653b6eb110b9174acce8fb`                     | address of the contract for the official rewarding token promoted by eXo                                                                                                                                                          |                                                                                                  |
+| EXO_REWARDS_WALLET_TOKEN_ADDRESS              | NO        | `0xc76987d43b77c45d51653b6eb110b9174acce8fb`                     | address of the contract for the official rewarding token promoted by eXo                                                                                                                                                         | 
+| EXO_REWARDS_WALLET_NETWORK_CRYPTOCURRENCY              | NO        |                     | When not set, the cryptocurrency is got from the contract   |
+| EXO_REWARDS_WALLET_TOKEN_SYMBOL              | NO        |                     | When not set, the token's symbol is got from the contract   |
+                                                                                                 |
 
 ### Agenda
 
