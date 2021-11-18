@@ -172,6 +172,7 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET}" ] && EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET="wss://mainnet.infura.io/ws/v3/a1ac85aea9ce4be88e9e87dad7c01d40"
 [ -z "${EXO_REWARDS_WALLET_TOKEN_ADDRESS}" ] && EXO_REWARDS_WALLET_TOKEN_ADDRESS="0xc76987d43b77c45d51653b6eb110b9174acce8fb"
 
+
 [ -z "${EXO_AGENDA_GOOGLE_CONNECTOR_ENABLED}" ] && EXO_AGENDA_GOOGLE_CONNECTOR_ENABLED="true"
 [ -z "${EXO_AGENDA_OFFICE_CONNECTOR_ENABLED}" ] && EXO_AGENDA_OFFICE_CONNECTOR_ENABLED="true"
 [ -z "${EXO_AGENDA_GOOGLE_CONNECTOR_CLIENT_API_KEY}" ] && EXO_AGENDA_GOOGLE_CONNECTOR_CLIENT_API_KEY=""
@@ -557,6 +558,9 @@ else
   add_in_exo_configuration "exo.wallet.blockchain.network.http=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP}"
   add_in_exo_configuration "exo.wallet.blockchain.network.websocket=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET}"
   add_in_exo_configuration "exo.wallet.blockchain.token.address=${EXO_REWARDS_WALLET_TOKEN_ADDRESS}"
+  [ ! -z "${EXO_REWARDS_WALLET_ADMIN_PRIVATE_KEY}" ] && add_in_exo_configuration "exo.wallet.admin.privateKey=${EXO_REWARDS_WALLET_ADMIN_PRIVATE_KEY}"
+  [ ! -z "${EXO_REWARDS_WALLET_NETWORK_CRYPTOCURRENCY}" ] && add_in_exo_configuration "exo.wallet.blockchain.network.cryptocurrency=${EXO_REWARDS_WALLET_NETWORK_CRYPTOCURRENCY}"
+  [ ! -z "${EXO_REWARDS_WALLET_TOKEN_SYMBOL}" ] && add_in_exo_configuration "exo.wallet.blockchain.token.symbol=${EXO_REWARDS_WALLET_TOKEN_SYMBOL}"
 
   # eXo Agenda
   add_in_exo_configuration "# Agenda configuration"
