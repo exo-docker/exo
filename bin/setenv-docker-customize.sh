@@ -185,6 +185,9 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_FILE_STORAGE_TYPE}" ] && EXO_FILE_STORAGE_TYPE=""
 
 [ -z "${EXO_CLUSTER_NODE_NAME}" ] && EXO_CLUSTER_NODE_NAME=""
+[ -z "${EXO_REWARDS_WALLET_ADMIN_PRIVATE_KEY}" ] && EXO_REWARDS_WALLET_ADMIN_PRIVATE_KEY=""
+[ -z "${EXO_REWARDS_WALLET_NETWORK_CRYPTOCURRENCY}" ] && EXO_REWARDS_WALLET_NETWORK_CRYPTOCURRENCY=""
+[ -z "${EXO_REWARDS_WALLET_TOKEN_SYMBOL}" ] && EXO_REWARDS_WALLET_TOKEN_SYMBOL=""
 
 set -u		# REACTIVATE unbound variable check
 
@@ -558,9 +561,9 @@ else
   add_in_exo_configuration "exo.wallet.blockchain.network.http=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP}"
   add_in_exo_configuration "exo.wallet.blockchain.network.websocket=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET}"
   add_in_exo_configuration "exo.wallet.blockchain.token.address=${EXO_REWARDS_WALLET_TOKEN_ADDRESS}"
-  [ ! -z "${EXO_REWARDS_WALLET_ADMIN_PRIVATE_KEY}" ] && add_in_exo_configuration "exo.wallet.admin.privateKey=${EXO_REWARDS_WALLET_ADMIN_PRIVATE_KEY}"
-  [ ! -z "${EXO_REWARDS_WALLET_NETWORK_CRYPTOCURRENCY}" ] && add_in_exo_configuration "exo.wallet.blockchain.network.cryptocurrency=${EXO_REWARDS_WALLET_NETWORK_CRYPTOCURRENCY}"
-  [ ! -z "${EXO_REWARDS_WALLET_TOKEN_SYMBOL}" ] && add_in_exo_configuration "exo.wallet.blockchain.token.symbol=${EXO_REWARDS_WALLET_TOKEN_SYMBOL}"
+  add_in_exo_configuration "exo.wallet.admin.privateKey=${EXO_REWARDS_WALLET_ADMIN_PRIVATE_KEY}"
+  add_in_exo_configuration "exo.wallet.blockchain.network.cryptocurrency=${EXO_REWARDS_WALLET_NETWORK_CRYPTOCURRENCY}"
+  add_in_exo_configuration "exo.wallet.blockchain.token.symbol=${EXO_REWARDS_WALLET_TOKEN_SYMBOL}"
 
   # eXo Agenda
   add_in_exo_configuration "# Agenda configuration"
