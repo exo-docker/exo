@@ -35,6 +35,7 @@ The image is compatible with the following databases system :  `MySQL` (default)
   - [Mail](#mail)
   - [JMX](#jmx)
   - [Remote Debugging](#remote-debugging)
+  - [Rememberme Token Expiration](#rememberme-token-expiration)
   - [Cluster](#cluster)
   - [Reward Wallet](#reward-wallet)
   - [Agenda](#agenda)
@@ -309,6 +310,15 @@ The following environment variables should be passed to the container in order t
 | --------------------------- | --------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | EXO_DEBUG_ENABLED           | NO        | `false`       | enable remote debugging listener                                                                                                                     |
 | EXO_DEBUG_PORT              | NO        | `8000`        | Remote debugging port
+
+### Rememberme Token Expiration
+
+The following environment variables should be passed to the container in order to specify rememberme token expiration :
+
+| VARIABLE                                        | MANDATORY | DEFAULT VALUE | DESCRIPTION                                                                                                                               |
+| ------------------------------------------------| --------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| EXO_TOKEN_REMEMBERME_EXPIRATION_VALUE           | NO        | `7`          | Number of unit expiration delay                                                                                                                     |
+| EXO_TOKEN_REMEMBERME_EXPIRATION_UNIT            | NO        | `DAY`        | Unit of token expiration `DAY`, `HOUR`, `MINUTE`, `SECOND`
 
 ### Cluster
 
