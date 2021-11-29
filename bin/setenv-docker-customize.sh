@@ -186,6 +186,9 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 
 [ -z "${EXO_CLUSTER_NODE_NAME}" ] && EXO_CLUSTER_NODE_NAME=""
 
+[ -z "${EXO_TOKEN_REMEMBERME_EXPIRATION_VALUE}" ] && EXO_TOKEN_REMEMBERME_EXPIRATION_VALUE="7"
+[ -z "${EXO_TOKEN_REMEMBERME_EXPIRATION_UNIT}" ] && EXO_TOKEN_REMEMBERME_EXPIRATION_UNIT="DAY"
+
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -567,6 +570,10 @@ else
   add_in_exo_configuration "exo.agenda.google.connector.key=${EXO_AGENDA_GOOGLE_CONNECTOR_CLIENT_API_KEY}"
   add_in_exo_configuration "exo.agenda.office.connector.enabled=${EXO_AGENDA_OFFICE_CONNECTOR_ENABLED}"
   add_in_exo_configuration "exo.agenda.office.connector.key=${EXO_AGENDA_OFFICE_CONNECTOR_CLIENT_API_KEY}"
+
+  # Rememberme Token expiration
+  add_in_exo_configuration "exo.token.rememberme.expiration.value=${EXO_TOKEN_REMEMBERME_EXPIRATION_VALUE}"
+  add_in_exo_configuration "exo.token.rememberme.expiration.unit=${EXO_TOKEN_REMEMBERME_EXPIRATION_UNIT}"
 
   # put a file to avoid doing the configuration twice
   touch /opt/exo/_done.configuration
