@@ -195,7 +195,7 @@ services:
     networks:
       - back
   exo-elasticsearch:
-    image: exoplatform/elasticsearch:1.2.2
+    image: exoplatform/elasticsearch:1.2.3
     volumes:
       - ./data/elasticsearch/:/usr/share/elasticsearch/data/:rw
     environment:
