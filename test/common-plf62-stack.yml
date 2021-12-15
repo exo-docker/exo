@@ -70,7 +70,7 @@ services:
     networks:
       - back
   es:
-    image: exoplatform/elasticsearch:1.2.2
+    image: exoplatform/elasticsearch:2.0.2
     volumes:
       - search_data:/usr/share/elasticsearch/data:rw
     environment:
