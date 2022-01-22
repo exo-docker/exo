@@ -417,17 +417,6 @@ else
   fi
   # JMX configuration
   if [ "${EXO_JMX_ENABLED}" = "true" ]; then
-    # insert the listener before the "Global JNDI resources" line
-    xmlstarlet ed -L -i "/Server/GlobalNamingResources" -t elem -n ListenerTMP -v "" \
-      -i "//ListenerTMP" -t attr -n "className" -v "org.apache.catalina.mbeans.JmxRemoteLifecycleListener" \
-      -i "//ListenerTMP" -t attr -n "rmiRegistryPortPlatform" -v "${EXO_JMX_RMI_REGISTRY_PORT}" \
-      -i "//ListenerTMP" -t attr -n "rmiServerPortPlatform" -v "${EXO_JMX_RMI_SERVER_PORT}" \
-      -i "//ListenerTMP" -t attr -n "useLocalPorts" -v "false" \
-      -r "//ListenerTMP" -v "Listener" \
-      /opt/exo/conf/server.xml || {
-      echo "ERROR during xmlstarlet processing (adding JmxRemoteLifecycleListener)"
-      exit 1
-    }
     # Create the security files if required
     if [ "${EXO_JMX_USERNAME:-}" != "-" ]; then
       if [ "${EXO_JMX_PASSWORD:-}" = "-" ]; then
@@ -739,6 +728,8 @@ if [ "${EXO_JMX_ENABLED}" = "true" ]; then
   CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote=true"
   CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.ssl=false"
   CATALINA_OPTS="${CATALINA_OPTS} -Djava.rmi.server.hostname=${EXO_JMX_RMI_SERVER_HOSTNAME}"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.port=${EXO_JMX_RMI_REGISTRY_PORT}"
+  CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.rmi.port=${EXO_JMX_RMI_SERVER_PORT}"
   if [ "${EXO_JMX_USERNAME:-}" = "-" ]; then
     CATALINA_OPTS="${CATALINA_OPTS} -Dcom.sun.management.jmxremote.authenticate=false"
   else
