@@ -187,6 +187,7 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 
 [ -z "${EXO_TOKEN_REMEMBERME_EXPIRATION_VALUE}" ] && EXO_TOKEN_REMEMBERME_EXPIRATION_VALUE="7"
 [ -z "${EXO_TOKEN_REMEMBERME_EXPIRATION_UNIT}" ] && EXO_TOKEN_REMEMBERME_EXPIRATION_UNIT="DAY"
+[ -z "${EXO_GZIP_ENABLED}" ] && EXO_GZIP_ENABLED="true"
 
 set -u		# REACTIVATE unbound variable check
 
@@ -458,6 +459,14 @@ else
     }
   fi
 
+  # Gzip compression
+  if [ "${EXO_GZIP_ENABLED}" = "true" ]; then
+    xmlstarlet ed -L -u "/Server/Service/Connector/@compression" -v "on" /opt/exo/conf/server.xml || {
+      echo "ERROR during xmlstarlet processing (configuring Connector compression)"
+      exit 1
+    }
+  fi
+  
   # Elasticsearch configuration
   add_in_exo_configuration "# Elasticsearch configuration"
   add_in_exo_configuration "exo.es.embedded.enabled=false"
