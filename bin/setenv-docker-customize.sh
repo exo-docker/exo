@@ -708,7 +708,7 @@ if [ -d /tmp/_injectors_ ]; then
     echo "[Warning] Folder /tmp/_injectors_ is empty. Skipping injecting items!"
   else
     for file in /tmp/_injectors_/*.jar /tmp/_injectors_/*.war ; do
-      [[ $file =~ '*' ]] && continue
+      [ -f $file ] || continue
       _TARGET_DIR=''
       case "${file##*.}" in
         jar)
@@ -718,7 +718,7 @@ if [ -d /tmp/_injectors_ ]; then
           _TARGET_DIR=/opt/exo/webapps
         ;;
         xml)
-          if [[ $file =~ .*logback\.xml$ ]]; then
+          if [[ $(expr match "$file" '.*logback\.xml$') != 0 ]]; then
             _TARGET_DIR=/opt/exo/conf
           fi
         ;;
