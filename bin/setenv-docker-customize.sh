@@ -702,7 +702,7 @@ fi
 
 if [ -d /tmp/_injectors_ ]; then
   echo "# ---------------------------------------------- #"
-  echo "# eXo modules files Injection management started."
+  echo "# eXo modules files Injection management start."
   echo "# ---------------------------------------------- #"
   if [ -z "$(ls -A /tmp/_injectors_)" ]; then
     echo "[Warning] Folder /tmp/_injectors_ is empty. Skipping injecting items!"
