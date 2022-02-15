@@ -704,7 +704,7 @@ if [ -d /tmp/_injectors_ ]; then
   echo "# ---------------------------------------------- #"
   echo "# eXo modules files Injection management start."
   echo "# ---------------------------------------------- #"
-  if [ -z "$(ls -A /tmp/_injectors_)" ]; then
+  if [ -z "$(ls -A /tmp/_injectors_ 2>/dev/null || echo)" ]; then
     echo "[Warning] Folder /tmp/_injectors_ is empty. Skipping injecting items!"
   else
     for file in /tmp/_injectors_/*.jar /tmp/_injectors_/*.war ; do
@@ -728,7 +728,10 @@ if [ -d /tmp/_injectors_ ]; then
       esac
       if [ ! -z "${_TARGET_DIR}" ]; then
         _sanitizedFile="$(echo ${file##*/} | sed -E 's/-?[0-9.]+x?(-SNAPSHOT)?\.(jar|war|xml)$//').${file##*.}"
-        if [ -f ${_TARGET_DIR}/${_sanitizedFile} ]; then
+        if [ -f ${_TARGET_DIR}/${file##*/} ]; then
+          echo "Replacing ${_TARGET_DIR}/${file##*/} with ${file}..."
+          cp -v $file ${_TARGET_DIR}/${file##*/}
+        elif [ -f ${_TARGET_DIR}/${_sanitizedFile} ]; then
           echo "Replacing ${_TARGET_DIR}/${_sanitizedFile} with ${file}..."
           cp -v $file ${_TARGET_DIR}/${_sanitizedFile}
         else
