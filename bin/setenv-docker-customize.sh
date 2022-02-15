@@ -700,6 +700,49 @@ else
   touch /opt/exo/_done.patches
 fi
 
+if [ -d /tmp/_injectors_ ]; then
+  echo "# ---------------------------------------------- #"
+  echo "# eXo modules files Injection management started."
+  echo "# ---------------------------------------------- #"
+  if [ -z "$(ls -A /tmp/_injectors_)" ]; then
+    echo "[Warning] Folder /tmp/_injectors_ is empty. Skipping injecting items!"
+  else
+    for file in /tmp/_injectors_/*.jar /tmp/_injectors_/*.war ; do
+      [[ $file =~ '*' ]] && continue
+      _TARGET_DIR=''
+      case "${file##*.}" in
+        jar)
+          _TARGET_DIR=/opt/exo/lib
+        ;;
+        war)
+          _TARGET_DIR=/opt/exo/webapps
+        ;;
+        xml)
+          if [[ $file =~ .*logback\.xml$ ]]; then
+            _TARGET_DIR=/opt/exo/conf
+          fi
+        ;;
+        *)
+          echo "[Warning] File ${file} is ignored !"
+        ;;
+      esac
+      if [ ! -z "${_TARGET_DIR}" ]; then
+        _sanitizedFile="$(echo ${file##*/} | sed -E 's/-?[0-9.]+x?(-SNAPSHOT)?\.(jar|war|xml)$//').${file##*.}"
+        if [ -f ${_TARGET_DIR}/${_sanitizedFile} ]; then
+          echo "Replacing ${_TARGET_DIR}/${_sanitizedFile} with ${file}..."
+          cp -v $file ${_TARGET_DIR}/${_sanitizedFile}
+        else
+          echo "Adding file ${file}..."
+          cp -v $file ${_TARGET_DIR}
+        fi
+      fi
+    done
+  fi
+  echo "# ---------------------------------------------- #"
+  echo "# eXo modules files Injection management done."
+  echo "# ---------------------------------------------- #"
+fi
+
 # -----------------------------------------------------------------------------
 # Change chat add-on security token at each start
 # -----------------------------------------------------------------------------
