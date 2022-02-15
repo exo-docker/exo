@@ -727,7 +727,7 @@ if [ -d /tmp/_injectors_ ]; then
         ;;
       esac
       if [ ! -z "${_TARGET_DIR}" ]; then
-        _sanitizedFile="$(echo ${file##*/} | sed -E 's/-?[0-9.]+x?(-SNAPSHOT)?\.(jar|war|xml)$//').${file##*.}"
+        _sanitizedFile="$(echo ${file##*/} | sed -E 's/-?[0-9.]+x?(-SNAPSHOT|-(M|RC|CP)?[0-9]+)?\.(jar|war|xml)$//').${file##*.}"
         if [ -f ${_TARGET_DIR}/${file##*/} ]; then
           echo "Replacing ${_TARGET_DIR}/${file##*/} with ${file}..."
           cp -v $file ${_TARGET_DIR}/${file##*/}
