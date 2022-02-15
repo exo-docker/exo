@@ -42,6 +42,7 @@ The image is compatible with the following databases system :  `MySQL` (default)
   - [License](#license)
   - [exo.properties](#exoproperties)
 - [Testing](#testing)
+- [Development](#development)
 - [Image build](#image-build)
 
 ## Configuration options
@@ -415,6 +416,16 @@ When everything is started you can use :
 
 - <http://localhost> for eXo Platform access
 - <http://localhost/mail> to see all the mails sent by eXo platform
+
+## Development
+
+We provide a solution for injecting modified Java archives (jar and war) for development purposes.
+
+This can be done by adding an extra docker volume to `/tmp/_injectors_` folder. Each placed file in this directory will be copied
+
+on the suitable target folder.
+
+:warning: It is strictly recommended to avoid using the functionality for production environments.
 
 ## Image build
 
