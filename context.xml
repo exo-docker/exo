@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is part of the Meeds project (https://meeds.io/).
+Copyright (C) 2020 Meeds Association
+contact@meeds.io
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public
+License as published by the Free Software Foundation; either
+version 3 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Lesser General Public License for more details.
+You should have received a copy of the GNU Lesser General Public License
+along with this program; if not, write to the Free Software Foundation,
+Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+
+-->
+<!-- The contents of this file will be loaded for each web application -->
+<Context reloadable="${EXO_DEV}" crossContext="true" sessionCookiePath="/" xmlValidation="false" xmlNamespaceAware="false" unpackWAR="${EXO_TOMCAT_UNPACK_WARS}">
+
+  <!-- Default set of monitored resources. If one of these changes, the    -->
+  <!-- web application will be reloaded.                                   -->
+  <WatchedResource>WEB-INF/web.xml</WatchedResource>
+  <WatchedResource>WEB-INF/tomcat-web.xml</WatchedResource>
+  <WatchedResource>${catalina.base}/conf/web.xml</WatchedResource>
+
+  <JarScanner scanClassPath="false" scanManifest="false">
+  </JarScanner>
+
+  <!-- Disable session persistence across Tomcat restarts -->
+  <Manager pathname=""/>
+
+  <Valve className="org.gatein.sso.agent.tomcat.ServletAccessValve" asyncSupported="true"/>
+  <Valve className="org.apache.catalina.valves.ErrorReportValve" showReport="false" showServerInfo="false"/>
+
+  <ResourceLink name="exo-jcr_portal" global="exo-jcr_portal" type="javax.sql.DataSource"/>
+  <ResourceLink name="exo-idm_portal" global="exo-idm_portal" type="javax.sql.DataSource"/>
+  <ResourceLink name="exo-jpa_portal" global="exo-jpa_portal" type="javax.sql.DataSource"/>
+
+</Context>

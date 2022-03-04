@@ -130,7 +130,8 @@ RUN chmod 755 ${EXO_APP_DIR}/bin/setenv-docker-customize.sh && \
 #   && rm -rf /tmp/*
 
 USER ${EXO_USER}
-
+# WA
+ADD context.xml /opt/exo/conf/context.xml
 RUN for a in ${ADDONS}; do echo "Installing addon $a"; /opt/exo/addon install $a; done
 
 WORKDIR ${EXO_LOG_DIR}
