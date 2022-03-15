@@ -298,7 +298,7 @@ else
 
   if [ "${EXO_PROXY_SSL}" = "true" ]; then
     xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "scheme" -v "https" \
-      -s "/Server/Service/Connector" -t attr -n "secure" -v "false" \
+      -s "/Server/Service/Connector" -t attr -n "secure" -v "true" \
       -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "${EXO_PROXY_PORT}" \
       /opt/exo/conf/server.xml || {
       echo "ERROR during xmlstarlet processing (configuring Connector proxy ssl)"
