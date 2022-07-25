@@ -389,6 +389,8 @@ services:
 ...
 ```
 
+In order to prevent misconfiguration issues while using `exo.properties`. an empty check can be ensured by `EXO_STRICT_CHECK_CONF` (`true` or `false` (default)) before server startup.
+
 ## Testing
 
 The prerequisites are :
