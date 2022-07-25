@@ -49,6 +49,14 @@ add_in_chat_configuration() {
   echo "${P1}" >> ${_CONFIG_FILE}
 }
 
+# Check exo.propeties whather intialized or not before the server startup to avoid misconfiguration issues
+check_exo_properties() {
+  if [ -f /etc/exo/exo.properties ] && ! grep -q '[^[:space:]]' /etc/exo/exo.properties; then 
+    echo "Problem: file /etc/exo/exo.properties is empty! aborting server startup!..."
+    kill 1 # Restart the process
+  fi
+}
+
 # -----------------------------------------------------------------------------
 # Check configuration variables and add default values when needed
 # -----------------------------------------------------------------------------
@@ -828,3 +836,8 @@ else
 fi
 
 set +u		# DEACTIVATE unbound variable check
+
+# Check exo.propeties file is empty or not.
+if ${EXO_STRICT_CHECK_CONF:-false}; then 
+  check_exo_properties
+fi
