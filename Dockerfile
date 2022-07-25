@@ -41,7 +41,7 @@ ARG DOWNLOAD_URL
 # this allow to specifiy a user to download a protected binary
 ARG DOWNLOAD_USER
 # allow to override the list of addons to package by default
-ARG ADDONS="exo-jdbc-driver-mysql:2.0.3 exo-jdbc-driver-postgresql:2.0.0"
+ARG ADDONS="exo-jdbc-driver-mysql:2.0.3 exo-jdbc-driver-postgresql:2.2.0"
 # Default base directory on the plf archive
 ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}
 
