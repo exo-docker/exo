@@ -51,7 +51,7 @@ add_in_chat_configuration() {
 
 # Check exo.propeties whather intialized or not before the server startup to avoid misconfiguration issues
 check_exo_properties() {
-  if [ ! -s /etc/exo/exo.properties ]; then 
+  if [ -f /etc/exo/exo.properties ] && ! grep -q '[^[:space:]]' /etc/exo/exo.properties; then 
     echo "Problem: file /etc/exo/exo.properties is empty! aborting server startup!..."
     kill 1 # Restart the process
   fi
