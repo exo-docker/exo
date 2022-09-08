@@ -3,7 +3,7 @@ name: Create and publish CI/CD Docker image
 on:
   push:
     tags:
-      - '[6-9].[0-9].[0-9]-[0-9]{8}\_[0-9]'
+      - '[6-9].[0-9].[0-9]-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]_[0-9]'
 env:
   DOCKERHUB_IMAGE_NAME: 'exoplatform/exo'
 
