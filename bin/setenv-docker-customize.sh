@@ -198,6 +198,9 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_TOKEN_REMEMBERME_EXPIRATION_UNIT}" ] && EXO_TOKEN_REMEMBERME_EXPIRATION_UNIT="DAY"
 [ -z "${EXO_GZIP_ENABLED}" ] && EXO_GZIP_ENABLED="true"
 
+# Logback Debug logger
+[ -z "${EXO_LOGBACK_LOGGERS_DEBUG}" ] && EXO_LOGBACK_LOGGERS_DEBUG=""
+
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -457,6 +460,22 @@ else
       echo "ERROR during xmlstarlet processing (adding AccessLogValve)"
       exit 1
     }
+  fi
+
+  # logback append debug loggers
+  if [ ! -z ${EXO_LOGBACK_LOGGERS_DEBUG} ]; then 
+    # Add new debug loggers (just before the end of configuration)
+    loggersList=$(echo ${EXO_LOGBACK_LOGGERS_DEBUG} | sed 's/,/ /g')
+    for logger in $loggersList; do 
+      xmlstarlet ed -L -s "/configuration" -t elem -n "loggerTMP" -v "" \
+        -i "//loggerTMP" -t attr -n "name" -v "${logger}" \
+        -i "//loggerTMP" -t attr -n "level" -v "DEBUG" \
+        -r "//loggerTMP" -v logger \
+        /opt/exo/conf/logback.xml || {
+          echo "ERROR during xmlstarlet processing (adding Debug logback loggers)"
+          exit 1
+        }
+    done
   fi
 
   # Gzip compression

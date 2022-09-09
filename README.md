@@ -127,7 +127,7 @@ The following environment variables can be passed to the container to configure 
 | EXO_HTTP_THREAD_MIN    | NO        | `10`          | minimum number of threads ready in the tomcat http connector                 |
 | EXO_ACCESS_LOG_ENABLED | NO        | `false`       | activate Tomcat access log with combine format and a daily log file rotation |
 | EXO_GZIP_ENABLED       | NO        | `true`        | activate Tomcat Gzip compression for assets mimetypes                        |
-
+| EXO_LOGBACK_LOGGERS_DEBUG | NO     |            | Append logback debug scope loggers for advanced analysis (comma (`,`) seperated modules list (_ie_: `WalletStatistics,...`))                       |
 #### Valves and Listeners <!-- omit in toc -->
 
 A file containing the list of valves and listeners can be attached to the container in the path {{/etc/exo/host.yml}}. If a file is specified, the default valves and listeners configuration will be overridden.
