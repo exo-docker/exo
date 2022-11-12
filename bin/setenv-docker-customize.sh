@@ -468,8 +468,8 @@ else
   fi
 
   # Connection timeout
-  xmlstarlet ed -L -u "/Server/Service/Connector/@connectTimeout" -v "${EXO_CONNECTION_TIMEOUT:-20000}" /opt/exo/conf/server.xml || {
-    echo "ERROR during xmlstarlet processing (configuring Connector connectTimeout)"
+  xmlstarlet ed -L -u "/Server/Service/Connector/@connectionTimeout" -v "${EXO_CONNECTION_TIMEOUT:-20000}" /opt/exo/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (configuring Connector connectionTimeout)"
     exit 1
   }
     
