@@ -466,7 +466,13 @@ else
       exit 1
     }
   fi
-  
+
+  # Connection timeout
+  xmlstarlet ed -L -u "/Server/Service/Connector/@connectTimeout" -v "${EXO_CONNECTION_TIMEOUT:-20000}" /opt/exo/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (configuring Connector connectTimeout)"
+    exit 1
+  }
+    
   # Elasticsearch configuration
   add_in_exo_configuration "# Elasticsearch configuration"
   add_in_exo_configuration "exo.es.embedded.enabled=false"
