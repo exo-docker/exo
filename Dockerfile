@@ -11,7 +11,7 @@
 # Run:      docker run -ti --rm --name=exo -p 80:8080 exoplatform/exo
 #           docker run -d --name=exo -p 80:8080 exoplatform/exo
 
-FROM  exoplatform/jdk:openjdk-11-ubuntu-2004
+FROM  exoplatform/jdk:openjdk-17-ubuntu-2004
 LABEL maintainer="eXo Platform <docker@exoplatform.com>"
 
 # Install the needed packages
