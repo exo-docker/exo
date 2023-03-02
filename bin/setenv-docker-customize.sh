@@ -336,6 +336,7 @@ else
   # Upload size
   add_in_exo_configuration "exo.ecms.connector.drives.uploadLimit=${EXO_UPLOAD_MAX_FILE_SIZE}"
   add_in_exo_configuration "exo.social.activity.uploadLimit=${EXO_UPLOAD_MAX_FILE_SIZE}"
+  add_in_exo_configuration "exo.social.composer.maxFileSizeInMB=${EXO_UPLOAD_MAX_FILE_SIZE}"
   add_in_exo_configuration "wiki.attachment.uploadLimit=${EXO_UPLOAD_MAX_FILE_SIZE}"
   add_in_exo_configuration "exo.uploadLimit=${EXO_UPLOAD_MAX_FILE_SIZE}"
 
