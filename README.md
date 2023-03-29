@@ -4,7 +4,8 @@
 
 | Image                                                       | JDK | eXo Platform             |
 | ----------------------------------------------------------- | --- | ------------------------ |
-| exoplatform/exo:6.4_latest                                  | 11  | 6.4.x Enterprise edition |
+| exoplatform/exo:6.5_latest                                  | 17  | 6.5.x Enterprise edition |
+| exoplatform/exo:6.4_latest                                  | 17  | 6.4.x Enterprise edition |
 | exoplatform/exo:6.3_latest                                  | 11  | 6.3.x Enterprise edition |
 | exoplatform/exo:6.2_latest                                  | 11  | 6.2.x Enterprise edition |
 | exoplatform/exo:6.1_latest                                  | 11  | 6.1.x Enterprise edition |
@@ -127,7 +128,7 @@ The following environment variables can be passed to the container to configure 
 | EXO_HTTP_THREAD_MIN    | NO        | `10`          | minimum number of threads ready in the tomcat http connector                 |
 | EXO_ACCESS_LOG_ENABLED | NO        | `false`       | activate Tomcat access log with combine format and a daily log file rotation |
 | EXO_GZIP_ENABLED       | NO        | `true`        | activate Tomcat Gzip compression for assets mimetypes                        |
-| EXO_CONNECTION_TIMEOUT       | NO        | `20000`        | Tomcat Connection timeout                        |
+| EXO_CONNECTION_TIMEOUT | NO        | `20000`        | Tomcat Connection timeout                                                   |
 
 #### Valves and Listeners <!-- omit in toc -->
 
