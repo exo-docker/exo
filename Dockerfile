@@ -11,7 +11,7 @@
 # Run:      docker run -ti --rm --name=exo -p 80:8080 exoplatform/exo
 #           docker run -d --name=exo -p 80:8080 exoplatform/exo
 
-FROM  openjdk:17-alpine
+FROM  eclipse-temurin:17-jdk-alpine
 LABEL maintainer="eXo Platform <docker@exoplatform.com>"
 
 # Install the needed packages
@@ -38,9 +38,6 @@ ARG DOWNLOAD_USER
 ARG ADDONS="exo-jdbc-driver-mysql:2.0.4 exo-jdbc-driver-postgresql:2.3.0"
 # Default base directory on the plf archive
 ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}
-
-# Specify primary prompt string for bash navigation
-ENV PS1                    "\u@\h:\w$ "
 
 ENV EXO_APP_DIR            /opt/exo
 ENV EXO_CONF_DIR           /etc/exo
