@@ -39,6 +39,9 @@ ARG ADDONS="exo-jdbc-driver-mysql:2.0.4 exo-jdbc-driver-postgresql:2.3.0"
 # Default base directory on the plf archive
 ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}
 
+# Specify primary prompt string for bash navigation
+ENV PS1                    "\u@\h:\w$ "
+
 ENV EXO_APP_DIR            /opt/exo
 ENV EXO_CONF_DIR           /etc/exo
 ENV EXO_DATA_DIR           /srv/exo
