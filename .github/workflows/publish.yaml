@@ -28,7 +28,7 @@ jobs:
           images: ${{ env.DOCKERHUB_IMAGE_NAME }}
 
       - name: Build and push Docker image to Dockerhub
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: true
