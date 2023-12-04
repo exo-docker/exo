@@ -19,8 +19,7 @@ RUN apk update && \
   apk upgrade && \
   apk add --no-cache xmlstarlet jq bash curl tini && \
   apk --no-cache add msttcorefonts-installer fontconfig && \
-  update-ms-fonts &&  fc-cache -f && \
-  apk add --no-cache libreoffice
+  update-ms-fonts &&  fc-cache -f
 
 RUN wget -nv -q -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download/v4.9.3/yq_linux_amd64 && \
   chmod a+x /usr/bin/yq
