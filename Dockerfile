@@ -20,7 +20,7 @@ RUN apt-get -qq update && \
   apt-get -qq -y install ${_APT_OPTIONS} xmlstarlet jq && \
   echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections && \
   echo "ttf-mscorefonts-installer msttcorefonts/present-mscorefonts-eula note" | debconf-set-selections && \
-  apt-get -qq -y install ${_APT_OPTIONS} ttf-mscorefonts-installer && \
+  apt-get -qq -y install ${_APT_OPTIONS} libfreetype6 fontconfig fonts-dejavu ttf-mscorefonts-installer && \
   apt-get -qq -y autoremove && \
   apt-get -qq -y clean && \
   rm -rf /var/lib/apt/lists/*
