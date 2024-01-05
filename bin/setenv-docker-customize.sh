@@ -172,7 +172,6 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_PROFILES}" ] && EXO_PROFILES="all"
 
 [ -z "${EXO_REWARDS_WALLET_ADMIN_KEY}" ] && EXO_REWARDS_WALLET_ADMIN_KEY="changeThisKey"
-[ -z "${EXO_REWARDS_WALLET_ACCESS_PERMISSION}" ] && EXO_REWARDS_WALLET_ACCESS_PERMISSION="/platform/users"
 [ -z "${EXO_REWARDS_WALLET_NETWORK_ID}" ] && EXO_REWARDS_WALLET_NETWORK_ID="1"
 [ -z "${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP}" ] && EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP="https://mainnet.infura.io/v3/a1ac85aea9ce4be88e9e87dad7c01d40"
 [ -z "${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET}" ] && EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET="wss://mainnet.infura.io/ws/v3/a1ac85aea9ce4be88e9e87dad7c01d40"
@@ -566,7 +565,7 @@ else
   # eXo Rewards
   add_in_exo_configuration "# Rewards configuration"
   add_in_exo_configuration "exo.wallet.admin.key=${EXO_REWARDS_WALLET_ADMIN_KEY}"
-  add_in_exo_configuration "exo.wallet.accessPermission=${EXO_REWARDS_WALLET_ACCESS_PERMISSION}"
+  [ ! -z "${EXO_REWARDS_WALLET_ACCESS_PERMISSION:-}" ] && add_in_exo_configuration "exo.wallet.accessPermission=${EXO_REWARDS_WALLET_ACCESS_PERMISSION}"
   add_in_exo_configuration "exo.wallet.blockchain.networkId=${EXO_REWARDS_WALLET_NETWORK_ID}"
   add_in_exo_configuration "exo.wallet.blockchain.network.http=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_HTTP}"
   add_in_exo_configuration "exo.wallet.blockchain.network.websocket=${EXO_REWARDS_WALLET_NETWORK_ENDPOINT_WEBSOCKET}"
