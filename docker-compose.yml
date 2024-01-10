@@ -1,0 +1,36 @@
+version: '2'
+services:
+  exo:
+    image: exoplatform/exo:develop
+    environment:
+      EXO_DB_NAME: exo
+      EXO_DB_USER: exo
+      EXO_DB_PASSWORD: my-secret-pw
+      EXO_ADDONS_LIST:
+      EXO_ADDONS_REMOVE_LIST: "exo-chat,exo-onlyoffice,exo-jitsi"
+      EXO_JVM_LOG_GC_ENABLED: "true"
+      EXO_ES_SCHEME: http
+      EXO_ES_HOST: es
+      EXO_ES_PORT: 9200
+    volumes:
+      - exo_data:/srv/exo
+      - exo_logs:/var/log/exo
+    expose:
+      - "8080"
+    ports:
+      - "8080:8080"
+  es:
+    image: exoplatform/elasticsearch:2.1.0
+    volumes:
+      - search_data:/usr/share/elasticsearch/data:rw
+    environment:
+      - ES_JAVA_OPTS=-Xms2048m -Xmx2048m
+      - node.name=exo
+      - cluster.name=exo
+      - cluster.initial_master_nodes=exo
+      - network.host=_site_   
+      - xpack.security.enabled=false
+volumes:
+  exo_data:
+  exo_logs:
+  search_data:
