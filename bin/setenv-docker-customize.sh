@@ -718,6 +718,55 @@ else
 fi
 
 # -----------------------------------------------------------------------------
+# Import self-signed certificates to Keystore
+# -----------------------------------------------------------------------------
+if [ -f /opt/exo/_done.ssca ]; then
+  echo "INFO: self-signed certificates keystore import already done! skipping this step."
+else
+  # self-signed certificates authorization
+  if [ -z "${EXO_SELFSIGNEDCERTS_HOSTS:-}" ]; then
+    echo "# no self-signed certificate to be imported from EXO_SELFSIGNEDCERTS_HOSTS environment variable."
+  else
+    echo "# Cloning JDK cacerts keystore to custom one to be used for self-signed certificates import..."
+    rm -rf /opt/exo/custkeystore
+    mkdir -p /opt/exo/custkeystore
+    _cacertsPath=/opt/exo/custkeystore/cacerts
+    keytool -importkeystore -srckeystore $JAVA_HOME/lib/security/cacerts -destkeystore $_cacertsPath -srcstorepass changeit -deststorepass changeit &>/dev/null
+    echo "Clone done."
+    echo "# Importing self-signed certificates from EXO_SELFSIGNEDCERTS_HOSTS environment variable:"
+    echo ${EXO_SELFSIGNEDCERTS_HOSTS} | tr ',' '\n' | while read _selfsignedcerthost ; do
+      if [ -n "${_selfsignedcerthost}" ]; then
+        # Authorize self-signed certificate
+        _sslPort=':443'
+        if echo "${_selfsignedcerthost}" | grep -q ':'; then
+          _sslPort=''
+        fi
+        _sanitizedhostname=$(echo "${_selfsignedcerthost}" | cut -d ':' -f1)
+        echo "Importing ${_selfsignedcerthost} self-signed certificate to java custom keystore..."
+        echo -n | openssl s_client -connect "${_selfsignedcerthost}${_sslPort}" | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "/tmp/${_sanitizedhostname}.crt"
+        keytool -import -trustcacerts -keystore ${_cacertsPath} -storepass changeit -noprompt -alias "${_sanitizedhostname}" -file "/tmp/${_sanitizedhostname}.crt" &>/dev/null
+        rm "/tmp/${_sanitizedhostname}.crt"
+        if [ $? != 0 ]; then
+          echo "[ERROR] Problem during importing self-signed certificate of Host: [${_selfsignedcerthost}]."
+          exit 1
+        fi
+      fi
+    done
+    if [ $? != 0 ]; then
+      echo "[ERROR] An error during importing self-signed certificates phase aborted eXo startup !"
+      exit 1
+    fi
+    # Configure tomcat to use custom ca certs
+    CATALINA_OPTS="${CATALINA_OPTS:-} -Djavax.net.ssl.trustStore=${_cacertsPath}"
+    CATALINA_OPTS="${CATALINA_OPTS:-} -Djavax.net.ssl.trustStorePassword=changeit"
+  fi
+  echo "# ------------------------------------ #"
+  echo "# eXo self-signed certificates import done."
+  echo "# ------------------------------------ #"
+  # put a file to avoid doing the configuration twice
+  touch /opt/exo/_done.ssca
+fi
+# -----------------------------------------------------------------------------
 # Change chat add-on security token at each start
 # -----------------------------------------------------------------------------
 if [ -f /etc/exo/chat.properties ] && [ "${EXO_CHAT_SERVER_STANDALONE}" = "false" ]; then
