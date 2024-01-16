@@ -731,7 +731,7 @@ else
     rm -rf /opt/exo/custkeystore
     mkdir -p /opt/exo/custkeystore
     _cacertsPath=/opt/exo/custkeystore/cacerts
-    keytool -importkeystore -srckeystore $JAVA_HOME/lib/security/cacerts -destkeystore $_cacertsPath -srcstorepass changeit -deststorepass changeit &>/dev/null
+    keytool -importkeystore -srckeystore $JAVA_HOME/lib/security/cacerts -destkeystore $_cacertsPath -srcstorepass changeit -deststorepass changeit 2>&1 >/dev/null
     echo "Clone done."
     echo "# Importing self-signed certificates from EXO_SELFSIGNEDCERTS_HOSTS environment variable:"
     echo ${EXO_SELFSIGNEDCERTS_HOSTS} | tr ',' '\n' | while read _selfsignedcerthost ; do
@@ -744,8 +744,7 @@ else
         _sanitizedhostname=$(echo "${_selfsignedcerthost}" | cut -d ':' -f1)
         echo "Importing ${_selfsignedcerthost} self-signed certificate to java custom keystore..."
         echo -n | openssl s_client -connect "${_selfsignedcerthost}${_sslPort}" | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "/tmp/${_sanitizedhostname}.crt"
-        keytool -import -trustcacerts -keystore ${_cacertsPath} -storepass changeit -noprompt -alias "${_sanitizedhostname}" -file "/tmp/${_sanitizedhostname}.crt" &>/dev/null
-        rm "/tmp/${_sanitizedhostname}.crt"
+        keytool -import -trustcacerts -keystore ${_cacertsPath} -storepass changeit -noprompt -alias "${_sanitizedhostname}" -file "/tmp/${_sanitizedhostname}.crt" 2>&1 >/dev/null
         if [ $? != 0 ]; then
           echo "[ERROR] Problem during importing self-signed certificate of Host: [${_selfsignedcerthost}]."
           exit 1
