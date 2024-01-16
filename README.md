@@ -36,6 +36,7 @@ The image is compatible with the following databases system :  `MySQL` (default)
   - [Mail](#mail)
   - [JMX](#jmx)
   - [Remote Debugging](#remote-debugging)
+  - [Self-Signed Certifcates import](#Self-Signed-Certifcates-import)
   - [Rememberme Token Expiration](#rememberme-token-expiration)
   - [Cluster](#cluster)
   - [Reward Wallet](#reward-wallet)
@@ -305,6 +306,14 @@ The following environment variables should be passed to the container in order t
 | --------------------------- | --------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | EXO_DEBUG_ENABLED           | NO        | `false`       | enable remote debugging listener                                                                                                                     |
 | EXO_DEBUG_PORT              | NO        | `8000`        | Remote debugging port
+
+### Self-Signed Certifcates Import
+
+The following environment variables should be passed to the container in order to import self-signed certficates :
+
+| VARIABLE                    | MANDATORY | DEFAULT VALUE | DESCRIPTION                                                                                                                               |
+| --------------------------- | --------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| EXO_SELFSIGNEDCERTS_HOSTS   | NO        | -       | commas separated list of self-certificates hostname to import to keystore           |
 
 ### Rememberme Token Expiration
 
