@@ -727,12 +727,12 @@ else
   if [ -z "${EXO_SELFSIGNEDCERTS_HOSTS:-}" ]; then
     echo "# no self-signed certificate to be imported from EXO_SELFSIGNEDCERTS_HOSTS environment variable."
   else
-    echo "# Cloning JDK cacerts keystore to custom one to be used for self-signed certificates import..."
-    rm -rf /opt/exo/custkeystore
-    mkdir -p /opt/exo/custkeystore
-    _cacertsPath=/opt/exo/custkeystore/cacerts
-    keytool -importkeystore -srckeystore $JAVA_HOME/lib/security/cacerts -destkeystore $_cacertsPath -srcstorepass changeit -deststorepass changeit 2>&1 >/dev/null
-    echo "Clone done."
+    echo "# Copying JDK cacerts keystore to custom one to be used for self-signed certificates import (rootless)..."
+    _custKeyStoreDir=/opt/exo/.custkeystore
+    mkdir -p ${_custKeyStoreDir}
+    _custKeyStoreFile=${_custKeyStoreDir}/exo.jks
+    cp -f $JAVA_HOME/lib/security/cacerts $_custKeyStoreFile
+    echo "Done."
     echo "# Importing self-signed certificates from EXO_SELFSIGNEDCERTS_HOSTS environment variable:"
     echo ${EXO_SELFSIGNEDCERTS_HOSTS} | tr ',' '\n' | while read _selfsignedcerthost ; do
       if [ -n "${_selfsignedcerthost}" ]; then
@@ -744,11 +744,12 @@ else
         _sanitizedhostname=$(echo "${_selfsignedcerthost}" | cut -d ':' -f1)
         echo "Importing ${_selfsignedcerthost} self-signed certificate to java custom keystore..."
         echo -n | openssl s_client -connect "${_selfsignedcerthost}${_sslPort}" | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "/tmp/${_sanitizedhostname}.crt"
-        keytool -import -trustcacerts -keystore ${_cacertsPath} -storepass changeit -noprompt -alias "${_sanitizedhostname}" -file "/tmp/${_sanitizedhostname}.crt" 2>&1 >/dev/null
+        keytool -import -trustcacerts -keystore ${_custKeyStoreFile} -storepass changeit -noprompt -alias "${_sanitizedhostname}" -file "/tmp/${_sanitizedhostname}.crt"
         if [ $? != 0 ]; then
           echo "[ERROR] Problem during importing self-signed certificate of Host: [${_selfsignedcerthost}]."
           exit 1
         fi
+        rm "/tmp/${_sanitizedhostname}.crt"
       fi
     done
     if [ $? != 0 ]; then
@@ -756,7 +757,7 @@ else
       exit 1
     fi
     # Configure tomcat to use custom ca certs
-    CATALINA_OPTS="${CATALINA_OPTS:-} -Djavax.net.ssl.trustStore=${_cacertsPath}"
+    CATALINA_OPTS="${CATALINA_OPTS:-} -Djavax.net.ssl.trustStore=${_custKeyStoreFile}"
     CATALINA_OPTS="${CATALINA_OPTS:-} -Djavax.net.ssl.trustStorePassword=changeit"
   fi
   echo "# ------------------------------------ #"
