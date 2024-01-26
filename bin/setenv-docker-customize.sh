@@ -726,6 +726,8 @@ fi
 # -----------------------------------------------------------------------------
 # Import self-signed certificates to Keystore
 # -----------------------------------------------------------------------------
+_custKeyStoreDir=/opt/exo/.custkeystore
+_custKeyStoreFile=${_custKeyStoreDir}/exo.jks
 if [ -f /opt/exo/_done.ssca ]; then
   echo "INFO: self-signed certificates keystore import already done! skipping this step."
 else
@@ -734,9 +736,7 @@ else
     echo "# no self-signed certificate to be imported from EXO_SELFSIGNEDCERTS_HOSTS environment variable."
   else
     echo "# Copying JDK cacerts keystore to custom one to be used for self-signed certificates import (rootless)..."
-    _custKeyStoreDir=/opt/exo/.custkeystore
     mkdir -p ${_custKeyStoreDir}
-    _custKeyStoreFile=${_custKeyStoreDir}/exo.jks
     cp -f $JAVA_HOME/lib/security/cacerts $_custKeyStoreFile
     echo "Done."
     echo "# Importing self-signed certificates from EXO_SELFSIGNEDCERTS_HOSTS environment variable:"
@@ -762,15 +762,19 @@ else
       echo "[ERROR] An error during importing self-signed certificates phase aborted eXo startup !"
       exit 1
     fi
-    # Configure tomcat to use custom ca certs
-    CATALINA_OPTS="${CATALINA_OPTS:-} -Djavax.net.ssl.trustStore=${_custKeyStoreFile}"
-    CATALINA_OPTS="${CATALINA_OPTS:-} -Djavax.net.ssl.trustStorePassword=changeit"
   fi
   echo "# ------------------------------------ #"
   echo "# eXo self-signed certificates import done."
   echo "# ------------------------------------ #"
   # put a file to avoid doing the configuration twice
   touch /opt/exo/_done.ssca
+fi
+# ---------------------------------------------------------------------------------
+# Configure tomcat to use custom ca certs each start if custom keystore is provided
+# ---------------------------------------------------------------------------------
+if [ -f "${_custKeyStoreFile}" ]; then
+  CATALINA_OPTS="${CATALINA_OPTS:-} -Djavax.net.ssl.trustStore=${_custKeyStoreFile}"
+  CATALINA_OPTS="${CATALINA_OPTS:-} -Djavax.net.ssl.trustStorePassword=changeit"
 fi
 # -----------------------------------------------------------------------------
 # Change chat add-on security token at each start
