@@ -41,7 +41,7 @@ services:
       - back
       - mail
   mongo:
-    image: mongo:4.4
+    image: mongo:6.0
     volumes:
       - mongo_data:/data/db:rw
     networks:
@@ -60,7 +60,7 @@ services:
     networks:
       - back
   pgsql:
-    image: postgres:14.0-alpine
+    image: postgres:15.0-alpine
     environment:
       POSTGRES_DB: exo
       POSTGRES_USER: exo
@@ -70,7 +70,7 @@ services:
     networks:
       - back
   es:
-    image: exoplatform/elasticsearch:2.0.3
+    image: exoplatform/elasticsearch:2.1.0
     volumes:
       - search_data:/usr/share/elasticsearch/data:rw
     environment:
@@ -79,6 +79,7 @@ services:
       - cluster.name=exo
       - cluster.initial_master_nodes=exo
       - network.host=_site_
+      - xpack.security.enabled=false
     networks:
       - back
   mail:
