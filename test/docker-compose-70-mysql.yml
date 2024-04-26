@@ -2,7 +2,7 @@ version: '2'
 services:
   web:
     extends:
-      file: common-plf66-stack.yml
+      file: common-plf70-stack.yml
       service: web
     ports: 
       - "80:80"
@@ -13,7 +13,7 @@ services:
       - mail
   exo:
     extends:
-      file: common-plf66-stack.yml
+      file: common-plf70-stack.yml
       service: exo
     image: exoplatform/exo:develop
     environment:
@@ -40,15 +40,15 @@ services:
       - mail
   mongo:
     extends:
-      file: common-plf66-stack.yml
+      file: common-plf70-stack.yml
       service: mongo
   db:
     extends:
-      file: common-plf66-stack.yml
+      file: common-plf70-stack.yml
       service: mysql
   search:
     extends:
-      file: common-plf66-stack.yml
+      file: common-plf70-stack.yml
       service: es
     ports: 
       # (Linux) open elasticsearch port for local connection only
@@ -57,7 +57,7 @@ services:
       - "9200:9200"
   mail:
     extends:
-      file: common-plf66-stack.yml
+      file: common-plf70-stack.yml
       service: mail
     depends_on:
       - mongo
