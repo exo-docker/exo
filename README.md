@@ -279,6 +279,8 @@ The following environment variables should be passed to the container in order t
 | EXO_MAIL_SMTP_STARTTLS | NO        | `false`                   | true to enable the secure (TLS) SMTP. See RFC 3207. |
 | EXO_MAIL_SMTP_USERNAME | NO        | -                         | authentication username for smtp server (if needed) |
 | EXO_MAIL_SMTP_PASSWORD | NO        | -                         | authentication password for smtp server (if needed) |
+| EXO_SMTP_SSL_ENABLED   | NO        | `false`                   | true to enable SSL connection                       |
+| EXO_MAIL_SSL_SOCKETFACTORY_PORT   | NO        | `${EXO_MAIL_SMTP_PORT}`                   | ssl socketfactory port (default smtp port)                     |
 | EXO_SMTP_SSL_PROTOCOLS | NO        | -                         | tls version for smtp server (if needed) |
 
 
