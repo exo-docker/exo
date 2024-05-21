@@ -418,8 +418,13 @@ else
     add_in_exo_configuration "exo.email.smtp.username=${EXO_MAIL_SMTP_USERNAME}"
     add_in_exo_configuration "exo.email.smtp.password=${EXO_MAIL_SMTP_PASSWORD}"
   fi
-  add_in_exo_configuration "exo.email.smtp.socketFactory.port="
-  add_in_exo_configuration "exo.email.smtp.socketFactory.class="
+  if [ "${EXO_SMTP_SSL_ENABLED:-false}" = "false" ]; then 
+    add_in_exo_configuration "exo.email.smtp.socketFactory.port="
+    add_in_exo_configuration "exo.email.smtp.socketFactory.class="
+  else 
+    add_in_exo_configuration "exo.email.smtp.socketFactory.port=${EXO_MAIL_SSL_SOCKETFACTORY_PORT:-${EXO_MAIL_SMTP_PORT}}"
+    add_in_exo_configuration "exo.email.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory"
+  fi
   # SMTP TLS Version, Example: TLSv1.2
   if [ ! -z "${EXO_SMTP_SSL_PROTOCOLS:-}" ]; then 
     add_in_exo_configuration "mail.smtp.ssl.protocols=${EXO_SMTP_SSL_PROTOCOLS}"
