@@ -11,7 +11,7 @@
 # Run:      docker run -ti --rm --name=exo -p 80:8080 exoplatform/exo
 #           docker run -d --name=exo -p 80:8080 exoplatform/exo
 
-FROM  eclipse-temurin:17-jdk-alpine
+FROM  eclipse-temurin:21-jdk-alpine
 LABEL maintainer="eXo Platform <docker@exoplatform.com>"
 
 # Install the needed packages
