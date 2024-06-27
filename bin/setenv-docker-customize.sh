@@ -407,6 +407,7 @@ else
   # Tomcat Session Timeout
   if [ "${EXO_SESSION_TIMEOUT}" -lt 1 ]; then 
     echo "Error EXO_SESSION_TIMEOUT (${EXO_SESSION_TIMEOUT}) must be greater than 0"
+    exit 1
   else
     xmlstarlet ed -L -N a="https://jakarta.ee/xml/ns/jakartaee" -u "a:web-app/a:session-config/a:session-timeout" -v ${EXO_SESSION_TIMEOUT} /opt/exo/conf/web.xml || {
       echo "ERROR during xmlstarlet processing (adding ${className})"
