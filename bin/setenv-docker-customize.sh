@@ -410,7 +410,7 @@ else
     exit 1
   else
     xmlstarlet ed -L -N a="https://jakarta.ee/xml/ns/jakartaee" -u "a:web-app/a:session-config/a:session-timeout" -v ${EXO_SESSION_TIMEOUT} /opt/exo/conf/web.xml || {
-      echo "ERROR during xmlstarlet processing (adding ${className})"
+      echo "ERROR during xmlstarlet processing (submitting tomcat session timeout)"
       exit 1
     }
   fi
