@@ -195,6 +195,8 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_TOKEN_REMEMBERME_EXPIRATION_UNIT}" ] && EXO_TOKEN_REMEMBERME_EXPIRATION_UNIT="DAY"
 [ -z "${EXO_GZIP_ENABLED}" ] && EXO_GZIP_ENABLED="true"
 
+[ -z "${EXO_SESSION_TIMEOUT}" ] && EXO_SESSION_TIMEOUT=30
+
 set -u		# REACTIVATE unbound variable check
 
 # -----------------------------------------------------------------------------
@@ -400,6 +402,17 @@ else
         i=-1
       fi
     done
+  fi
+  
+  # Tomcat Session Timeout
+  if [ "${EXO_SESSION_TIMEOUT}" -lt 1 ]; then 
+    echo "Error EXO_SESSION_TIMEOUT (${EXO_SESSION_TIMEOUT}) must be greater than 0"
+    exit 1
+  else
+    xmlstarlet ed -L -N a="http://xmlns.jcp.org/xml/ns/javaee" -u "a:web-app/a:session-config/a:session-timeout" -v ${EXO_SESSION_TIMEOUT} /opt/exo/conf/web.xml || {
+      echo "ERROR during xmlstarlet processing (submitting tomcat session timeout)"
+      exit 1
+    }
   fi
 
   # Mail configuration
