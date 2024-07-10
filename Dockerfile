@@ -1,10 +1,6 @@
 # Dockerizing base image for eXo Platform hosting offer with:
 #
 # - eXo Platform
-# - Libre Office
-# - Oracle JAI (Java Advanced Imaging) API
-# - Oracle JAI (Java Advanced Imaging) Image I/O Tools
-# - Oracle JAI (Java Advanced Imaging) ICC Profiles
 
 # Build:    docker build -t exoplatform/exo .
 #
@@ -21,7 +17,7 @@ RUN apk update && \
   apk --no-cache add msttcorefonts-installer fontconfig && \
   update-ms-fonts &&  fc-cache -f
 
-RUN wget -nv -q -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download/v4.9.3/yq_linux_amd64 && \
+  RUN wget -nv -q -O /usr/bin/yq https://github.com/mikefarah/yq/releases/download/v4.44.2/yq_linux_amd64 && \
   chmod a+x /usr/bin/yq
 
 RUN sed -i "s/999/99/" /etc/group
@@ -81,7 +77,7 @@ RUN wget -nv -q -O /usr/bin/wait-for https://raw.githubusercontent.com/eficode/w
   chmod a+x /usr/bin/wait-for
 
 # Install Docker customization file
-ADD bin/setenv-docker-customize.sh ${EXO_APP_DIR}/bin/setenv-docker-customize.sh
+COPY bin/setenv-docker-customize.sh ${EXO_APP_DIR}/bin/setenv-docker-customize.sh
 RUN chmod 755 ${EXO_APP_DIR}/bin/setenv-docker-customize.sh && \
   chown ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR}/bin/setenv-docker-customize.sh && \
   sed -i '/# Load custom settings/i \
