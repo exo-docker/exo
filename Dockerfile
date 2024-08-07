@@ -23,7 +23,7 @@ RUN apk update && \
 RUN sed -i "s/999/99/" /etc/group
 
 # Build Arguments and environment variables
-ARG EXO_VERSION=7.0.0-20240806
+ARG EXO_VERSION=7.0.0-20240807
 
 # this allow to specify an eXo Platform download url
 ARG DOWNLOAD_URL
