@@ -1,11 +1,11 @@
 version: "2"
 services:
   web:
-    image: nginx:1.23-alpine
+    image: nginx:1.25-alpine
     expose:
       - "80"
     volumes:
-      - ./conf/nginx-plf65.conf:/etc/nginx/nginx.conf:ro
+      - ./conf/nginx-plf70.conf:/etc/nginx/nginx.conf:ro
     networks:
       - front
       - mail
@@ -70,7 +70,7 @@ services:
     networks:
       - back
   es:
-    image: exoplatform/elasticsearch:2.1.0
+    image: elasticsearch:8.14.3
     volumes:
       - search_data:/usr/share/elasticsearch/data:rw
     environment:
