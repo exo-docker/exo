@@ -686,9 +686,10 @@ else
         fi
       fi
     done
-    if [ $? != 0 ]; then
+    _ADDONS_RET=$?
+    if [ $_ADDONS_RET != 0 ]; then
       echo "[ERROR] An error during add-on installation phase aborted eXo startup !"
-      exit 1
+      exit ${_ADDONS_RET}
     fi
   fi
   echo "# ------------------------------------ #"
