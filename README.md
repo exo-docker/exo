@@ -81,6 +81,7 @@ Some add-ons are already installed in eXo image but you can install other one or
 | EXO_ADDONS_CATALOG_URL   | NO        | -             | The url of a valid eXo Catalog                                                                |
 | EXO_ADDONS_CONFLICT_MODE | NO        | -             | decision to make in case of file conflicts (overwrite, ignore or fail)                        |
 | EXO_ADDONS_NOCOMPAT_MODE | NO        | false         | decision to allow to install incompatible addon |
+| EXO_ADDONS_INSTALL_TIMEOUT | NO        | 120         | timeout to install an addon (in seconds) |
 
 ### Patches
 
