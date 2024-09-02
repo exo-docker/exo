@@ -185,6 +185,7 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 
 [ -z "${EXO_ADDONS_CONFLICT_MODE}" ] && EXO_ADDONS_CONFLICT_MODE=""
 [ -z "${EXO_ADDONS_NOCOMPAT_MODE}" ] && EXO_ADDONS_NOCOMPAT_MODE="false"
+[ -z "${EXO_ADDONS_INSTALL_TIMEOUT}" ] && EXO_ADDONS_INSTALL_TIMEOUT=120
 
 [ -z "${EXO_JCR_FS_STORAGE_ENABLED}" ] && EXO_JCR_FS_STORAGE_ENABLED=""
 [ -z "${EXO_FILE_STORAGE_TYPE}" ] && EXO_FILE_STORAGE_TYPE=""
@@ -675,9 +676,9 @@ else
         _ADDON_COUNTER=$((_ADDON_COUNTER+1))
         # Install addon
         if [ ${_ADDON_COUNTER} -eq "1" ]; then 
-          ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} ${_addon} --force --batch-mode --no-cache
+          timeout ${EXO_ADDONS_INSTALL_TIMEOUT} ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} ${_addon} --force --batch-mode --no-cache
         else
-          ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} ${_addon} --force --batch-mode
+          timeout ${EXO_ADDONS_INSTALL_TIMEOUT} ${EXO_APP_DIR}/addon install ${_ADDON_MGR_OPTIONS:-} ${_ADDON_MGR_OPTION_CATALOG:-} ${_addon} --force --batch-mode
         fi
         if [ $? != 0 ]; then
           echo "[ERROR] Problem during add-on [${_addon}] install."
@@ -685,9 +686,10 @@ else
         fi
       fi
     done
-    if [ $? != 0 ]; then
+    _ADDONS_RET=$?
+    if [ $_ADDONS_RET != 0 ]; then
       echo "[ERROR] An error during add-on installation phase aborted eXo startup !"
-      exit 1
+      exit ${_ADDONS_RET}
     fi
   fi
   echo "# ------------------------------------ #"
