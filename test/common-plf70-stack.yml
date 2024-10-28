@@ -47,14 +47,12 @@ services:
     networks:
       - back
   mysql:
-    image: mysql:8.0
+    image: mysql:8.4.3
     environment:
       MYSQL_ROOT_PASSWORD: my-secret-pw
       MYSQL_DATABASE: exo
       MYSQL_USER: exo
       MYSQL_PASSWORD: exo
-    # mysql native password is needed to avoid ssl key errors with the default configuration
-    command: --default-authentication-plugin=mysql_native_password
     volumes:
       - db_data:/var/lib/mysql:rw
     networks:
