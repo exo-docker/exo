@@ -36,6 +36,7 @@ ARG ARCHIVE_BASE_DIR=platform-${EXO_VERSION}
 
 ENV EXO_APP_DIR=/opt/exo
 ENV EXO_CONF_DIR=/etc/exo
+ENV EXO_CODEC_DIR=/etc/exo/codec
 ENV EXO_DATA_DIR=/srv/exo
 ENV EXO_SHARED_DATA_DIR=/srv/exo/shared
 ENV EXO_LOG_DIR=/var/log/exo
@@ -70,6 +71,7 @@ RUN if [ -n "${DOWNLOAD_USER}" ]; then PARAMS="-u ${DOWNLOAD_USER}"; fi && \
   mv /srv/downloads/${ARCHIVE_BASE_DIR} ${EXO_APP_DIR} && \
   chown -R ${EXO_USER}:${EXO_GROUP} ${EXO_APP_DIR} && \
   ln -s ${EXO_APP_DIR}/gatein/conf /etc/exo && \
+  mkdir -p ${EXO_CODEC_DIR} && chown ${EXO_USER}:${EXO_GROUP} ${EXO_CODEC_DIR} && \
   rm -rf ${EXO_APP_DIR}/logs && ln -s ${EXO_LOG_DIR} ${EXO_APP_DIR}/logs
 
 # Add wait-for

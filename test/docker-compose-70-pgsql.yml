@@ -63,6 +63,7 @@ services:
       - mongo
 volumes:
   exo_data:
+  exo_codec:
   exo_logs:
   db_data:
   mongo_data:
