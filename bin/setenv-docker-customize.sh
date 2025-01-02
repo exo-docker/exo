@@ -748,31 +748,70 @@ fi
 # -----------------------------------------------------------------------------
 _custKeyStoreDir=/opt/exo/.custkeystore
 _custKeyStoreFile=${_custKeyStoreDir}/exo.jks
+_hashStoreDir="/opt/exo/.cert_hashes"
+_keytoolPass="changeit"
 # self-signed certificates authorization
 if [ -z "${EXO_SELFSIGNEDCERTS_HOSTS:-}" ]; then
   echo "# no self-signed certificate to be imported from EXO_SELFSIGNEDCERTS_HOSTS environment variable."
 else
-  echo "# Copying JDK cacerts keystore to custom one to be used for self-signed certificates import (rootless)..."
   mkdir -p ${_custKeyStoreDir}
-  cp -f $JAVA_HOME/lib/security/cacerts $_custKeyStoreFile
-  echo "Done."
+  mkdir -p ${_hashStoreDir}
+  # Copy JDK cacerts to the custom keystore if not already done
+  if [ ! -f "$_custKeyStoreFile" ]; then
+    echo "# Copying JDK cacerts keystore to custom one to be used for self-signed certificates import (rootless)..."
+    cp -f "$JAVA_HOME/lib/security/cacerts" "$_custKeyStoreFile"
+    echo "INFO: Custom keystore initialized."
+  else
+    echo "# Custom keystore already initialized."
+  fi
   echo "# Importing self-signed certificates from EXO_SELFSIGNEDCERTS_HOSTS environment variable:"
-  echo ${EXO_SELFSIGNEDCERTS_HOSTS} | tr ',' '\n' | while read _selfsignedcerthost ; do
-    if [ -n "${_selfsignedcerthost}" ]; then
+  echo ${EXO_SELFSIGNEDCERTS_HOSTS} | tr ',' '\n' | while read _selfSignedCertHost ; do
+    if [ -n "${_selfSignedCertHost}" ]; then
       # Authorize self-signed certificate
       _sslPort=':443'
-      if echo "${_selfsignedcerthost}" | grep -q ':'; then
+      if echo "${_selfSignedCertHost}" | grep -q ':'; then
         _sslPort=''
       fi
-      _sanitizedhostname=$(echo "${_selfsignedcerthost}" | cut -d ':' -f1)
-      echo "Importing ${_selfsignedcerthost} self-signed certificate to java custom keystore..."
-      echo -n | openssl s_client -connect "${_selfsignedcerthost}${_sslPort}" | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "/tmp/${_sanitizedhostname}.crt"
-      keytool -import -trustcacerts -keystore ${_custKeyStoreFile} -storepass changeit -noprompt -alias "${_sanitizedhostname}" -file "/tmp/${_sanitizedhostname}.crt"
-      if [ $? != 0 ]; then
-        echo "[ERROR] Problem during importing self-signed certificate of Host: [${_selfsignedcerthost}]."
-        exit 1
+      _sanitizedHostName=$(echo "${_selfSignedCertHost}" | cut -d ':' -f1)
+      _tempCertFile="/tmp/${_sanitizedHostName}.crt"
+      _hashFile="${_hashStoreDir}/${_sanitizedHostName}.hash"
+      echo "INFO: Fetching certificate from ${_selfSignedCertHost}${_sslPort}..."
+      echo -n | openssl s_client -connect "${_selfSignedCertHost}${_sslPort}" 2>/dev/null | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "${_tempCertFile}"
+      if [ -s "$_tempCertFile" ]; then
+        # Calculate the hash of the certificate
+        _currentHash=$(openssl x509 -in "${_tempCertFile}" -noout -sha256 -fingerprint | sed 's/://g' | awk -F= '{print $2}')
+        # Check if the hash matches the stored hash
+        if [ -f "$_hashFile" ] && [ "$_currentHash" = "$(cat "$_hashFile")" ]; then
+          echo "INFO: Certificate for ${_selfSignedCertHost}${_sslPort} is unchanged. Skipping import."
+        else
+          if keytool -list -keystore "$_custKeyStoreFile" -storepass "$_keytoolPass" -alias "$_sanitizedHostName" > /dev/null 2>&1; then
+            keytool -delete -alias "$_sanitizedHostName" -keystore "$_custKeyStoreFile" -storepass "$_keytoolPass" -noprompt 2>/dev/null
+            echo "INFO: Importing updated certificate for ${_selfSignedCertHost}${_sslPort}..."
+          else 
+            echo "INFO: Importing certificate for ${_selfSignedCertHost}${_sslPort}..."
+          fi
+          keytool -import -trustcacerts -keystore "$_custKeyStoreFile" -storepass "$_keytoolPass" -noprompt -alias "$_sanitizedHostName" -file "$_tempCertFile"
+          if [ $? -eq 0 ]; then
+            echo "$_currentHash" > "$_hashFile"
+            echo "INFO: Certificate for ${_selfSignedCertHost}${_sslPort} imported successfully."
+          else
+            echo "ERROR: Failed to import certificate for ${_selfSignedCertHost}${_sslPort}."
+            exit 1
+          fi
+        fi
+        # Clean up temporary certificate file
+        rm -f "$_tempCertFile"
+      else
+        rm -f "$_tempCertFile"
+        if [ "${EXO_SELFSIGNEDCERTS_STRICT_MODE:-false}" = "false" ] && [ -f "$_hashFile" ]; then
+          echo "WARNING: Unable to fetch certificate for ${_selfSignedCertHost}${_sslPort}."
+          echo "  The connection might have failed, or the certificate could not be retrieved."
+          echo "  However, the certificate hash was found. Proceeding with the current certificate."
+        else
+          echo "Error: Unable to fetch certificate for ${_selfSignedCertHost}${_sslPort} (Strict Mode: ${EXO_SELFSIGNEDCERTS_STRICT_MODE:-false}). Abort!"
+          exit 1
+        fi
       fi
-      rm "/tmp/${_sanitizedhostname}.crt"
     fi
   done
   if [ $? != 0 ]; then
