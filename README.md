@@ -314,9 +314,10 @@ The following environment variables should be passed to the container in order t
 
 The following environment variables should be passed to the container in order to import self-signed certficates :
 
-| VARIABLE                    | MANDATORY | DEFAULT VALUE | DESCRIPTION                                                                                                                               |
-| --------------------------- | --------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| EXO_SELFSIGNEDCERTS_HOSTS   | NO        | -       | commas separated list of self-certificates hostname to import to keystore           |
+| VARIABLE                          | MANDATORY | DEFAULT VALUE | DESCRIPTION                                                                                                                                                         |
+| --------------------------------- | --------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| EXO_SELFSIGNEDCERTS_HOSTS         | NO        | -             | commas separated list of self-certificates hostname to import to keystore                               |
+| EXO_SELFSIGNEDCERTS_STRICT_MODE   | NO        | `false`       | Strict mode for importing certificates (Abort the server startup if ssl certificate import fails) |
 
 ### Rememberme Token Expiration
 
