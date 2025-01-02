@@ -748,47 +748,42 @@ fi
 # -----------------------------------------------------------------------------
 _custKeyStoreDir=/opt/exo/.custkeystore
 _custKeyStoreFile=${_custKeyStoreDir}/exo.jks
-if [ -f /opt/exo/_done.ssca ]; then
-  echo "INFO: self-signed certificates keystore import already done! skipping this step."
+# self-signed certificates authorization
+if [ -z "${EXO_SELFSIGNEDCERTS_HOSTS:-}" ]; then
+  echo "# no self-signed certificate to be imported from EXO_SELFSIGNEDCERTS_HOSTS environment variable."
 else
-  # self-signed certificates authorization
-  if [ -z "${EXO_SELFSIGNEDCERTS_HOSTS:-}" ]; then
-    echo "# no self-signed certificate to be imported from EXO_SELFSIGNEDCERTS_HOSTS environment variable."
-  else
-    echo "# Copying JDK cacerts keystore to custom one to be used for self-signed certificates import (rootless)..."
-    mkdir -p ${_custKeyStoreDir}
-    cp -f $JAVA_HOME/lib/security/cacerts $_custKeyStoreFile
-    echo "Done."
-    echo "# Importing self-signed certificates from EXO_SELFSIGNEDCERTS_HOSTS environment variable:"
-    echo ${EXO_SELFSIGNEDCERTS_HOSTS} | tr ',' '\n' | while read _selfsignedcerthost ; do
-      if [ -n "${_selfsignedcerthost}" ]; then
-        # Authorize self-signed certificate
-        _sslPort=':443'
-        if echo "${_selfsignedcerthost}" | grep -q ':'; then
-          _sslPort=''
-        fi
-        _sanitizedhostname=$(echo "${_selfsignedcerthost}" | cut -d ':' -f1)
-        echo "Importing ${_selfsignedcerthost} self-signed certificate to java custom keystore..."
-        echo -n | openssl s_client -connect "${_selfsignedcerthost}${_sslPort}" | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "/tmp/${_sanitizedhostname}.crt"
-        keytool -import -trustcacerts -keystore ${_custKeyStoreFile} -storepass changeit -noprompt -alias "${_sanitizedhostname}" -file "/tmp/${_sanitizedhostname}.crt"
-        if [ $? != 0 ]; then
-          echo "[ERROR] Problem during importing self-signed certificate of Host: [${_selfsignedcerthost}]."
-          exit 1
-        fi
-        rm "/tmp/${_sanitizedhostname}.crt"
+  echo "# Copying JDK cacerts keystore to custom one to be used for self-signed certificates import (rootless)..."
+  mkdir -p ${_custKeyStoreDir}
+  cp -f $JAVA_HOME/lib/security/cacerts $_custKeyStoreFile
+  echo "Done."
+  echo "# Importing self-signed certificates from EXO_SELFSIGNEDCERTS_HOSTS environment variable:"
+  echo ${EXO_SELFSIGNEDCERTS_HOSTS} | tr ',' '\n' | while read _selfsignedcerthost ; do
+    if [ -n "${_selfsignedcerthost}" ]; then
+      # Authorize self-signed certificate
+      _sslPort=':443'
+      if echo "${_selfsignedcerthost}" | grep -q ':'; then
+        _sslPort=''
       fi
-    done
-    if [ $? != 0 ]; then
-      echo "[ERROR] An error during importing self-signed certificates phase aborted eXo startup !"
-      exit 1
+      _sanitizedhostname=$(echo "${_selfsignedcerthost}" | cut -d ':' -f1)
+      echo "Importing ${_selfsignedcerthost} self-signed certificate to java custom keystore..."
+      echo -n | openssl s_client -connect "${_selfsignedcerthost}${_sslPort}" | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > "/tmp/${_sanitizedhostname}.crt"
+      keytool -import -trustcacerts -keystore ${_custKeyStoreFile} -storepass changeit -noprompt -alias "${_sanitizedhostname}" -file "/tmp/${_sanitizedhostname}.crt"
+      if [ $? != 0 ]; then
+        echo "[ERROR] Problem during importing self-signed certificate of Host: [${_selfsignedcerthost}]."
+        exit 1
+      fi
+      rm "/tmp/${_sanitizedhostname}.crt"
     fi
+  done
+  if [ $? != 0 ]; then
+    echo "[ERROR] An error during importing self-signed certificates phase aborted eXo startup !"
+    exit 1
   fi
-  echo "# ------------------------------------ #"
-  echo "# eXo self-signed certificates import done."
-  echo "# ------------------------------------ #"
-  # put a file to avoid doing the configuration twice
-  touch /opt/exo/_done.ssca
 fi
+echo "# ------------------------------------ #"
+echo "# eXo self-signed certificates import done."
+echo "# ------------------------------------ #"
+
 # ---------------------------------------------------------------------------------
 # Configure tomcat to use custom ca certs each start if custom keystore is provided
 # ---------------------------------------------------------------------------------
