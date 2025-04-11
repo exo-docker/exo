@@ -2,6 +2,11 @@
 
 ![Docker Stars](https://img.shields.io/docker/stars/exoplatform/exo.svg) - ![Docker Pulls](https://img.shields.io/docker/pulls/exoplatform/exo.svg)
 
+> ⚠️ **Deprecation Notice**  
+> This repository is deprecated and will no longer receive updates for **7.0.x** and later versions.
+>
+> Please note that all future 7.0.x releases will no longer be published here.
+
 | Image                                                       | JDK | eXo Platform             |
 | ----------------------------------------------------------- | --- | ------------------------ |
 | exoplatform/exo:7.0_latest                                  | 21  | 7.0.x Enterprise edition |
