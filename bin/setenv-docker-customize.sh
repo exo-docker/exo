@@ -167,6 +167,8 @@ EXO_ES_URL="${EXO_ES_SCHEME}://${EXO_ES_HOST}:${EXO_ES_PORT}"
 [ -z "${EXO_LDAP_POOL_TIMEOUT}" ] && EXO_LDAP_POOL_TIMEOUT="60000"
 [ -z "${EXO_LDAP_POOL_MAX_SIZE}" ] && EXO_LDAP_POOL_MAX_SIZE="100"
 
+[ -z "${EXO_JODCONVERTER_PORTS}" ] && EXO_JODCONVERTER_PORTS="2002"
+
 [ -z "${EXO_REGISTRATION}" ] && EXO_REGISTRATION="true"
 
 [ -z "${EXO_PROFILES}" ] && EXO_PROFILES="all"
@@ -511,6 +513,9 @@ else
 
   add_in_exo_configuration "exo.es.indexing.replica.number.default=${EXO_ES_INDEX_REPLICA_NB}"
   add_in_exo_configuration "exo.es.indexing.shard.number.default=${EXO_ES_INDEX_SHARD_NB}"
+
+  # JOD Converter
+  add_in_exo_configuration "exo.jodconverter.portnumbers=${EXO_JODCONVERTER_PORTS}"
 
   if [ "${EXO_REGISTRATION}" = "false" ]; then
     add_in_exo_configuration "# Registration"
